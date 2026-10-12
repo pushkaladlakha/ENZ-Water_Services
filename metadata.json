@@ -1,0 +1,6 @@
+{
+  "name": "Taumata Arowai - New Zealand Water Services GIS Platform",
+  "description": "Official spatial drinking water register, supply zones, watercare network assets, and compliance portal for New Zealand.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

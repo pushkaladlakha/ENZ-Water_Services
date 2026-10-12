@@ -1,0 +1,363 @@
+================================================================================
+TAUMATA AROWAI - NEW ZEALAND WATER SERVICES GIS PLATFORM
+SAFE EXECUTION & OPERATION GUIDE
+================================================================================
+File: SAFE_RUN_GUIDE.txt
+Target Audience: Local Developers, GIS Operators, Testers & System Administrators
+Last Updated: October 2026
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. QUICK START SUMMARY (TL;DR)
+2. DO I NEED TO RUN 'npm install' EVERY TIME? (CLARIFICATION)
+3. SYSTEM PREREQUISITES
+4. STEP-BY-STEP SAFE LOCAL LAUNCH (PORT 3000)
+5. HOW TO RUN SAFELY WITH VS CODE DEV TUNNELS / PORT FORWARDING
+6. MAP RENDERING FIXES FOR TUNNELED & REMOTE ENVIRONMENTS
+7. RUNNING THE PYTHON GEOSPATIAL ETL PIPELINE SAFELY (VIRTUAL ENV)
+8. SAFE DATABASE INITIALIZATION (POSTGRESQL & POSTGIS)
+9. PRODUCTION BUILD & VERIFICATION
+10. COMPREHENSIVE TROUBLESHOOTING MATRIX
+
+================================================================================
+1. QUICK START SUMMARY (TL;DR)
+================================================================================
+
+For daily development after initial setup, you only need ONE command:
+
+   npm run dev
+
+Open your browser at:
+   http://localhost:3000
+
+To stop the server safely at any time:
+   Press  Ctrl + C  in your terminal, then press  Y  (if prompted) and Enter.
+
+
+================================================================================
+2. DO I NEED TO RUN 'npm install' EVERY TIME? (CLARIFICATION)
+================================================================================
+
+ANSWER: NO! You do NOT need to run 'npm install' every time.
+
+- Once 'npm install' finishes successfully the first time, all required packages 
+  are saved in your local 'node_modules/' folder.
+- When you reopen Command Prompt (CMD), PowerShell, or VS Code tomorrow or after a 
+  restart, your packages are still there.
+- Only run 'npm install' if:
+    a) You just cloned or unzipped the repository for the first time.
+    b) You deleted the 'node_modules/' folder.
+    c) A new library was added to 'package.json'.
+- Otherwise, just open your terminal and run:
+    npm run dev
+
+
+================================================================================
+3. SYSTEM PREREQUISITES
+================================================================================
+
+Verify these tools on your computer before beginning:
+
+1. Node.js & npm (REQUIRED for the web application):
+   - Node.js version 18.0.0 or higher (Node 20 or 22 LTS recommended)
+   - npm version 9.0.0 or higher
+   - Verification commands:
+       node -v
+       npm -v
+
+2. Python (OPTIONAL - only needed if converting raw Esri .gdb / .lpkx layers):
+   - Python 3.9 or higher (3.10 / 3.11 / 3.12 recommended)
+   - Verification command:
+       python --version   (or python3 --version)
+
+3. PostgreSQL & PostGIS (OPTIONAL - only needed for production backend persistence):
+   - PostgreSQL 14+ with PostGIS 3.2+
+   - Verification command:
+       psql --version
+
+
+================================================================================
+4. STEP-BY-STEP SAFE LOCAL LAUNCH (PORT 3000)
+================================================================================
+
+Follow these sequential steps in order:
+
+STEP 4.1: OPEN YOUR PROJECT TERMINAL
+-----------------------------------
+- In VS Code: Press `Ctrl + ~` (tilde) or go to Terminal -> New Terminal.
+- In Windows CMD / PowerShell:
+    cd path\to\your\project-folder
+- In macOS / Linux Terminal:
+    cd /path/to/your/project-folder
+
+STEP 4.2: ENVIRONMENT FILE (IF MISSING)
+---------------------------------------
+If you do not have a `.env` file in your root folder:
+- On Windows CMD:
+    copy .env.example .env
+- On PowerShell:
+    Copy-Item .env.example .env
+- On macOS / Linux:
+    cp .env.example .env
+
+STEP 4.3: FIRST-TIME INSTALLATION (RUN ONCE ONLY)
+------------------------------------------------
+Run:
+    npm install
+
+* Note: Wait until it finishes without errors. If warnings about deprecated 
+  optional dependencies appear, they are harmless and can be ignored.
+
+STEP 4.4: START THE DEVELOPMENT SERVER
+--------------------------------------
+Run:
+    npm run dev
+
+You will see:
+    VITE v8.x.x  ready in ~250 ms
+    ➜  Local:   http://localhost:3000/
+    ➜  Network: http://<your-ip>:3000/
+
+STEP 4.5: OPEN IN BROWSER
+-------------------------
+Open Chrome, Edge, Firefox, or Safari and navigate to:
+    http://localhost:3000
+
+STEP 4.6: STOPPING THE SERVER SAFELY
+------------------------------------
+When you are done testing or want to shut down:
+- Click into the terminal window running Vite.
+- Press `Ctrl + C`.
+- This immediately frees port 3000 so other applications can use it.
+
+
+================================================================================
+5. HOW TO RUN SAFELY WITH VS CODE DEV TUNNELS / PORT FORWARDING
+================================================================================
+
+If you want to view your local app on a phone, share it with a colleague, or 
+access it remotely without deploying to a server:
+
+METHOD A: BUILT-IN VS CODE PORT FORWARDING (RECOMMENDED)
+---------------------------------------------------------
+1. In VS Code, start the app with:
+     npm run dev
+2. In the bottom panel next to "Terminal", click on the "PORTS" tab.
+   (If the Ports tab is hidden: click View -> Open View -> Ports).
+3. Click "Forward a Port" (or the `+` icon).
+4. Enter `3000` and press Enter.
+5. VS Code will generate a Forwarded Address URL like:
+     https://xxxx-3000.devtunnels.ms
+6. Right-click the Port entry:
+   - "Port Visibility" -> Keep as "Private" if testing yourself with your GitHub login.
+   - Or change to "Public" if sharing with a teammate without login requirement.
+7. Click the globe icon or copy the URL to open it in your browser.
+
+METHOD B: NGROK TUNNEL (ALTERNATIVE)
+------------------------------------
+If using ngrok from your command prompt:
+1. Start your dev server:
+     npm run dev
+2. In a second command prompt, run:
+     ngrok http 3000
+3. Copy the secure HTTPS URL (e.g. https://abc123xyz.ngrok-free.app).
+
+
+================================================================================
+6. MAP RENDERING FIXES FOR TUNNELED & REMOTE ENVIRONMENTS
+================================================================================
+
+WHY DID OPENSTREETMAP PREVIOUSLY FAIL ON TUNNELED APPS?
+------------------------------------------------------
+When accessing an app via localhost, browsers allow requests with origin `localhost`.
+However, when accessing via a tunnel (`*.devtunnels.ms` or `*.ngrok-free.app`):
+1. Raw OpenStreetMap servers (`tile.openstreetmap.org`) strictly enforce a Tile Usage Policy.
+   They detect proxy request headers, dev tunnel referrers, or rapid concurrent zoom requests
+   and respond with HTTP 403 Forbidden ("Access Blocked").
+2. Mixed Content Security: If your tunnel is `https://`, browsers block any `http://` tile URLs.
+3. Canvas Dimensions: If a tunnel loads slowly, Leaflet's container may calculate 0x0 size 
+   until a window resize occurs.
+
+HOW THIS APPLICATION RESOLVES IT AUTOMATICALLY:
+-----------------------------------------------
+1. Reliable CDN Endpoints:
+   The application automatically routes OpenStreetMap to high-availability, CORS-enabled 
+   CartoDB Voyager tiles (`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/...`) which 
+   allow unrestricted HTTPS requests from dev tunnels.
+2. Full HTTPS Protocol:
+   All default basemaps (Carto Light, Esri Satellite, Carto Voyager, and Topographic) use 
+   HTTPS URLs to prevent Mixed Content security blocking.
+3. Automatic Map Resize Invalidation:
+   The Leaflet instance triggers an `invalidateSize()` cycle on mount and tab switch, ensuring 
+   tiles render immediately even over high-latency tunnel handshakes.
+
+VERIFYING TILE CONNECTIVITY IN BROWSER DEVTOOLS:
+------------------------------------------------
+If you ever see a blank background on a remote tunnel:
+1. Open DevTools (Press `F12` or right-click -> Inspect).
+2. Go to the "Network" tab, filter by "Img".
+3. Check the status of tile images:
+   - Status 200: Successfully loaded.
+   - Status 403 / 0: Check if an ad blocker, corporate VPN, or strict firewall is blocking PNG tiles.
+   - Switch the basemap in the Layers panel (top-right) between "LINZ Cadastral Light", 
+     "Esri World Imagery", and "OpenStreetMap" to test alternative providers.
+
+
+================================================================================
+7. RUNNING THE PYTHON GEOSPATIAL ETL PIPELINE SAFELY (VIRTUAL ENV)
+================================================================================
+
+The script `scripts/process_mentor_data.py` extracts raw Auckland Esri `.gdb` or 
+`.lpkx` layer packages and joins `Auckland_zone_list.xlsx` to generate GeoJSON.
+
+CRITICAL SAFETY RULE:
+--------------------
+NEVER install GIS Python packages globally (do not run `pip install geopandas` 
+directly in your main system Python). Doing so can break other system tools or 
+cause GDAL/GEOS binary version conflicts.
+ALWAYS use a dedicated Python Virtual Environment (`venv`).
+
+STEP 7.1: CREATE A VIRTUAL ENVIRONMENT
+--------------------------------------
+Navigate to your project root and run:
+- On Windows (CMD / PowerShell):
+    python -m venv .venv
+- On macOS / Linux:
+    python3 -m venv .venv
+
+STEP 7.2: ACTIVATE THE VIRTUAL ENVIRONMENT
+------------------------------------------
+- Windows PowerShell:
+    .\.venv\Scripts\Activate.ps1
+    (If execution policy blocks it: run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` first)
+- Windows Command Prompt (CMD):
+    .venv\Scripts\activate.bat
+- macOS / Linux Terminal:
+    source .venv/bin/activate
+
+Notice that `(.venv)` appears at the start of your terminal prompt.
+
+STEP 7.3: INSTALL ONLY REQUIRED GIS PACKAGES
+--------------------------------------------
+Run:
+    pip install --upgrade pip
+    pip install geopandas pyogrio shapely fiona openpyxl pandas
+
+* Or simply install using the project requirements file:
+    pip install -r requirements.txt
+
+STEP 7.4: RUN THE CONVERSION SCRIPT
+-----------------------------------
+Run:
+    python scripts/process_mentor_data.py --gdb path/to/default.gdb --excel path/to/Auckland_zone_list.xlsx
+
+This will:
+1. Read the 43 MultiPolygon supply zones and concentric buffer tiers (50m, 100m, 200m, 500m, 1500m).
+2. Reproject geometries from Esri EPSG:3857 to EPSG:4326 (WGS84 Lat/Lng).
+3. Join operator, registered population, and compliance indices.
+4. Output verified GeoJSON files into `public/data/`.
+
+STEP 7.5: SAFELY DEACTIVATE THE VIRTUAL ENVIRONMENT
+---------------------------------------------------
+When finished, cleanly deactivate by typing:
+    deactivate
+
+
+================================================================================
+8. SAFE DATABASE INITIALIZATION (POSTGRESQL & POSTGIS)
+================================================================================
+
+The spatial database schema is located in `database/schema.sql`.
+
+SAFETY FEATURES OF THE SCHEMA:
+------------------------------
+- Fully guarded with `CREATE TABLE IF NOT EXISTS` and `CREATE INDEX IF NOT EXISTS`.
+- Will NOT wipe, drop, or destroy existing database tables or records.
+- Uses `uuid_generate_v4()` for primary keys to prevent ID collisions.
+
+HOW TO EXECUTE SAFELY:
+----------------------
+1. Create a dedicated database in PostgreSQL:
+     createdb -U postgres taumata_arowai_gis
+2. Apply the schema:
+     psql -U postgres -d taumata_arowai_gis -f database/schema.sql
+3. Set your connection string in `.env`:
+     DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/taumata_arowai_gis"
+
+
+================================================================================
+9. PRODUCTION BUILD & VERIFICATION
+================================================================================
+
+Before shipping or creating a production release, verify that TypeScript compiles 
+cleanly with zero errors:
+
+STEP 9.1: RUN TYPE CHECKING / LINT
+----------------------------------
+    npm run lint
+
+STEP 9.2: BUILD PRODUCTION BUNDLE
+---------------------------------
+    npm run build
+
+This outputs optimized, minified production assets into the `dist/` directory.
+
+STEP 9.3: PREVIEW THE PRODUCTION BUILD LOCALLY
+----------------------------------------------
+    npm run preview
+
+This launches a local preview server on `http://localhost:4173` to test the 
+production bundle exactly as it will behave in deployment.
+
+
+================================================================================
+10. COMPREHENSIVE TROUBLESHOOTING MATRIX
+================================================================================
+
+ISSUE 1: "Error: listen EADDRINUSE: address already in use :::3000"
+-------------------------------------------------------------------
+CAUSE: Another instance of Vite or another program is already using port 3000.
+SAFE FIX:
+- On Windows (CMD / PowerShell):
+    netstat -ano | findstr :3000
+    taskkill /PID <PID_NUMBER> /F
+- On macOS / Linux:
+    lsof -i :3000
+    kill -9 <PID_NUMBER>
+- Alternative: Start on another port by running:
+    npx vite --port 3001
+
+ISSUE 2: "Map tiles show gray grid or don't load over VS Code Tunnel"
+---------------------------------------------------------------------
+SAFE FIX:
+1. Check that you opened the `https://...` tunnel URL, not `http://`.
+2. In the top-right of the map, open the "Map Layers" panel and select 
+   "Esri World Imagery" or "LINZ Cadastral Light".
+3. Check your browser console (F12 -> Console) for any network blocking extensions.
+4. Hard-refresh the page by pressing `Ctrl + F5` (or `Cmd + Shift + R`).
+
+ISSUE 3: "Cannot find module ... or package is missing"
+------------------------------------------------------
+SAFE FIX:
+Run `npm install` once to make sure all dependencies in `package.json` are installed.
+
+ISSUE 4: "Geolocation permission denied or not locating"
+--------------------------------------------------------
+SAFE FIX:
+- Browsers only permit Geolocation API access on `localhost` or secure `https://` URLs.
+- If using an unencrypted remote IP (`http://192.168.x.x`), browsers block location access.
+- Use VS Code Dev Tunnels (which provide HTTPS) or test on `http://localhost:3000`.
+- Click the lock icon next to the browser URL bar and set "Location" to "Allow".
+
+ISSUE 5: "PowerShell: Execution of scripts is disabled on this system"
+-----------------------------------------------------------------------
+SAFE FIX:
+When activating Python `.venv` in PowerShell, run this first:
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Then re-run:
+    .\.venv\Scripts\Activate.ps1
+
+================================================================================
+END OF SAFE EXECUTION GUIDE
+================================================================================

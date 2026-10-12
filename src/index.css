@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "@xyflow/react/dist/style.css";
+
+/* Official Taumata Arowai Design System Tokens */
+:root {
+  --taumata-navy: #071A35;
+  --taumata-navy-hover: #0C2548;
+  --taumata-navy-dark: #040F20;
+  --taumata-navy-light: #EBF1F7;
+  --taumata-teal: #00A3A6;
+  --taumata-teal-dark: #007A87;
+  --taumata-border: #DCE3EC;
+}
+
+.bg-taumata-navy {
+  background-color: #071A35;
+}
+
+.bg-taumata-navy-hover:hover {
+  background-color: #0C2548;
+}
+
+.text-taumata-navy {
+  color: #071A35;
+}
+
+.border-taumata-navy {
+  border-color: #071A35;
+}
+
+/* Government-grade Leaflet map container */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+  background-color: #F8FAFC;
+}
+
+/* Official Taumata Arowai Map Popup */
+.watercare-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(7, 26, 53, 0.18), 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #071A35;
+}
+
+.watercare-popup .leaflet-popup-content {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.watercare-popup .leaflet-popup-tip {
+  background: white;
+  border: 1px solid #071A35;
+}
+
+/* Accessible clean scrollbars for GIS panels */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #071A35;
+}
+

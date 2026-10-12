@@ -1,0 +1,56 @@
+# =============================================================================
+# Taumata Arowai - New Zealand Water Services GIS Platform
+# Application & Environment Runtime Requirements Specification
+# File: requirements.txt
+# Complete Safe Execution Guide: See SAFE_RUN_GUIDE.txt
+# =============================================================================
+
+# 1. RUNTIME & SYSTEM PREREQUISITES
+# Node.js: Required for React 19 / Vite Web App
+Node.js >= 18.0.0
+npm >= 9.0.0
+
+# Optional Services:
+# Python >= 3.9 (Only needed for scripts/process_mentor_data.py)
+# PostgreSQL >= 14.0 with PostGIS >= 3.2 (Only needed for production spatial DB)
+
+# 2. CORE FRONTEND PACKAGES (Installed via: npm install)
+react>=19.0.0
+react-dom>=19.0.0
+leaflet>=1.9.4
+@types/leaflet>=1.9.14
+@types/geojson>=7946.0.14
+lucide-react>=0.546.0
+tailwindcss>=4.0.0
+@tailwindcss/vite>=4.0.0
+vite>=8.0.0
+typescript>=5.0.0
+
+# 3. PYTHON GEOSPATIAL PIPELINE DEPENDENCIES (For scripts/process_mentor_data.py)
+# SAFE INSTALL RULE: Always install inside a virtual environment (.venv)
+# Command: pip install geopandas pyogrio shapely fiona openpyxl pandas
+geopandas>=0.14.0
+pyogrio>=0.7.0
+shapely>=2.0.0
+fiona>=1.9.5
+openpyxl>=3.1.0
+pandas>=2.0.0
+
+# 4. SERVER & RUNTIME ENVIRONMENT VARIABLES (.env.example)
+# Permanent authoritative tile providers:
+VITE_MAP_TILES_CARTO="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+VITE_MAP_TILES_OSM="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+VITE_MAP_TILES_ESRI_SATELLITE="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+VITE_MAP_TILES_LINZ_TOPO="https://basemaps.linz.govt.nz/v1/tiles/aerial/EPSG:3857/{z}/{x}/{y}.png"
+VITE_LINZ_PUBLIC_API_KEY=""
+DATABASE_URL="postgresql://postgres:password@localhost:5432/taumata_arowai_gis"
+
+# 5. COORDINATE REFERENCE SYSTEMS (CRS)
+EPSG:4326 - WGS 84 (Geographic Lat/Lng for GeoJSON, Leaflet Web Map Tiles)
+EPSG:2193 - NZTM2000 (New Zealand Transverse Mercator 2000, Metric Projected)
+EPSG:3857 - WGS 84 / Pseudo-Mercator (Web Mercator for Esri ArcGIS layer packages)
+
+# 6. ROLE-BASED ACCESS CONTROL (RBAC) POLICIES
+# - Citizen: Public drinking water supply zones lookup, water scheme operator & compliance grading, public boil water & outage notifications, citizen contamination & service complaint reporting.
+# - Authorized Official: Three Waters reticulation pipeline inventory (diameter, material, pressure rating), COMPKEY identification, concentric distance buffer corridors, investigation & resolution of citizen contamination complaints.
+# - Administrator: GIS spatial dataset ingestion (AklDizzy, Auckland_zone_list.xlsx), PostGIS relational database schema migrations, audit log & user access governance.

@@ -1,0 +1,63 @@
+================================================================================
+TAUMATA AROWAI - NEW ZEALAND WATER SERVICES GIS PLATFORM
+APPLICATION RUN GUIDE & SAFE EXECUTION CHEATSHEET
+================================================================================
+For full, detailed troubleshooting documentation, see: SAFE_RUN_GUIDE.txt
+
+--------------------------------------------------------------------------------
+1. QUICK RUN (DAILY USE)
+--------------------------------------------------------------------------------
+Open terminal in project root and run:
+
+    npm run dev
+
+Then open in browser:
+    http://localhost:3000
+
+Stop at any time:
+    Press Ctrl + C
+
+* NOTE: You do NOT need to run 'npm install' every time you open CMD or VS Code.
+  Run 'npm install' only once during the initial project setup.
+
+--------------------------------------------------------------------------------
+2. RUNNING OVER TUNNELS (VS CODE PORT FORWARDING / NGROK)
+--------------------------------------------------------------------------------
+- Start app: npm run dev
+- In VS Code: Click 'PORTS' tab at the bottom -> 'Forward a Port' -> enter '3000'
+- Right-click port 3000 -> set Port Visibility to 'Public' if sharing with others
+- Open the generated https://...devtunnels.ms URL
+- Map tile security: The app uses secure HTTPS tile providers (Carto Voyager & Esri)
+  to ensure tiles render smoothly without 403 Forbidden proxy errors.
+
+--------------------------------------------------------------------------------
+3. PYTHON GIS PIPELINE (OPTIONAL / SAFE EXECUTION)
+--------------------------------------------------------------------------------
+Always use a Python virtual environment to avoid package conflicts:
+
+Windows:
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    pip install geopandas pyogrio shapely fiona openpyxl pandas
+    python scripts/process_mentor_data.py --gdb path/to/default.gdb --excel path/to/Auckland_zone_list.xlsx
+    deactivate
+
+macOS / Linux:
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip install geopandas pyogrio shapely fiona openpyxl pandas
+    python scripts/process_mentor_data.py --gdb path/to/default.gdb --excel path/to/Auckland_zone_list.xlsx
+    deactivate
+
+--------------------------------------------------------------------------------
+4. PRODUCTION BUILD
+--------------------------------------------------------------------------------
+    npm run build
+    npm run preview
+
+--------------------------------------------------------------------------------
+5. SAFE DATABASE INITIALIZATION (POSTGRESQL & POSTGIS)
+--------------------------------------------------------------------------------
+    createdb -U postgres taumata_arowai_gis
+    psql -U postgres -d taumata_arowai_gis -f database/schema.sql
+================================================================================

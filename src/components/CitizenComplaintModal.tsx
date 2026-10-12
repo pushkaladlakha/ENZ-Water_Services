@@ -1,0 +1,603 @@
+import React, { useState } from 'react';
+import { 
+  X, 
+  AlertTriangle, 
+  Droplet, 
+  MapPin, 
+  ShieldAlert, 
+  CheckCircle2, 
+  FileText, 
+  Clock, 
+  User, 
+  Phone, 
+  Mail, 
+  Send, 
+  Info,
+  ChevronRight,
+  ListFilter,
+  Check
+} from 'lucide-react';
+import { AuthUser, WaterIncidentComplaint, IncidentCategory, IncidentSeverity } from '../types/gis';
+import { TaumataArowaiLogo } from './TaumataArowaiLogo';
+import { AUCKLAND_ZONE_SCHEMES } from '../utils/waterLineageEngine';
+
+interface CitizenComplaintModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmitComplaint: (complaint: WaterIncidentComplaint) => void;
+  currentUser: AuthUser | null;
+  selectedAddress?: string;
+  selectedCoordinates?: [number, number];
+  complaintsList: WaterIncidentComplaint[];
+}
+
+export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmitComplaint,
+  currentUser,
+  selectedAddress = '',
+  selectedCoordinates,
+  complaintsList = [],
+}) => {
+  const [activeTab, setActiveTab] = useState<'submit' | 'registry'>('submit');
+
+  // Form Fields
+  const [category, setCategory] = useState<IncidentCategory>('contamination_discoloration');
+  const [severity, setSeverity] = useState<IncidentSeverity>('high');
+  const [address, setAddress] = useState(selectedAddress || '4015 Great North Road, Kelston, Auckland');
+  const [supplyZoneId, setSupplyZoneId] = useState('AKL-SZ-14');
+  const [observedAt, setObservedAt] = useState(new Date().toISOString().slice(0, 16));
+  const [description, setDescription] = useState('');
+  const [waterSupplyType, setWaterSupplyType] = useState('Municipal Watercare Reticulation');
+  const [boilWaterAdvised, setBoilWaterAdvised] = useState(true);
+  const [reporterName, setReporterName] = useState(currentUser?.name || '');
+  const [reporterEmail, setReporterEmail] = useState(currentUser?.email || '');
+  const [reporterPhone, setReporterPhone] = useState('021 555 0192');
+  const [isAnonymous, setIsAnonymous] = useState(false);
+
+  // Submission Status
+  const [submittedReference, setSubmittedReference] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const categories: { id: IncidentCategory; label: string; desc: string; icon: string; defaultSeverity: IncidentSeverity }[] = [
+    {
+      id: 'contamination_discoloration',
+      label: 'Water Discoloration / Turbidity',
+      desc: 'Brown, reddish, yellow, or murky tap water with visible sediment particles.',
+      icon: '🟤',
+      defaultSeverity: 'high',
+    },
+    {
+      id: 'chemical_odor_taste',
+      label: 'Chemical Taste or Noxious Odor',
+      desc: 'Petroleum, strong chlorine, sulfur, or sewage-like odor/taste from tap.',
+      icon: '🧪',
+      defaultSeverity: 'high',
+    },
+    {
+      id: 'suspected_illness_pathogen',
+      label: 'Suspected Contamination & Illness',
+      desc: 'Household illness symptoms (e.g. gastrointestinal) or suspected biological pathogen.',
+      icon: '⚠️',
+      defaultSeverity: 'critical',
+    },
+    {
+      id: 'pipe_burst_leak',
+      label: 'Watermain Rupture or Street Leak',
+      desc: 'Major pipe burst, flooding street, bubbling footpath, or leaking Toby meter pit.',
+      icon: '💧',
+      defaultSeverity: 'high',
+    },
+    {
+      id: 'low_pressure_outage',
+      label: 'Complete Supply Outage / Pressure Drop',
+      desc: 'No running water or severe pressure drop across multiple premises.',
+      icon: '📉',
+      defaultSeverity: 'standard',
+    },
+    {
+      id: 'backflow_hazard',
+      label: 'Backflow / Cross-Connection Hazard',
+      desc: 'Back-siphonage risk from commercial activity or unapproved connection.',
+      icon: '🔄',
+      defaultSeverity: 'high',
+    },
+  ];
+
+  const handleCategoryChange = (catId: IncidentCategory) => {
+    setCategory(catId);
+    const item = categories.find(c => c.id === catId);
+    if (item) {
+      setSeverity(item.defaultSeverity);
+      if (item.id === 'suspected_illness_pathogen') {
+        setBoilWaterAdvised(true);
+      }
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!address.trim()) {
+      setValidationError('Please specify the location or address where the issue was observed.');
+      return;
+    }
+    if (!description.trim() || description.trim().length < 10) {
+      setValidationError('Please provide a descriptive explanation of what you observed (at least 10 characters).');
+      return;
+    }
+    if (!isAnonymous && !reporterEmail.trim()) {
+      setValidationError('Please provide a contact email address for official compliance follow-up, or choose anonymous submission.');
+      return;
+    }
+
+    const matchedZone = AUCKLAND_ZONE_SCHEMES.find(z => z.zoneId === supplyZoneId);
+    const refCode = `NZ-DW-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const newComplaint: WaterIncidentComplaint = {
+      id: refCode,
+      category,
+      categoryLabel: categories.find(c => c.id === category)?.label || 'General Incident',
+      severity,
+      address: address.trim(),
+      coordinates: selectedCoordinates,
+      supplyZoneId,
+      supplySchemeName: matchedZone?.supplyName || 'Auckland Municipal Water Supply',
+      description: description.trim(),
+      observedAt,
+      waterSupplyType,
+      boilWaterAdvised,
+      reporterName: isAnonymous ? 'Anonymous Citizen' : (reporterName.trim() || 'Auckland Resident'),
+      reporterEmail: isAnonymous ? 'anonymous@taumataarowai.govt.nz' : reporterEmail.trim(),
+      reporterPhone: isAnonymous ? undefined : reporterPhone.trim(),
+      isAnonymous,
+      status: 'Submitted',
+      createdAt: new Date().toISOString(),
+    };
+
+    onSubmitComplaint(newComplaint);
+    setSubmittedReference(refCode);
+    setValidationError(null);
+  };
+
+  const handleResetForm = () => {
+    setSubmittedReference(null);
+    setDescription('');
+    setValidationError(null);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150">
+      <div className="bg-white rounded-lg shadow-2xl border border-slate-300 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
+        
+        {/* Modal Header */}
+        <div className="px-5 py-3.5 bg-[#071A35] text-white flex items-center justify-between border-b border-[#0C2548] shrink-0">
+          <div className="flex items-center gap-3">
+            <TaumataArowaiLogo theme="dark" compact={false} className="h-8" />
+            <div className="h-6 w-[1px] bg-white/20 hidden sm:block" />
+            <div className="hidden sm:block">
+              <h2 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4 text-amber-400" />
+                <span>Water Contamination & Incident Complaint Intake</span>
+              </h2>
+              <p className="text-[10px] text-slate-300">
+                Official statutory incident registry under the Water Services Act 2021
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            aria-label="Close complaint dialog"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="flex border-b border-slate-200 bg-slate-50 px-5 pt-2 gap-2 text-xs font-semibold shrink-0">
+          <button
+            type="button"
+            onClick={() => { setActiveTab('submit'); setSubmittedReference(null); }}
+            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 ${
+              activeTab === 'submit'
+                ? 'border-[#071A35] text-[#071A35] font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+            <span>Submit New Complaint</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('registry')}
+            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 ${
+              activeTab === 'registry'
+                ? 'border-[#071A35] text-[#071A35] font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <ListFilter className="w-3.5 h-3.5 text-sky-700" />
+            <span>Active Incident Register ({complaintsList.length})</span>
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="flex-1 overflow-y-auto p-5 text-xs text-slate-800 space-y-4 custom-scrollbar">
+
+          {/* TAB 1: SUBMIT COMPLAINT FORM */}
+          {activeTab === 'submit' && (
+            <>
+              {submittedReference ? (
+                /* SUCCESS CONFIRMATION VIEW */
+                <div className="p-5 bg-emerald-50/70 border border-emerald-300 rounded-lg space-y-4 text-xs animate-in zoom-in-95 duration-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-emerald-950">
+                        Incident Report Successfully Registered
+                      </h3>
+                      <p className="text-[11px] text-emerald-800">
+                        Taumata Arowai Drinking Water Compliance Team has been formally notified.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-3.5 rounded border border-emerald-200 space-y-2">
+                    <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                      <span className="text-slate-500 font-medium">Official Reference Number:</span>
+                      <span className="font-mono font-bold text-sm text-[#071A35] bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+                        {submittedReference}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-slate-500">Reported Category:</span>
+                      <span className="font-semibold text-slate-800">
+                        {categories.find(c => c.id === category)?.label}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-slate-500">Location:</span>
+                      <span className="font-semibold text-slate-800 truncate max-w-[280px]">
+                        {address}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-slate-500">Status:</span>
+                      <span className="font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                        Logged & Awaiting Officer Review
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Immediate Precautionary Guidance */}
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded text-amber-950 space-y-1.5 text-[11px]">
+                    <div className="font-bold flex items-center gap-1.5 text-amber-900">
+                      <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+                      <span>Immediate Safety Precautions:</span>
+                    </div>
+                    <ul className="list-disc pl-5 space-y-1 text-slate-700">
+                      <li><strong>Precautionary Boil Water:</strong> If tap water appears discolored, cloudy, or has an unusual smell, boil water vigorously for at least 1 minute before drinking or brushing teeth.</li>
+                      <li><strong>Severe Burst Leak:</strong> If water is rapidly flooding your home or road, phone Watercare 24/7 Operations immediately at <strong>(09) 442 2222</strong>.</li>
+                      <li><strong>Health Symptoms:</strong> If you or household members experience illness, consult Healthline at <strong>0800 611 116</strong> or your GP.</li>
+                    </ul>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('registry')}
+                      className="px-4 py-2 bg-[#071A35] hover:bg-[#0C2548] text-white font-bold rounded text-xs transition-colors"
+                    >
+                      View Incident on Register
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleResetForm}
+                      className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded text-xs transition-colors"
+                    >
+                      Submit Another Report
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* INTAKE FORM */
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {validationError && (
+                    <div className="p-3 rounded bg-rose-50 border border-rose-200 text-rose-800 flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                      <span>{validationError}</span>
+                    </div>
+                  )}
+
+                  {/* STEP 1: CATEGORY SELECTION */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                      1. Select Incident Nature / Contamination Type:
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {categories.map((cat) => {
+                        const isSelected = category === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => handleCategoryChange(cat.id)}
+                            className={`p-2.5 rounded border text-left transition-all flex items-start gap-2.5 ${
+                              isSelected
+                                ? 'border-[#071A35] bg-sky-50/70 text-[#071A35] ring-1 ring-[#071A35]'
+                                : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            <span className="text-base leading-none mt-0.5">{cat.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-bold text-xs text-slate-900 leading-tight">
+                                {cat.label}
+                              </div>
+                              <div className="text-[10px] text-slate-500 leading-snug mt-0.5">
+                                {cat.desc}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* STEP 2: LOCATION & SEVERITY */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-semibold text-slate-700">
+                        Affected Street Address / Property Location:
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          required
+                          placeholder="e.g. 4015 Great North Road, Kelston"
+                          className="w-full pl-8 pr-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                        />
+                        <MapPin className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-semibold text-slate-700">
+                        Auckland Water Supply Zone (if known):
+                      </label>
+                      <select
+                        value={supplyZoneId}
+                        onChange={(e) => setSupplyZoneId(e.target.value)}
+                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                      >
+                        {AUCKLAND_ZONE_SCHEMES.map(z => (
+                          <option key={z.zoneId} value={z.zoneId}>
+                            {z.zoneName} ({z.zoneId})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* STEP 3: OBSERVATION TIME & WATER SUPPLY SOURCE */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-semibold text-slate-700">
+                        First Observed Date & Time:
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="datetime-local"
+                          value={observedAt}
+                          onChange={(e) => setObservedAt(e.target.value)}
+                          className="w-full pl-8 pr-2 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                        />
+                        <Clock className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-semibold text-slate-700">
+                        Urgency / Perceived Severity:
+                      </label>
+                      <select
+                        value={severity}
+                        onChange={(e) => setSeverity(e.target.value as IncidentSeverity)}
+                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                      >
+                        <option value="standard">Standard Inquiry (Minor Taste/Pressure)</option>
+                        <option value="high">High (Severe Discoloration / Odor / Burst)</option>
+                        <option value="critical">Critical (Potential Pathogen / Illness)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-semibold text-slate-700">
+                        Water Supply Source:
+                      </label>
+                      <select
+                        value={waterSupplyType}
+                        onChange={(e) => setWaterSupplyType(e.target.value)}
+                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                      >
+                        <option value="Municipal Watercare Reticulation">Municipal Reticulation (Watercare)</option>
+                        <option value="Rural Community Water Supply">Rural Community Water Supply</option>
+                        <option value="Private Borehole / Groundwater">Private Borehole</option>
+                        <option value="Rainwater Tank Collection">Rainwater Tank Collection</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* STEP 4: DESCRIPTION */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-semibold text-slate-700">
+                      Detailed Observation Description:
+                    </label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={3}
+                      required
+                      placeholder="Describe what you observed: color, smell, whether both cold and hot taps are affected, duration of discoloration, or leak severity..."
+                      className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                    />
+                  </div>
+
+                  {/* STEP 5: REPORTER CONTACT DETAILS */}
+                  <div className="border border-slate-200 rounded p-3 bg-slate-50/70 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="font-semibold text-slate-900 text-xs flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-[#071A35]" />
+                        <span>Reporter Contact Information</span>
+                      </div>
+                      <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isAnonymous}
+                          onChange={(e) => setIsAnonymous(e.target.checked)}
+                          className="rounded text-[#071A35]"
+                        />
+                        <span>Submit Anonymously</span>
+                      </label>
+                    </div>
+
+                    {!isAnonymous && (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                        <div>
+                          <label className="block text-[10px] text-slate-500">Your Full Name:</label>
+                          <input
+                            type="text"
+                            value={reporterName}
+                            onChange={(e) => setReporterName(e.target.value)}
+                            placeholder="Full Name"
+                            className="w-full px-2 py-1.5 rounded border border-slate-300 text-xs text-slate-900 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] text-slate-500">Contact Email:</label>
+                          <input
+                            type="email"
+                            value={reporterEmail}
+                            onChange={(e) => setReporterEmail(e.target.value)}
+                            placeholder="name@example.co.nz"
+                            className="w-full px-2 py-1.5 rounded border border-slate-300 text-xs text-slate-900 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] text-slate-500">Phone Number:</label>
+                          <input
+                            type="tel"
+                            value={reporterPhone}
+                            onChange={(e) => setReporterPhone(e.target.value)}
+                            placeholder="021 XXX XXXX"
+                            className="w-full px-2 py-1.5 rounded border border-slate-300 text-xs text-slate-900 bg-white"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* SUBMIT BUTTON */}
+                  <div className="pt-2 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-500">
+                      Reports are logged directly into Taumata Arowai incident dispatch.
+                    </span>
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-[#071A35] font-bold rounded text-xs transition-colors flex items-center gap-2 shadow-xs"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Submit Official Complaint</span>
+                    </button>
+                  </div>
+                </form>
+              )}
+            </>
+          )}
+
+          {/* TAB 2: ACTIVE INCIDENT REGISTER */}
+          {activeTab === 'registry' && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900">
+                  Registered Incident Reports & Contamination Notifications ({complaintsList.length})
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  Regulatory Compliance Tracking
+                </span>
+              </div>
+
+              {complaintsList.length === 0 ? (
+                <div className="p-6 text-center text-slate-500 bg-slate-50 rounded border border-slate-200">
+                  <Droplet className="w-6 h-6 mx-auto mb-2 text-slate-400" />
+                  <p className="font-semibold text-xs text-slate-700">No Active Complaints Recorded</p>
+                  <p className="text-[11px] mt-0.5">Use the Submit tab to log a new water quality or contamination report.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {complaintsList.map((item) => (
+                    <div key={item.id} className="p-3 bg-white rounded border border-slate-200 hover:border-slate-300 transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            item.severity === 'critical' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                            item.severity === 'high' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                            'bg-sky-100 text-sky-800 border border-sky-300'
+                          }`}>
+                            {item.severity.toUpperCase()}
+                          </span>
+                          <span className="font-bold text-xs text-slate-900">{item.categoryLabel}</span>
+                        </div>
+                        <span className="font-mono text-[10px] text-slate-500 font-semibold">{item.id}</span>
+                      </div>
+
+                      <div className="text-[11px] text-slate-700 flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="font-semibold">{item.address}</span>
+                      </div>
+
+                      <p className="text-[11px] text-slate-600 leading-snug line-clamp-2">
+                        {item.description}
+                      </p>
+
+                      <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-100">
+                        <span>Reported by: {item.reporterName}</span>
+                        <span className="font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+
+        {/* Modal Footer */}
+        <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+          <div className="text-[10px] text-slate-500">
+            For urgent health emergencies, phone Healthline 0800 611 116 (24/7).
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded font-semibold text-xs transition-colors"
+          >
+            Close
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
