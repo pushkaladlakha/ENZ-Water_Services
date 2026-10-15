@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   MapPin, 
@@ -10,10 +10,28 @@ import {
   Building2,
   Info,
   AlertTriangle,
-  FlaskConical
+  FlaskConical,
+  Play,
+  RotateCw,
+  Navigation,
+  ExternalLink,
+  Activity
 } from 'lucide-react';
-import { AccessLevel, ActiveSelection, ParcelFeature, PipeAsset, FittingAsset, WaterIncidentComplaint, AucklandSupplyZone } from '../types/gis';
-import { AucklandZoneScheme } from '../utils/waterLineageEngine';
+import { 
+  AccessLevel, 
+  ActiveSelection, 
+  ParcelFeature, 
+  PipeAsset, 
+  FittingAsset, 
+  WaterIncidentComplaint, 
+  AucklandSupplyZone,
+  WaterTestingProfileResult 
+} from '../types/gis';
+import { 
+  AucklandZoneScheme, 
+  resolveAddressSupplyZone, 
+  simulateWaterTestingProfile 
+} from '../utils/waterLineageEngine';
 
 interface InspectionDrawerProps {
   selection: ActiveSelection | null;
@@ -32,16 +50,38 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
   onReportIncident,
   complaintsList = [],
 }) => {
-  if (!selection) return null;
-
-  const isParcel = selection.type === 'parcel';
+  const isParcel = selection?.type === 'parcel';
   const parcel = isParcel ? (selection.data as ParcelFeature) : null;
-  const isPipe = selection.type === 'pipe';
+  const isPipe = selection?.type === 'pipe';
   const pipe = isPipe ? (selection.data as PipeAsset) : null;
-  const isFitting = selection.type === 'fitting';
+  const isFitting = selection?.type === 'fitting';
   const fitting = isFitting ? (selection.data as FittingAsset) : null;
-  const isZone = selection.type === 'supply_zone';
-  const zone = isZone && !selection.unmapped ? (selection.data as AucklandZoneScheme | AucklandSupplyZone) : null;
+  const isZone = selection?.type === 'supply_zone';
+  const zone = isZone && !selection?.unmapped ? (selection.data as AucklandZoneScheme | AucklandSupplyZone) : null;
+
+  // Active simulated water testing profile state for parcel
+  const [parcelProfile, setParcelProfile] = useState<WaterTestingProfileResult | null>(null);
+  const [isRunningProfile, setIsRunningProfile] = useState(false);
+
+  useEffect(() => {
+    if (parcel) {
+      setParcelProfile(simulateWaterTestingProfile(parcel));
+    } else {
+      setParcelProfile(null);
+    }
+  }, [parcel]);
+
+  const handleRunDrawerProfile = () => {
+    if (!parcel) return;
+    setIsRunningProfile(true);
+    setTimeout(() => {
+      const simulated = simulateWaterTestingProfile(parcel);
+      setParcelProfile(simulated);
+      setIsRunningProfile(false);
+    }, 450);
+  };
+
+  if (!selection) return null;
 
   // Filter water-testing incidents for the selected zone
   const zoneIncidents = isZone && zone ? complaintsList.filter(c => 
@@ -341,6 +381,90 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
                 <span className="font-mono font-medium text-slate-800">{parcel.titleReference}</span>
               </div>
             </div>
+
+            {/* Allocated Supply Zone Traceability & Run Profile */}
+            {parcelProfile && (
+              <div className="border border-sky-300 bg-sky-50/80 rounded p-3 space-y-2.5">
+                <div className="flex items-center justify-between border-b border-sky-200 pb-1.5">
+                  <span className="text-xs font-bold text-[#071A35] flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-sky-700" />
+                    <span>Allocated Supply Zone</span>
+                  </span>
+                  <span className="font-mono font-bold text-[10px] bg-sky-700 text-white px-2 py-0.5 rounded">
+                    {parcelProfile.allocatedZoneId}
+                  </span>
+                </div>
+
+                <div className="space-y-1 text-xs">
+                  <div className="font-bold text-slate-900">{parcelProfile.allocatedZoneName}</div>
+                  <div className="text-[11px] text-slate-600">Scheme: {parcelProfile.supplyName}</div>
+                </div>
+
+                {/* Distance & Transit Time */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-white p-2 rounded border border-sky-100">
+                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Zone Distance</span>
+                    <strong className="text-sm text-slate-900 font-extrabold">{parcelProfile.distanceKm} km</strong>
+                  </div>
+                  <div className="bg-white p-2 rounded border border-sky-100">
+                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Mains Transit</span>
+                    <strong className="text-sm text-slate-900 font-extrabold">{parcelProfile.transitTimeFormatted}</strong>
+                  </div>
+                </div>
+
+                {/* Run Profile Action */}
+                <button
+                  type="button"
+                  onClick={handleRunDrawerProfile}
+                  disabled={isRunningProfile}
+                  className={`w-full py-2 px-3 rounded font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                    isRunningProfile
+                      ? 'bg-slate-400 text-white cursor-not-allowed'
+                      : 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs'
+                  }`}
+                >
+                  {isRunningProfile ? (
+                    <>
+                      <RotateCw className="w-3.5 h-3.5 animate-spin text-white" />
+                      <span>Simulating Profile...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-white text-white" />
+                      <span>Run Profile (Water Testing)</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Simulated Metrics Card */}
+                <div className="bg-white p-2 rounded border border-sky-200 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-700 border-b border-slate-100 pb-1">
+                    <span className="flex items-center gap-1">
+                      <Activity className="w-3 h-3 text-sky-600" />
+                      <span>Hydraulic & Quality Testing</span>
+                    </span>
+                    <span className="text-emerald-700 font-bold">{parcelProfile.complianceStatus} (Grade A1)</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1 text-[11px]">
+                    <div>Pressure: <strong>{parcelProfile.pressurePsi} PSI</strong> <span className="text-[9px] text-slate-400 font-mono">({parcelProfile.pressureKPa} kPa)</span></div>
+                    <div>pH Target: <strong>{parcelProfile.ph}</strong></div>
+                    <div>Free Chlorine: <strong>{parcelProfile.chlorineMgL} mg/L</strong></div>
+                    <div>Turbidity: <strong>{parcelProfile.turbidityNtu} NTU</strong></div>
+                  </div>
+
+                  <a
+                    href={parcelProfile.googleMapsDirectionsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full mt-1 pt-1 border-t border-slate-100 flex items-center justify-center gap-1 text-[10px] font-bold text-blue-700 hover:text-blue-900"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>View Driving Route on Google Maps</span>
+                  </a>
+                </div>
+              </div>
+            )}
 
             {/* Drinking Water Supply Lineage */}
             {parcel.waterLineage && (

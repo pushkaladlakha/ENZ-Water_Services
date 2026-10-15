@@ -1,5 +1,5 @@
-export type UserRole = 'citizen' | 'official' | 'admin';
-export type AccessLevel = 'citizen' | 'official' | 'admin';
+export type UserRole = 'user' | 'admin' | 'citizen' | 'official';
+export type AccessLevel = 'user' | 'admin' | 'citizen' | 'official';
 
 export interface AuthUser {
   id: string;
@@ -147,6 +147,8 @@ export interface ParcelFeature {
   zoneColor: string;
   zoneDescription: string;
   dataSource: string;
+  allocatedZoneId?: string;
+  allocatedZoneName?: string;
   // Citizen-facing essential services
   services: {
     waterConnected: boolean;
@@ -330,6 +332,39 @@ export interface PathwayResolutionResult {
   confidenceScore: number;
   dataProvenance: string;
   dijkstraRoute?: DijkstraRouteResult | null;
+}
+
+export interface WaterTestingProfileResult {
+  addressId: string;
+  address: string;
+  lotPlan?: string;
+  allocatedZoneId: string;
+  allocatedZoneName: string;
+  supplyId: string;
+  supplyName: string;
+  coordinates: [number, number]; // [lat, lng] of address
+  zoneCoordinates: [number, number]; // [lat, lng] of supply zone
+  distanceKm: number;
+  transitTimeMinutes: number;
+  transitTimeFormatted: string;
+  pressurePsi: number;
+  pressureKPa: number;
+  ph: number;
+  chlorineMgL: number;
+  turbidityNtu: number;
+  ecoliCfuPer100ml: number;
+  fluorideMgL: number;
+  waterQualityGrade: string;
+  complianceStatus: 'Compliant' | 'Advisory' | 'Critical';
+  testedAt: string;
+  sourceDam: string;
+  treatmentPlant: string;
+  reservoir: string;
+  distributionMain: string;
+  servicePipe: string;
+  googleMapsDirectionsUrl: string;
+  googleMapsEmbedUrl: string;
+  pipelineLineage?: WaterNetworkLineage | null;
 }
 
 

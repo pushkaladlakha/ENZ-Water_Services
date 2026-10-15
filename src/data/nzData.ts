@@ -116,6 +116,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#d97706',
     zoneDescription: 'Auckland Unitary Plan: Medium density housing up to three storeys.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
+    allocatedZoneId: 'AKL-SZ-14',
+    allocatedZoneName: 'High Head Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -172,6 +174,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#d97706',
     zoneDescription: 'Auckland Unitary Plan: Medium density housing up to three storeys.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
+    allocatedZoneId: 'AKL-SZ-14',
+    allocatedZoneName: 'High Head Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -228,6 +232,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#7c3aed',
     zoneDescription: 'Auckland Unitary Plan: Light manufacturing, warehousing, and trade suppliers.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
+    allocatedZoneId: 'AKL-SZ-14',
+    allocatedZoneName: 'High Head Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -284,6 +290,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#ca8a04',
     zoneDescription: 'Auckland Unitary Plan: Suburban residential housing.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
+    allocatedZoneId: 'AKL-SZ-14',
+    allocatedZoneName: 'High Head Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -340,6 +348,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#eab308',
     zoneDescription: 'Auckland Unitary Plan: Educational and community infrastructure.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
+    allocatedZoneId: 'AKL-SZ-14',
+    allocatedZoneName: 'High Head Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -465,28 +475,7 @@ export const VERIFIED_PIPES: PipeAsset[] = [
       [-36.91080, 174.67780],
     ],
   },
-  {
-    compkey: 3014101,
-    assetType: 'wastewater',
-    status: 'Operational - in use',
-    material: 'Concrete',
-    nomDiaMm: 225,
-    process: 'Gravity Sewer',
-    network: 'Local Reticulation',
-    installYear: 1988,
-    pressureRating: 'Gravity Class 3',
-    depthM: 2.10,
-    cctvScore: 2,
-    lineLengthM: 195.0,
-    dataSource: 'Watercare Services Ltd Open Data',
-    engineerNotes: 'Great North Road wastewater trunk collector pipe.',
-    coordinates: [
-      [-36.90880, 174.67960],
-      [-36.90940, 174.68050],
-      [-36.91000, 174.68140],
-      [-36.91060, 174.68230],
-    ],
-  },
+
   {
     compkey: 4018801,
     assetType: 'stormwater',

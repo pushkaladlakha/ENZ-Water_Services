@@ -8,6 +8,8 @@ import { DataRequestModal } from './components/DataRequestModal';
 import { DocumentationModal } from './components/DocumentationModal';
 import { LoginModal } from './components/LoginModal';
 import { ProfileDashboard } from './components/ProfileDashboard';
+import { SignInPage } from './components/sign-in';
+import { GuestLookup } from './components/GuestLookup';
 import { 
   AccessLevel, 
   BaseMapStyle, 
@@ -19,8 +21,13 @@ import {
   PathwayResolutionResult,
   PathwayResolvedZone
 } from './types/gis';
-import { VERIFIED_PIPES } from './data/nzData';
-import { AucklandZoneScheme } from './utils/waterLineageEngine';
+import { VERIFIED_PIPES, VERIFIED_PARCELS, getDocumentedWaterLineage } from './data/nzData';
+import { 
+  AucklandZoneScheme, 
+  findNearestVerifiedParcel, 
+  resolveAddressSupplyZone,
+  simulateWaterTestingProfile 
+} from './utils/waterLineageEngine';
 import { 
   getCurrentUserApi, 
   fetchIncidentsApi, 
@@ -33,6 +40,46 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
+  // View Routing: 'auth' (Authentication Portal) vs 'guest' (Public Pipeline Lookup) vs 'map' (Interactive GIS Map)
+  const getInitialView = (): 'auth' | 'map' | 'guest' => {
+    if (typeof window === 'undefined') return 'auth';
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    const search = window.location.search.toLowerCase();
+    if (path.includes('guest') || hash.includes('guest') || search.includes('guest')) {
+      return 'guest';
+    }
+    if (path.includes('map') || hash.includes('map') || search.includes('map')) {
+      return 'map';
+    }
+    // Default to the authentication portal so the browser immediately displays the redesigned portal!
+    return 'auth';
+  };
+
+  const [activeView, setActiveView] = useState<'auth' | 'map' | 'guest'>(getInitialView);
+
+  // Keep URL in sync with view
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      const search = window.location.search.toLowerCase();
+      if (path.includes('guest') || hash.includes('guest') || search.includes('guest')) {
+        setActiveView('guest');
+      } else if (path.includes('map') || hash.includes('map') || search.includes('map')) {
+        setActiveView('map');
+      } else {
+        setActiveView('auth');
+      }
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
   // Derived Access Role
   const accessLevel: AccessLevel = currentUser?.role || 'citizen';
 
@@ -44,7 +91,7 @@ export default function App() {
     parcels: true,
     residentialZones: true,
     waterPipes: true,
-    wastewaterPipes: true,
+    wastewaterPipes: false,
     stormwaterPipes: true,
     fittings: true,
     floodHazard: true,
@@ -96,6 +143,10 @@ export default function App() {
   const handleLogout = useCallback(() => {
     clearAuthToken();
     setCurrentUser(null);
+    setActiveView('auth');
+    try {
+      window.history.pushState(null, '', '#login');
+    } catch {}
   }, []);
 
   // Handlers
@@ -136,29 +187,104 @@ export default function App() {
   }, []);
 
   const handleLocateMe = useCallback(() => {
-    if (!navigator.geolocation) {
-      return;
-    }
     setIsLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setIsLocating(false);
-        const { latitude, longitude } = position.coords;
-        setFlyToLocation({
-          center: [latitude, longitude],
-          zoom: 18,
+
+    const applyLocation = (lat: number, lng: number, isRealGps: boolean) => {
+      setIsLocating(false);
+      setFlyToLocation({ center: [lat, lng], zoom: 18 });
+
+      // 1. Check if user is near one of the verified cadastral parcels (within 250m)
+      const nearest = findNearestVerifiedParcel(lat, lng);
+      if (nearest) {
+        setSelectedFeature({
+          type: 'parcel',
+          data: nearest,
         });
-      },
-      (error) => {
-        setIsLocating(false);
-        console.warn('Geolocation unavailable, defaulting to Auckland central:', error.message);
-        setFlyToLocation({
-          center: [-36.9094, 174.6806],
-          zoom: 18,
+      } else {
+        // 2. Resolve supply zone for user's coordinates
+        const { zone } = resolveAddressSupplyZone([lat, lng]);
+        const liveParcel: ParcelFeature = {
+          id: `LIVE-GPS-${Math.abs(Math.round(lat * 10000))}`,
+          streetNumber: '',
+          streetName: isRealGps ? 'Current GPS Location' : 'Auckland Central Reticulation',
+          suburb: 'Auckland',
+          city: 'Auckland',
+          fullAddress: isRealGps
+            ? `Current GPS Fix (${lat.toFixed(4)}, ${lng.toFixed(4)})`
+            : `Auckland Reticulation Hub (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+          center: [lat, lng],
+          coordinates: [
+            [lat - 0.0002, lng - 0.0002],
+            [lat - 0.0002, lng + 0.0002],
+            [lat + 0.0002, lng + 0.0002],
+            [lat + 0.0002, lng - 0.0002],
+          ],
+          lotNumber: 'Live GPS',
+          dpNumber: 'WGS84',
+          titleReference: 'LIVE-COORDINATE',
+          areaM2: 685,
+          zoneCode: 'MHU',
+          zoneName: 'Residential - Urban Reticulation',
+          zoneColor: '#00D4C7',
+          zoneDescription: 'Live GPS coordinate bound to closest municipal water supply zone',
+          dataSource: isRealGps ? 'Device Geolocation Sensor (WGS84)' : 'Municipal Reticulation Network Baseline',
+          allocatedZoneId: zone.zoneId,
+          allocatedZoneName: zone.zoneName,
+          services: {
+            waterConnected: true,
+            wastewaterConnected: true,
+            stormwaterConnected: true,
+            rubbishCollectionDay: 'Wednesday morning',
+            meterLocationDescription: 'Front boundary water meter manifold',
+            outageStatus: 'Normal',
+            outageDetails: 'Reticulation active under standard operating pressure.',
+          },
+          planning: {
+            maxBuildingCoveragePct: 45,
+            maxHeightM: 11.0,
+            minLandscapedAreaPct: 35,
+            imperviousAreaLimitPct: 60,
+            floodRisk: 'Low',
+            overlandFlowPath: false,
+            heritageOverlay: false,
+            catchmentZone: 'Auckland Central Catchment Basin',
+          },
+          engineerData: {
+            supplyZoneId: zone.zoneId,
+            sewerSubcatchmentId: 'WW-LIVE-01',
+            pipeConnectionCompkey: 2017826,
+            meterSerialNumber: 'WM-LIVE-CURRENT',
+            meterSizeMm: 20,
+            meterLastReadM3: 412.8,
+            backflowHazardLevel: 'Low',
+            staticPressureKPa: 490,
+            cathodicProtectionStatus: 'N/A',
+            scadaZoneId: 'SC-LIVE-AKL',
+          },
+          waterLineage: getDocumentedWaterLineage('Current Location', 2017826, 20),
+        };
+        setSelectedFeature({
+          type: 'parcel',
+          data: liveParcel,
         });
-      },
-      { timeout: 8000 }
-    );
+      }
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          applyLocation(pos.coords.latitude, pos.coords.longitude, true);
+        },
+        (err) => {
+          console.warn('[Geolocation] Browser GPS error or permission denied:', err.message);
+          // High-reliability fallback to Auckland reticulation central
+          applyLocation(-36.9094, 174.6806, false);
+        },
+        { enableHighAccuracy: false, timeout: 6000, maximumAge: 30000 }
+      );
+    } else {
+      applyLocation(-36.9094, 174.6806, false);
+    }
   }, []);
 
   const handleOpenComplaintForAddress = useCallback((addr?: string) => {
@@ -172,12 +298,73 @@ export default function App() {
     setComplaintsList(prev => [newComplaint, ...prev]);
   }, []);
 
+  // Primary Route: Render the redesigned AquaConnect Authentication Portal by default
+  if (activeView === 'auth') {
+    return (
+      <SignInPage
+        onLogin={(user) => {
+          setCurrentUser(user);
+          setActiveView('map');
+          try {
+            window.history.pushState(null, '', '#map');
+          } catch {}
+        }}
+        onContinueToMap={() => {
+          setActiveView('map');
+          try {
+            window.history.pushState(null, '', '#map');
+          } catch {}
+        }}
+        onContinueAsGuest={() => {
+          setActiveView('guest');
+          try {
+            window.history.pushState(null, '', '#guest');
+          } catch {}
+        }}
+        currentUser={currentUser}
+      />
+    );
+  }
+
+  // Guest Pipeline Lookup Route (Public Resident Access without login credentials)
+  if (activeView === 'guest') {
+    return (
+      <GuestLookup
+        onBackToLogin={() => {
+          setActiveView('auth');
+          try {
+            window.history.pushState(null, '', '#login');
+          } catch {}
+        }}
+        onExploreMap={(searchedAddress) => {
+          if (searchedAddress) {
+            const matched = VERIFIED_PARCELS.find(p =>
+              p.fullAddress.toLowerCase().includes(searchedAddress.toLowerCase())
+            );
+            if (matched) {
+              handleSearchSelectParcel(matched);
+            }
+          }
+          setActiveView('map');
+          try {
+            window.history.pushState(null, '', '#map');
+          } catch {}
+        }}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-900 font-sans select-none">
       {/* Taumata Arowai Header Navigation */}
       <Header
         currentUser={currentUser}
-        onOpenLogin={() => setIsLoginModalOpen(true)}
+        onOpenLogin={() => {
+          setActiveView('auth');
+          try {
+            window.history.pushState(null, '', '#login');
+          } catch {}
+        }}
         onLogout={handleLogout}
         onSearchSelectParcel={handleSearchSelectParcel}
         onSearchSelectZone={handleSearchSelectZone}

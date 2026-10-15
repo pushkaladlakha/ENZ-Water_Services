@@ -89,12 +89,14 @@ export const Header: React.FC<HeaderProps> = ({
   const getRoleBadge = (role?: string) => {
     switch (role) {
       case 'admin':
-        return { label: 'Admin', color: 'bg-purple-900/60 text-purple-200 border-purple-400/40' };
+        return { label: 'Admin', color: 'bg-indigo-900/60 text-indigo-200 border-indigo-400/40' };
+      case 'user':
+      case 'citizen':
+        return { label: 'Resident User', color: 'bg-teal-900/60 text-teal-200 border-teal-400/40' };
       case 'official':
         return { label: 'Authorized Official', color: 'bg-sky-900/70 text-sky-200 border-sky-400/40' };
-      case 'citizen':
       default:
-        return { label: 'Citizen', color: 'bg-emerald-900/60 text-emerald-200 border-emerald-400/40' };
+        return { label: 'Resident User', color: 'bg-teal-900/60 text-teal-200 border-teal-400/40' };
     }
   };
 
@@ -280,10 +282,11 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={onOpenLogin}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-[#009E91] hover:bg-[#00877C] text-white border border-[#009E91] transition-colors shadow-xs"
+                title="Open AquaConnect Authentication Portal"
               >
-                <LogIn className="w-3.5 h-3.5 text-slate-300" />
-                <span>Sign In</span>
+                <LogIn className="w-3.5 h-3.5 text-white" />
+                <span>Portal / Sign In</span>
               </button>
             )}
           </div>

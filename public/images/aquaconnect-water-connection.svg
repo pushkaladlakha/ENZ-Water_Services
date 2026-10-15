@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <linearGradient id="lawnGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3f6212"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+    <linearGradient id="concreteGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="brassGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="pipeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Auckland Suburban Setting -->
+  <rect width="600" height="200" fill="url(#skyGrad)"/>
+  
+  <!-- Distant Auckland suburban house silhouette -->
+  <polygon points="120,180 180,120 280,120 340,180" fill="#475569" opacity="0.65"/>
+  <rect x="150" y="160" width="160" height="40" fill="#334155" opacity="0.75"/>
+  <!-- Garden hedge & fence -->
+  <rect x="0" y="180" width="600" height="30" fill="#2d5016" opacity="0.8"/>
+  <line x1="0" y1="190" x2="600" y2="190" stroke="#78350f" stroke-width="2"/>
+
+  <!-- Foreground: Driveway and Lawn Edge -->
+  <polygon points="0,210 240,210 200,450 0,450" fill="url(#concreteGrad)"/>
+  <polygon points="240,210 600,210 600,450 200,450" fill="url(#lawnGrad)"/>
+  
+  <!-- Soil & Grass edge around pit -->
+  <ellipse cx="380" cy="340" rx="190" ry="100" fill="#292524" opacity="0.85"/>
+
+  <!-- Rectangular Utility Meter Box (Partially Open Pit) -->
+  <polygon points="210,270 540,270 520,410 190,410" fill="#18181b" stroke="#3f3f46" stroke-width="6"/>
+  <polygon points="220,280 530,280 512,400 202,400" fill="#09090b"/>
+
+  <!-- Open Lid leaned beside pit -->
+  <polygon points="130,260 210,260 190,390 110,390" fill="#27272a" stroke="#52525b" stroke-width="3"/>
+  <text x="155" y="330" fill="#71717a" font-size="12" font-family="sans-serif" font-weight="bold" transform="rotate(-75 155 330)">WATER METER</text>
+
+  <!-- Blue Polyethylene Water Supply Pipe (PE100 20mm) entering from street -->
+  <path d="M 50,335 C 150,335 180,345 250,345" stroke="url(#pipeGrad)" stroke-width="22" stroke-linecap="round" fill="none"/>
+  <!-- Street connection fitting -->
+  <rect x="245" y="330" width="25" height="30" rx="3" fill="#0284c7" stroke="#0c4a6e" stroke-width="2"/>
+
+  <!-- Brass Isolation Ball Valve & Shutoff Handle -->
+  <rect x="270" y="332" width="40" height="26" rx="4" fill="url(#brassGrad)" stroke="#78350f" stroke-width="1.5"/>
+  <!-- Red Shutoff Valve Handle -->
+  <line x1="290" y1="332" x2="290" y2="305" stroke="#991b1b" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="290" cy="303" r="6" fill="#dc2626"/>
+
+  <!-- Brass Water Meter Body & Index Dial -->
+  <rect x="325" y="325" width="95" height="40" rx="6" fill="url(#brassGrad)" stroke="#78350f" stroke-width="2"/>
+  <!-- Dial Face -->
+  <circle cx="372" cy="345" r="22" fill="#ffffff" stroke="#78350f" stroke-width="3"/>
+  <circle cx="372" cy="345" r="18" fill="#f8fafc"/>
+  <rect x="357" y="338" width="30" height="14" fill="#0f172a" rx="2"/>
+  <text x="372" y="349" fill="#00D4C7" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">0482.4</text>
+  <text x="372" y="360" fill="#64748b" font-size="6" font-family="sans-serif" text-anchor="middle">m³</text>
+  <circle cx="372" cy="345" r="2" fill="#ef4444"/>
+  <line x1="372" y1="345" x2="378" y2="340" stroke="#ef4444" stroke-width="1.5"/>
+
+  <!-- Dual Check Backflow Preventer -->
+  <rect x="430" y="333" width="35" height="24" rx="4" fill="url(#brassGrad)" stroke="#78350f" stroke-width="1.5"/>
+
+  <!-- Blue Pipe exiting towards suburban house -->
+  <path d="M 465,345 C 510,345 540,340 590,325" stroke="url(#pipeGrad)" stroke-width="22" stroke-linecap="round" fill="none"/>
+
+  <!-- Authentic Technical Overlay Badge -->
+  <rect x="15" y="15" width="220" height="28" rx="4" fill="#07172d" opacity="0.85" stroke="#009E91" stroke-width="1"/>
+  <text x="25" y="33" fill="#00D4C7" font-size="11" font-family="monospace" font-weight="bold">AUCKLAND WATERCARE TOBY</text>
+  
+  <rect x="415" y="15" width="170" height="28" rx="4" fill="#07172d" opacity="0.85" stroke="#38bdf8" stroke-width="1"/>
+  <text x="425" y="33" fill="#f8fafc" font-size="11" font-family="monospace">PE100 • 20mm • PN16</text>
+</svg>

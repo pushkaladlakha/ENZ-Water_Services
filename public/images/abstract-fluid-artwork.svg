@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="100%" height="100%">
+  <defs>
+    <!-- Background Base Gradient: Deep Purple & Midnight Blue -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0217" />
+      <stop offset="35%" stop-color="#180730" />
+      <stop offset="70%" stop-color="#240c46" />
+      <stop offset="100%" stop-color="#0e0320" />
+    </linearGradient>
+
+    <!-- Deep Violet Shadow Gradient -->
+    <linearGradient id="violetShadow" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#3b0764" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#1e0538" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#090114" stop-opacity="1" />
+    </linearGradient>
+
+    <!-- Broad Icy-Blue Diagonal Ribbon Gradients -->
+    <linearGradient id="icyBlueGrad1" x1="0" y1="0" x2="1" y2="0.9">
+      <stop offset="0%" stop-color="#f0f9ff" />
+      <stop offset="25%" stop-color="#bae6fd" />
+      <stop offset="55%" stop-color="#38bdf8" />
+      <stop offset="85%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <linearGradient id="icyBlueGrad2" x1="0.1" y1="0.2" x2="0.9" y2="0.8">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="30%" stop-color="#7dd3fc" />
+      <stop offset="60%" stop-color="#00D4C7" />
+      <stop offset="85%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="icyRibbonGlow" x1="0" y1="0.5" x2="1" y2="0.5">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="40%" stop-color="#7dd3fc" stop-opacity="0.9" />
+      <stop offset="80%" stop-color="#0284c7" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#0f051d" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Coral-Red & Rose Fluid Streaks Gradients -->
+    <linearGradient id="coralStreak1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe4e6" />
+      <stop offset="20%" stop-color="#fb7185" />
+      <stop offset="50%" stop-color="#f43f5e" />
+      <stop offset="80%" stop-color="#e11d48" />
+      <stop offset="100%" stop-color="#881337" />
+    </linearGradient>
+
+    <linearGradient id="coralWarmGlow" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#ff7b72" />
+      <stop offset="40%" stop-color="#f43f5e" />
+      <stop offset="75%" stop-color="#be123c" />
+      <stop offset="100%" stop-color="#4c0519" />
+    </linearGradient>
+
+    <!-- Ambient Glow Filter -->
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="35" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="strongGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="70" />
+    </filter>
+  </defs>
+
+  <!-- Background Base Canvas -->
+  <rect width="1200" height="1600" fill="url(#bgGrad)" />
+
+  <!-- Ambient background color blooms -->
+  <ellipse cx="850" cy="400" rx="450" ry="350" fill="#4c0519" opacity="0.45" filter="url(#strongGlow)" />
+  <ellipse cx="300" cy="900" rx="500" ry="400" fill="#0369a1" opacity="0.4" filter="url(#strongGlow)" />
+  <ellipse cx="600" cy="1300" rx="600" ry="350" fill="#2e1065" opacity="0.6" filter="url(#strongGlow)" />
+
+  <!-- ======================================================== -->
+  <!-- LAYER 1: Deep Purple & Velvet Shadow Ribbons             -->
+  <!-- ======================================================== -->
+  <path d="M -100,200 C 250,120 600,300 950,150 C 1150,60 1280,0 1350,-50 L 1350,700 C 1050,850 700,650 350,800 C 100,900 -50,1050 -100,1100 Z"
+        fill="url(#violetShadow)" opacity="0.95" />
+
+  <!-- ======================================================== -->
+  <!-- LAYER 2: Broad Coral-Red Waves & Crests                  -->
+  <!-- ======================================================== -->
+  <path d="M -150,450 C 150,320 500,550 850,380 C 1050,280 1200,220 1350,180 L 1350,550 C 1100,650 800,550 500,750 C 250,900 50,1050 -150,1200 Z"
+        fill="url(#coralWarmGlow)" opacity="0.88" />
+
+  <path d="M -100,500 C 200,380 550,600 900,420 C 1100,320 1250,280 1350,260 L 1350,420 C 1150,480 850,480 600,650 C 350,820 100,950 -100,1080 Z"
+        fill="url(#coralStreak1)" opacity="0.92" />
+
+  <!-- Secondary vibrant coral accent ribbon -->
+  <path d="M 150,550 C 450,450 750,680 1050,500 C 1180,420 1280,380 1350,360 L 1350,480 C 1150,580 850,650 600,780 C 380,900 200,1020 50,1150 Z"
+        fill="url(#coralWarmGlow)" opacity="0.75" />
+
+  <!-- ======================================================== -->
+  <!-- LAYER 3: Deep Midnight Underside Shadows                 -->
+  <!-- ======================================================== -->
+  <path d="M -150,750 C 150,650 450,900 800,750 C 1050,640 1220,580 1350,550 L 1350,950 C 1100,1050 750,950 400,1150 C 150,1300 -50,1400 -150,1450 Z"
+        fill="#0f041e" opacity="0.95" />
+
+  <!-- ======================================================== -->
+  <!-- LAYER 4: Major Broad Diagonal Icy-Blue Ribbons           -->
+  <!-- ======================================================== -->
+  <!-- Main flowing diagonal icy wave across the frame -->
+  <path d="M -200,950 C 100,780 450,1050 850,850 C 1100,730 1250,650 1400,580 L 1400,1020 C 1150,1150 850,1100 500,1320 C 250,1480 0,1650 -200,1700 Z"
+        fill="url(#icyBlueGrad1)" opacity="0.96" />
+
+  <!-- Bright silk crest highlights on the icy ribbon -->
+  <path d="M -150,920 C 120,760 480,1020 880,820 C 1120,700 1270,620 1400,550 L 1400,680 C 1200,780 950,880 650,1080 C 380,1260 100,1480 -150,1620 Z"
+        fill="url(#icyBlueGrad2)" opacity="0.9" />
+
+  <!-- Upper luminous edge of the icy silk ribbon -->
+  <path d="M -150,900 C 140,740 500,1000 900,800 C 1130,680 1280,600 1400,530 L 1400,570 C 1250,650 1000,770 700,980 C 420,1180 120,1420 -150,1580 Z"
+        fill="url(#icyRibbonGlow)" />
+
+  <!-- Deep contrast fold underneath the main icy band -->
+  <path d="M 0,1150 C 280,980 600,1220 950,1050 C 1150,950 1280,880 1350,840 L 1350,1150 C 1120,1280 800,1300 500,1480 C 300,1600 150,1680 0,1720 Z"
+        fill="#130426" opacity="0.85" />
+
+  <!-- Lower secondary icy-blue wave ribbon -->
+  <path d="M -100,1350 C 200,1180 550,1400 900,1220 C 1120,1100 1260,1040 1350,980 L 1350,1350 C 1150,1450 850,1450 550,1620 C 300,1750 100,1850 -100,1880 Z"
+        fill="url(#icyBlueGrad1)" opacity="0.85" />
+
+  <!-- Delicate translucent coral warmth weaving beneath the blue -->
+  <path d="M 250,1050 C 500,950 780,1150 1050,1000 C 1200,920 1300,860 1350,820 L 1350,920 C 1180,1020 900,1150 680,1280 C 450,1420 300,1520 150,1620 Z"
+        fill="url(#coralStreak1)" opacity="0.55" />
+
+  <!-- Ambient light glints -->
+  <ellipse cx="650" cy="880" rx="300" ry="120" fill="#bae6fd" opacity="0.2" filter="url(#softGlow)" transform="rotate(-22 650 880)" />
+  <ellipse cx="400" cy="550" rx="250" ry="90" fill="#f43f5e" opacity="0.25" filter="url(#softGlow)" transform="rotate(-18 400 550)" />
+
+  <!-- ======================================================== -->
+  <!-- LAYER 5: Delicate Four-Point Radiant Star in Lower Right -->
+  <!-- ======================================================== -->
+  <g transform="translate(1020, 1380)">
+    <!-- Star Glow Backing -->
+    <circle cx="0" cy="0" r="32" fill="#ffffff" opacity="0.15" filter="url(#softGlow)" />
+    <circle cx="0" cy="0" r="16" fill="#7dd3fc" opacity="0.35" filter="url(#softGlow)" />
+    <!-- 4-Point Diamond Rays -->
+    <polygon points="0,-42 3,-8 35,0 3,8 0,42 -3,8 -35,0 -3,-8" fill="#ffffff" opacity="0.95" />
+    <polygon points="0,-22 2,-4 18,0 2,4 0,22 -2,4 -18,0 -2,-4" fill="#e0f2fe" />
+    <!-- Diagonal smaller secondary rays -->
+    <polygon points="0,-16 2,-3 14,0 2,3 0,16 -2,3 -14,0 -2,-3" fill="#ffffff" opacity="0.8" transform="rotate(45)" />
+    <!-- Center white core dot -->
+    <circle cx="0" cy="0" r="3" fill="#ffffff" />
+  </g>
+
+  <!-- Minor sparkle dot nearby -->
+  <circle cx="940" cy="1440" r="2" fill="#ffffff" opacity="0.7" />
+  <circle cx="1100" cy="1320" r="1.5" fill="#bae6fd" opacity="0.8" />
+</svg>

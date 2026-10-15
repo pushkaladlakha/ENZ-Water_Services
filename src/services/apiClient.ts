@@ -11,10 +11,17 @@ import {
   WaterIncidentComplaint, 
   UserRole,
   PathwayResolutionResult,
-  AucklandSupplyZone
+  AucklandSupplyZone,
+  WaterTestingProfileResult
 } from '../types/gis';
 import { VERIFIED_PARCELS, latLngToNZTM2000 } from '../data/nzData';
-import { AUCKLAND_ZONE_SCHEMES, resolveDrinkingWaterSupplyZone, calculateDistanceKm } from '../utils/waterLineageEngine';
+import { 
+  AUCKLAND_ZONE_SCHEMES, 
+  resolveDrinkingWaterSupplyZone, 
+  calculateDistanceKm,
+  simulateWaterTestingProfile,
+  resolveAddressSupplyZone
+} from '../utils/waterLineageEngine';
 import { calculateDijkstraShortestPath, PRECOMPUTED_PARCEL_DIJKSTRA_ROUTES } from '../utils/dijkstraRouting';
 
 const BASE_URL = API_CONFIG.baseUrl.replace(/\/$/, '');
@@ -567,4 +574,51 @@ export async function fetchSupplyZoneByIdApi(zoneId: string): Promise<AucklandSu
   }
   const all = await fetchSupplyZonesApi();
   return all.find(z => z.zoneId === zoneId || z.zoneName.toLowerCase().includes(zoneId.toLowerCase())) || null;
+}
+
+/**
+ * Executes Water Testing Hydraulic & Quality Simulation (Run Profile).
+ * Links Address -> Allocated Supply Zone -> Pipeline Lineage & Water Testing Metrics.
+ * Calls POST /api/v1/water-testing/profile with automatic spatial zone resolution
+ * and robust local fallback.
+ */
+export async function runWaterTestingProfileApi(
+  target: string | ParcelFeature | [number, number]
+): Promise<WaterTestingProfileResult> {
+  const addressId = typeof target === 'string' 
+    ? target 
+    : Array.isArray(target) 
+      ? `COORD-${target[0].toFixed(4)}-${target[1].toFixed(4)}` 
+      : target.id;
+
+  const coordinates = Array.isArray(target)
+    ? target
+    : typeof target === 'string'
+      ? undefined
+      : target.center;
+
+  try {
+    const res = await fetch(`${BASE_URL}/v1/water-testing/profile`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        address_id: addressId,
+        coordinates,
+        query: typeof target === 'string' ? target : undefined,
+      }),
+      signal: AbortSignal.timeout(4000),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.allocatedZoneId) {
+        return data as WaterTestingProfileResult;
+      }
+    }
+  } catch (err) {
+    console.debug('[API Client] Live /v1/water-testing/profile endpoint fallback to local engine:', err);
+  }
+
+  // Resilient deterministic local simulation engine
+  return simulateWaterTestingProfile(target);
 }
