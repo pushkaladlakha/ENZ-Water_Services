@@ -16,6 +16,14 @@ export interface MapTileEndpointConfig {
 }
 
 export const MAP_PROVIDERS: Record<string, MapTileEndpointConfig> = {
+  'google-maps': {
+    id: 'google-maps',
+    name: 'Google Maps (Roadmap)',
+    url: 'https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+    attribution: '&copy; <a href="https://maps.google.com" target="_blank" rel="noopener">Google Maps</a>',
+    maxZoom: 20,
+    subdomains: ['0', '1', '2', '3'],
+  },
   'carto-light': {
     id: 'carto-light',
     name: 'LINZ Cadastral Light (Carto Canvas)',
@@ -34,8 +42,8 @@ export const MAP_PROVIDERS: Record<string, MapTileEndpointConfig> = {
   'osm': {
     id: 'osm',
     name: 'OpenStreetMap New Zealand',
-    url: import.meta.env.VITE_MAP_TILES_OSM || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+    url: import.meta.env.VITE_MAP_TILES_OSM || 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &mdash; Tiles courtesy of <a href="https://www.hotosm.org/" target="_blank" rel="noopener">Humanitarian OpenStreetMap Team</a>',
     maxZoom: 19,
     subdomains: ['a', 'b', 'c'],
   },

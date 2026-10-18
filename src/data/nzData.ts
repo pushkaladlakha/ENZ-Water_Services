@@ -116,8 +116,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#d97706',
     zoneDescription: 'Auckland Unitary Plan: Medium density housing up to three storeys.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
-    allocatedZoneId: 'AKL-SZ-14',
-    allocatedZoneName: 'High Head Supply Zone',
+    allocatedZoneId: 'AKL-SZ-09',
+    allocatedZoneName: 'Glen Eden/New Lynn Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -138,7 +138,7 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
       catchmentZone: 'Oratia Stream Catchment 4B',
     },
     engineerData: {
-      supplyZoneId: 'AKL-SZ-14',
+      supplyZoneId: 'AKL-SZ-09',
       sewerSubcatchmentId: 'WW-KELSTON-GRAV-08',
       pipeConnectionCompkey: 2017826,
       meterSerialNumber: 'WM-2021-99823',
@@ -174,8 +174,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#d97706',
     zoneDescription: 'Auckland Unitary Plan: Medium density housing up to three storeys.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
-    allocatedZoneId: 'AKL-SZ-14',
-    allocatedZoneName: 'High Head Supply Zone',
+    allocatedZoneId: 'AKL-SZ-09',
+    allocatedZoneName: 'Glen Eden/New Lynn Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -196,7 +196,7 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
       catchmentZone: 'Oratia Stream Catchment 4B',
     },
     engineerData: {
-      supplyZoneId: 'AKL-SZ-14',
+      supplyZoneId: 'AKL-SZ-09',
       sewerSubcatchmentId: 'WW-KELSTON-GRAV-08',
       pipeConnectionCompkey: 2017830,
       meterSerialNumber: 'WM-2019-48201',
@@ -232,8 +232,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#7c3aed',
     zoneDescription: 'Auckland Unitary Plan: Light manufacturing, warehousing, and trade suppliers.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
-    allocatedZoneId: 'AKL-SZ-14',
-    allocatedZoneName: 'High Head Supply Zone',
+    allocatedZoneId: 'AKL-SZ-09',
+    allocatedZoneName: 'Glen Eden/New Lynn Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -254,7 +254,7 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
       catchmentZone: 'Westech Industrial Basin',
     },
     engineerData: {
-      supplyZoneId: 'AKL-SZ-14',
+      supplyZoneId: 'AKL-SZ-09',
       sewerSubcatchmentId: 'WW-WESTECH-IND-01',
       pipeConnectionCompkey: 2017910,
       meterSerialNumber: 'WM-COM-2022-8114',
@@ -290,8 +290,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#ca8a04',
     zoneDescription: 'Auckland Unitary Plan: Suburban residential housing.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
-    allocatedZoneId: 'AKL-SZ-14',
-    allocatedZoneName: 'High Head Supply Zone',
+    allocatedZoneId: 'AKL-SZ-09',
+    allocatedZoneName: 'Glen Eden/New Lynn Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -312,7 +312,7 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
       catchmentZone: 'Brandon Stream Basin',
     },
     engineerData: {
-      supplyZoneId: 'AKL-SZ-14',
+      supplyZoneId: 'AKL-SZ-09',
       sewerSubcatchmentId: 'WW-BRANDON-GRAV-02',
       pipeConnectionCompkey: 2018104,
       meterSerialNumber: 'WM-2018-32009',
@@ -348,8 +348,8 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
     zoneColor: '#eab308',
     zoneDescription: 'Auckland Unitary Plan: Educational and community infrastructure.',
     dataSource: 'LINZ Cadastral Database & Auckland Council GIS',
-    allocatedZoneId: 'AKL-SZ-14',
-    allocatedZoneName: 'High Head Supply Zone',
+    allocatedZoneId: 'AKL-SZ-09',
+    allocatedZoneName: 'Glen Eden/New Lynn Supply Zone',
     services: {
       waterConnected: true,
       wastewaterConnected: true,
@@ -370,7 +370,7 @@ export const VERIFIED_PARCELS: ParcelFeature[] = [
       catchmentZone: 'Whau River Upper Basin',
     },
     engineerData: {
-      supplyZoneId: 'AKL-SZ-14',
+      supplyZoneId: 'AKL-SZ-09',
       sewerSubcatchmentId: 'WW-ARCHIBALD-TRUNK',
       pipeConnectionCompkey: 2018900,
       meterSerialNumber: 'WM-BULK-2017-009',

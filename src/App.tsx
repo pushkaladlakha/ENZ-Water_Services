@@ -8,8 +8,6 @@ import { DataRequestModal } from './components/DataRequestModal';
 import { DocumentationModal } from './components/DocumentationModal';
 import { LoginModal } from './components/LoginModal';
 import { ProfileDashboard } from './components/ProfileDashboard';
-import { SignInPage } from './components/sign-in';
-import { GuestLookup } from './components/GuestLookup';
 import { 
   AccessLevel, 
   BaseMapStyle, 
@@ -18,79 +16,43 @@ import {
   ParcelFeature,
   AuthUser,
   WaterIncidentComplaint,
-  PathwayResolutionResult,
-  PathwayResolvedZone
+  PathwayResolutionResult
 } from './types/gis';
 import { VERIFIED_PIPES, VERIFIED_PARCELS, getDocumentedWaterLineage } from './data/nzData';
 import { 
   AucklandZoneScheme, 
   findNearestVerifiedParcel, 
-  resolveAddressSupplyZone,
-  simulateWaterTestingProfile 
+  resolveAddressSupplyZone 
 } from './utils/waterLineageEngine';
 import { 
   getCurrentUserApi, 
   fetchIncidentsApi, 
-  clearAuthToken, 
-  resolveWaterSupplyApi 
+  clearAuthToken,
+  resolveWaterSupplyApi,
+  getSavedCurrentUser,
+  saveCurrentUser,
+  clearSavedCurrentUser
 } from './services/apiClient';
+import { PathwayPanel } from './components/PathwayPanel';
 
 export default function App() {
-  // 1. Authentication State (Admin, Authorized Official, Citizen)
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  // 1. Authentication & Incident-Triggered Login State
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getSavedCurrentUser());
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [loginReason, setLoginReason] = useState<'report_incident' | 'general'>('general');
+  const [pendingIncidentAddress, setPendingIncidentAddress] = useState<string>('');
 
-  // View Routing: 'auth' (Authentication Portal) vs 'guest' (Public Pipeline Lookup) vs 'map' (Interactive GIS Map)
-  const getInitialView = (): 'auth' | 'map' | 'guest' => {
-    if (typeof window === 'undefined') return 'auth';
-    const path = window.location.pathname.toLowerCase();
-    const hash = window.location.hash.toLowerCase();
-    const search = window.location.search.toLowerCase();
-    if (path.includes('guest') || hash.includes('guest') || search.includes('guest')) {
-      return 'guest';
-    }
-    if (path.includes('map') || hash.includes('map') || search.includes('map')) {
-      return 'map';
-    }
-    // Default to the authentication portal so the browser immediately displays the redesigned portal!
-    return 'auth';
-  };
-
-  const [activeView, setActiveView] = useState<'auth' | 'map' | 'guest'>(getInitialView);
-
-  // Keep URL in sync with view
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const path = window.location.pathname.toLowerCase();
-      const hash = window.location.hash.toLowerCase();
-      const search = window.location.search.toLowerCase();
-      if (path.includes('guest') || hash.includes('guest') || search.includes('guest')) {
-        setActiveView('guest');
-      } else if (path.includes('map') || hash.includes('map') || search.includes('map')) {
-        setActiveView('map');
-      } else {
-        setActiveView('auth');
-      }
-    };
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('hashchange', handleLocationChange);
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('hashchange', handleLocationChange);
-    };
-  }, []);
-
-  // Derived Access Role
+  // Derived Access Role (Guests have 'citizen' public access level)
   const accessLevel: AccessLevel = currentUser?.role || 'citizen';
 
   // 2. Map State
-  const [baseMapStyle, setBaseMapStyle] = useState<BaseMapStyle>('esri-satellite');
+  const [baseMapStyle, setBaseMapStyle] = useState<BaseMapStyle>('google-maps');
   const [layerVisibility, setLayerVisibility] = useState<LayerVisibility>({
     supplyZones: true,
     supplyBuffers: true,
     parcels: true,
     residentialZones: true,
-    waterPipes: true,
+    waterPipes: false, // 4th Layer inactive by default
     wastewaterPipes: false,
     stormwaterPipes: true,
     fittings: true,
@@ -119,11 +81,28 @@ export default function App() {
   // 7. Custom Ingested GeoJSON Data
   const [customGeoJsonData, setCustomGeoJsonData] = useState<any | null>(null);
 
-  // 8. Water Supply Pathway Resolution State
+  // 8. Water Supply Pathway & Connectivity State
   const [pathwayState, setPathwayState] = useState<PathwayResolutionResult | null>(null);
   const [isResolvingPathway, setIsResolvingPathway] = useState<boolean>(false);
   const [focusZoneBounds, setFocusZoneBounds] = useState<[number, number][] | null>(null);
   const [focusRouteBounds, setFocusRouteBounds] = useState<[number, number][] | null>(null);
+
+  // Resolve authoritative water supply pathway & single connectivity path for a parcel
+  const resolvePathwayForParcel = useCallback(async (parcel: ParcelFeature) => {
+    setIsResolvingPathway(true);
+    try {
+      const result = await resolveWaterSupplyApi({
+        address: parcel.fullAddress,
+        coordinates: parcel.center,
+        address_id: parcel.id,
+      });
+      setPathwayState(result);
+    } catch (err) {
+      console.error('Failed to resolve water supply pathway:', err);
+    } finally {
+      setIsResolvingPathway(false);
+    }
+  }, []);
 
   // Restore authenticated session and live incidents from backend if available
   useEffect(() => {
@@ -142,11 +121,50 @@ export default function App() {
 
   const handleLogout = useCallback(() => {
     clearAuthToken();
+    clearSavedCurrentUser();
     setCurrentUser(null);
-    setActiveView('auth');
-    try {
-      window.history.pushState(null, '', '#login');
-    } catch {}
+  }, []);
+
+  // When users click "Report an Incident" (either in Header or InspectionDrawer)
+  // If guest: open compact login modal instead of navigating away.
+  // After successful authentication: continue directly to incident reporting!
+  const handleReportIncident = useCallback((address?: string) => {
+    const targetAddress = address || (selectedFeature?.type === 'parcel' ? selectedFeature.data.fullAddress : '');
+    
+    if (currentUser) {
+      if (targetAddress) {
+        setComplaintAddressPrefill(targetAddress);
+      }
+      setIsComplaintModalOpen(true);
+    } else {
+      setPendingIncidentAddress(targetAddress);
+      setLoginReason('report_incident');
+      setIsLoginModalOpen(true);
+    }
+  }, [currentUser, selectedFeature]);
+
+  // Handle successful login from LoginModal
+  const handleLoginSuccess = useCallback((user: AuthUser) => {
+    saveCurrentUser(user);
+    setCurrentUser(user);
+    setIsLoginModalOpen(false);
+
+    // If login was triggered by clicking "Report an Incident", continue to reporting!
+    if (loginReason === 'report_incident') {
+      if (pendingIncidentAddress) {
+        setComplaintAddressPrefill(pendingIncidentAddress);
+      }
+      setIsComplaintModalOpen(true);
+      setPendingIncidentAddress('');
+      setLoginReason('general');
+    }
+  }, [loginReason, pendingIncidentAddress]);
+
+  // General login button clicked in Header
+  const handleOpenGeneralLogin = useCallback(() => {
+    setPendingIncidentAddress('');
+    setLoginReason('general');
+    setIsLoginModalOpen(true);
   }, []);
 
   // Handlers
@@ -169,11 +187,15 @@ export default function App() {
       center: parcel.center,
       zoom: 18,
     });
-  }, []);
+    resolvePathwayForParcel(parcel);
+  }, [resolvePathwayForParcel]);
 
   const handleSelectFeature = useCallback((selection: ActiveSelection | null) => {
     setSelectedFeature(selection);
-  }, []);
+    if (selection?.type === 'parcel') {
+      resolvePathwayForParcel(selection.data as ParcelFeature);
+    }
+  }, [resolvePathwayForParcel]);
 
   const handleSearchSelectZone = useCallback((zone: AucklandZoneScheme) => {
     setSelectedFeature({
@@ -184,6 +206,7 @@ export default function App() {
       center: [zone.lat, zone.lng],
       zoom: 15,
     });
+    setPathwayState(null);
   }, []);
 
   const handleLocateMe = useCallback(() => {
@@ -200,6 +223,7 @@ export default function App() {
           type: 'parcel',
           data: nearest,
         });
+        resolvePathwayForParcel(nearest);
       } else {
         // 2. Resolve supply zone for user's coordinates
         const { zone } = resolveAddressSupplyZone([lat, lng]);
@@ -225,7 +249,7 @@ export default function App() {
           areaM2: 685,
           zoneCode: 'MHU',
           zoneName: 'Residential - Urban Reticulation',
-          zoneColor: '#00D4C7',
+          zoneColor: '#008080',
           zoneDescription: 'Live GPS coordinate bound to closest municipal water supply zone',
           dataSource: isRealGps ? 'Device Geolocation Sensor (WGS84)' : 'Municipal Reticulation Network Baseline',
           allocatedZoneId: zone.zoneId,
@@ -267,6 +291,7 @@ export default function App() {
           type: 'parcel',
           data: liveParcel,
         });
+        resolvePathwayForParcel(liveParcel);
       }
     };
 
@@ -277,7 +302,6 @@ export default function App() {
         },
         (err) => {
           console.warn('[Geolocation] Browser GPS error or permission denied:', err.message);
-          // High-reliability fallback to Auckland reticulation central
           applyLocation(-36.9094, 174.6806, false);
         },
         { enableHighAccuracy: false, timeout: 6000, maximumAge: 30000 }
@@ -285,105 +309,32 @@ export default function App() {
     } else {
       applyLocation(-36.9094, 174.6806, false);
     }
-  }, []);
-
-  const handleOpenComplaintForAddress = useCallback((addr?: string) => {
-    if (addr) {
-      setComplaintAddressPrefill(addr);
-    }
-    setIsComplaintModalOpen(true);
-  }, []);
+  }, [resolvePathwayForParcel]);
 
   const handleSubmitComplaint = useCallback((newComplaint: WaterIncidentComplaint) => {
     setComplaintsList(prev => [newComplaint, ...prev]);
   }, []);
 
-  // Primary Route: Render the redesigned AquaConnect Authentication Portal by default
-  if (activeView === 'auth') {
-    return (
-      <SignInPage
-        onLogin={(user) => {
-          setCurrentUser(user);
-          setActiveView('map');
-          try {
-            window.history.pushState(null, '', '#map');
-          } catch {}
-        }}
-        onContinueToMap={() => {
-          setActiveView('map');
-          try {
-            window.history.pushState(null, '', '#map');
-          } catch {}
-        }}
-        onContinueAsGuest={() => {
-          setActiveView('guest');
-          try {
-            window.history.pushState(null, '', '#guest');
-          } catch {}
-        }}
-        currentUser={currentUser}
-      />
-    );
-  }
-
-  // Guest Pipeline Lookup Route (Public Resident Access without login credentials)
-  if (activeView === 'guest') {
-    return (
-      <GuestLookup
-        onBackToLogin={() => {
-          setActiveView('auth');
-          try {
-            window.history.pushState(null, '', '#login');
-          } catch {}
-        }}
-        onExploreMap={(searchedAddress) => {
-          if (searchedAddress) {
-            const matched = VERIFIED_PARCELS.find(p =>
-              p.fullAddress.toLowerCase().includes(searchedAddress.toLowerCase())
-            );
-            if (matched) {
-              handleSearchSelectParcel(matched);
-            }
-          }
-          setActiveView('map');
-          try {
-            window.history.pushState(null, '', '#map');
-          } catch {}
-        }}
-      />
-    );
-  }
-
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-900 font-sans select-none">
-      {/* Taumata Arowai Header Navigation */}
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 font-sans select-none">
+      {/* Taumata Arowai Public-Sector Header Navigation */}
       <Header
         currentUser={currentUser}
-        onOpenLogin={() => {
-          setActiveView('auth');
-          try {
-            window.history.pushState(null, '', '#login');
-          } catch {}
-        }}
+        onOpenLogin={handleOpenGeneralLogin}
         onLogout={handleLogout}
         onSearchSelectParcel={handleSearchSelectParcel}
         onSearchSelectZone={handleSearchSelectZone}
         onLocateMe={handleLocateMe}
         isLocating={isLocating}
-        onOpenComplaintModal={() => {
-          setComplaintAddressPrefill(
-            selectedFeature?.type === 'parcel' ? selectedFeature.data.fullAddress : ''
-          );
-          setIsComplaintModalOpen(true);
-        }}
+        onOpenComplaintModal={() => handleReportIncident()}
         onOpenDataRequestModal={() => setIsDataModalOpen(true)}
         onOpenDocumentation={() => setIsDocModalOpen(true)}
         onOpenProfileDashboard={() => setIsProfileDashboardOpen(true)}
       />
 
-      {/* Main Map Viewport Area */}
+      {/* Main Map Viewport Area (Default Landing Page) */}
       <main className="relative flex-1 w-full h-full overflow-hidden">
-        {/* Leaflet GIS Map Canvas */}
+        {/* Leaflet GIS Map Canvas - Available to all guests */}
         <GisMap
           accessLevel={accessLevel}
           baseMapStyle={baseMapStyle}
@@ -394,9 +345,9 @@ export default function App() {
           customGeoJsonData={customGeoJsonData}
           onToggleLayerPanel={() => setIsLayerPanelOpen(prev => !prev)}
           isLayerPanelOpen={isLayerPanelOpen}
-          pathway={null}
+          pathway={pathwayState}
           focusZoneBounds={focusZoneBounds}
-          focusRouteBounds={null}
+          focusRouteBounds={focusRouteBounds}
         />
 
         {/* Map Layers & Basemap Control Panel */}
@@ -410,7 +361,7 @@ export default function App() {
           accessLevel={accessLevel}
         />
 
-        {/* Right Inspection Drawer */}
+        {/* Right Inspection Drawer - Fully functional for guests */}
         <InspectionDrawer
           selection={selectedFeature}
           accessLevel={accessLevel}
@@ -418,8 +369,32 @@ export default function App() {
           onLocateAsset={(coords) => {
             setFlyToLocation({ center: coords, zoom: 19 });
           }}
-          onReportIncident={handleOpenComplaintForAddress}
+          onReportIncident={handleReportIncident}
           complaintsList={complaintsList}
+        />
+
+        {/* Water Supply Pathway & Single Connectivity Path Panel */}
+        <PathwayPanel
+          pathway={pathwayState}
+          isLoading={isResolvingPathway}
+          onFocusZone={(zone) => {
+            if (zone.polygon && zone.polygon.length > 0) {
+              setFocusZoneBounds(zone.polygon);
+            } else {
+              setFlyToLocation({ center: [zone.lat, zone.lng], zoom: 15 });
+            }
+          }}
+          onFocusAddress={(coords) => {
+            setFlyToLocation({ center: coords, zoom: 18 });
+          }}
+          onFocusRoute={(coords) => {
+            setFocusRouteBounds(coords);
+          }}
+          onReportIncident={(addr) => handleReportIncident(addr)}
+          onClear={() => {
+            setPathwayState(null);
+            setFocusRouteBounds(null);
+          }}
         />
 
         {/* Citizen Water Contamination & Service Complaint Modal */}
@@ -460,12 +435,14 @@ export default function App() {
           onClose={() => setIsProfileDashboardOpen(false)}
         />
 
-        {/* Authentication Modal */}
+        {/* Compact Login Modal */}
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
-          onLogin={(user) => setCurrentUser(user)}
+          onLogin={handleLoginSuccess}
           currentUser={currentUser}
+          reason={loginReason}
+          pendingIncidentAddress={pendingIncidentAddress}
         />
       </main>
     </div>

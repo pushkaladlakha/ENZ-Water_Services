@@ -185,7 +185,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
       <div className="bg-white rounded-lg shadow-2xl border border-slate-300 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
         
         {/* Modal Header */}
-        <div className="px-5 py-3.5 bg-[#071A35] text-white flex items-center justify-between border-b border-[#0C2548] shrink-0">
+        <div className="px-5 py-3.5 bg-[#072e54] text-white flex items-center justify-between border-b border-[#052340] shrink-0">
           <div className="flex items-center gap-3">
             <TaumataArowaiLogo theme="dark" compact={false} className="h-8" />
             <div className="h-6 w-[1px] bg-white/20 hidden sm:block" />
@@ -202,7 +202,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             aria-label="Close complaint dialog"
           >
             <X className="w-5 h-5" />
@@ -214,9 +214,9 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
           <button
             type="button"
             onClick={() => { setActiveTab('submit'); setSubmittedReference(null); }}
-            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 ${
+            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'submit'
-                ? 'border-[#071A35] text-[#071A35] font-bold'
+                ? 'border-[#072e54] text-[#072e54] font-bold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -227,9 +227,9 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('registry')}
-            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 ${
+            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'registry'
-                ? 'border-[#071A35] text-[#071A35] font-bold'
+                ? 'border-[#072e54] text-[#072e54] font-bold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -264,7 +264,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                   <div className="bg-white p-3.5 rounded border border-emerald-200 space-y-2">
                     <div className="flex justify-between items-center pb-2 border-b border-slate-100">
                       <span className="text-slate-500 font-medium">Official Reference Number:</span>
-                      <span className="font-mono font-bold text-sm text-[#071A35] bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+                      <span className="font-mono font-bold text-sm text-[#072e54] bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
                         {submittedReference}
                       </span>
                     </div>
@@ -305,7 +305,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setActiveTab('registry')}
-                      className="px-4 py-2 bg-[#071A35] hover:bg-[#0C2548] text-white font-bold rounded text-xs transition-colors"
+                      className="px-4 py-2 bg-[#072e54] hover:bg-[#052340] text-white font-bold rounded text-xs transition-colors cursor-pointer"
                     >
                       View Incident on Register
                     </button>
@@ -341,9 +341,9 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                             key={cat.id}
                             type="button"
                             onClick={() => handleCategoryChange(cat.id)}
-                            className={`p-2.5 rounded border text-left transition-all flex items-start gap-2.5 ${
+                            className={`p-2.5 rounded border text-left transition-all flex items-start gap-2.5 cursor-pointer ${
                               isSelected
-                                ? 'border-[#071A35] bg-sky-50/70 text-[#071A35] ring-1 ring-[#071A35]'
+                                ? 'border-[#072e54] bg-sky-50/70 text-[#072e54] ring-1 ring-[#072e54]'
                                 : 'border-slate-200 hover:bg-slate-50 text-slate-700'
                             }`}
                           >
@@ -375,7 +375,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                           onChange={(e) => setAddress(e.target.value)}
                           required
                           placeholder="e.g. 4015 Great North Road, Kelston"
-                          className="w-full pl-8 pr-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                          className="w-full pl-8 pr-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#072e54]"
                         />
                         <MapPin className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
                       </div>
@@ -388,7 +388,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                       <select
                         value={supplyZoneId}
                         onChange={(e) => setSupplyZoneId(e.target.value)}
-                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#072e54]"
                       >
                         {AUCKLAND_ZONE_SCHEMES.map(z => (
                           <option key={z.zoneId} value={z.zoneId}>
@@ -410,7 +410,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                           type="datetime-local"
                           value={observedAt}
                           onChange={(e) => setObservedAt(e.target.value)}
-                          className="w-full pl-8 pr-2 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                          className="w-full pl-8 pr-2 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#072e54]"
                         />
                         <Clock className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
                       </div>
@@ -423,7 +423,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                       <select
                         value={severity}
                         onChange={(e) => setSeverity(e.target.value as IncidentSeverity)}
-                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#072e54]"
                       >
                         <option value="standard">Standard Inquiry (Minor Taste/Pressure)</option>
                         <option value="high">High (Severe Discoloration / Odor / Burst)</option>
@@ -438,7 +438,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                       <select
                         value={waterSupplyType}
                         onChange={(e) => setWaterSupplyType(e.target.value)}
-                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                        className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#072e54]"
                       >
                         <option value="Municipal Watercare Reticulation">Municipal Reticulation (Watercare)</option>
                         <option value="Rural Community Water Supply">Rural Community Water Supply</option>
@@ -459,7 +459,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                       rows={3}
                       required
                       placeholder="Describe what you observed: color, smell, whether both cold and hot taps are affected, duration of discoloration, or leak severity..."
-                      className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#071A35]"
+                      className="w-full px-3 py-2 rounded border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#072e54]"
                     />
                   </div>
 
@@ -467,7 +467,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                   <div className="border border-slate-200 rounded p-3 bg-slate-50/70 space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="font-semibold text-slate-900 text-xs flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5 text-[#071A35]" />
+                        <User className="w-3.5 h-3.5 text-[#072e54]" />
                         <span>Reporter Contact Information</span>
                       </div>
                       <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
@@ -475,7 +475,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                           type="checkbox"
                           checked={isAnonymous}
                           onChange={(e) => setIsAnonymous(e.target.checked)}
-                          className="rounded text-[#071A35]"
+                          className="rounded text-[#072e54]"
                         />
                         <span>Submit Anonymously</span>
                       </label>
@@ -524,7 +524,7 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
                     </span>
                     <button
                       type="submit"
-                      className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-[#071A35] font-bold rounded text-xs transition-colors flex items-center gap-2 shadow-xs"
+                      className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-[#072e54] font-bold rounded text-xs transition-colors flex items-center gap-2 shadow-xs cursor-pointer"
                     >
                       <Send className="w-3.5 h-3.5" />
                       <span>Submit Official Complaint</span>

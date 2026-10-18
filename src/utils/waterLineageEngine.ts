@@ -78,8 +78,32 @@ export function findNearestVerifiedParcel(lat: number, lng: number): ParcelFeatu
   return closest;
 }
 
+// Ray-casting point-in-polygon algorithm for authoritative geographic containment
+export function isCoordinateInPolygon(lat: number, lng: number, polygon: [number, number][]): boolean {
+  if (!polygon || polygon.length < 3) return false;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0];
+    const yi = polygon[i][1];
+    const xj = polygon[j][0];
+    const yj = polygon[j][1];
+    const intersect = ((yi > lng) !== (yj > lng)) &&
+      (lat < ((xj - xi) * (lng - yi)) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
 // Resolves which drinking water supply zone encloses or is closest to coordinate
 export function resolveDrinkingWaterSupplyZone(lat: number, lng: number): AucklandZoneScheme | null {
+  // 1. Authoritative Point-in-Polygon Containment Check
+  for (const scheme of AUCKLAND_ZONE_SCHEMES) {
+    if (scheme.polygon && isCoordinateInPolygon(lat, lng, scheme.polygon)) {
+      return scheme;
+    }
+  }
+
+  // 2. Spatial Radius Boundary Match
   let closestScheme: AucklandZoneScheme | null = null;
   let minDistance = 999999;
 
@@ -91,7 +115,7 @@ export function resolveDrinkingWaterSupplyZone(lat: number, lng: number): Auckla
     }
   }
 
-  // If outside all zone radii, return closest if within 15km, else null
+  // 3. Fallback: Return closest zone if within 15km
   if (!closestScheme) {
     for (const scheme of AUCKLAND_ZONE_SCHEMES) {
       const dist = calculateDistanceKm(lat, lng, scheme.lat, scheme.lng);
@@ -202,7 +226,18 @@ export function resolveAddressSupplyZone(
     }
   }
 
-  // 2. Spatial resolution fallback: Find nearest zone via Haversine distance
+  // 2. Authoritative Point-in-Polygon spatial check
+  const polyZone = resolveDrinkingWaterSupplyZone(targetLat, targetLng);
+  if (polyZone) {
+    const dist = calculateDistanceKm(targetLat, targetLng, polyZone.lat, polyZone.lng);
+    return {
+      zone: polyZone,
+      distanceKm: Math.round(dist * 100) / 100,
+      isAutoResolvedNearest: false,
+    };
+  }
+
+  // 3. Spatial resolution fallback: Find nearest zone via Haversine distance
   let closestZone = AUCKLAND_ZONE_SCHEMES[0];
   let minDistance = 999999;
 

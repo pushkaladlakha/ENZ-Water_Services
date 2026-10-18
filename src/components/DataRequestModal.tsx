@@ -283,7 +283,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
       <div className="bg-white rounded-lg shadow-2xl border border-slate-300 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
         
         {/* Header with Taumata Arowai Branding */}
-        <div className="px-5 py-3.5 bg-[#071A35] text-white flex items-center justify-between border-b border-[#0C2548] shrink-0">
+        <div className="px-5 py-3.5 bg-[#072e54] text-white flex items-center justify-between border-b border-[#052340] shrink-0">
           <div className="flex items-center gap-3">
             <TaumataArowaiLogo theme="dark" compact={false} className="h-8" />
             <div className="h-6 w-[1px] bg-white/20 hidden sm:block" />
@@ -299,7 +299,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             aria-label="Close Data Modal"
           >
             <X className="w-5 h-5" />
@@ -317,11 +317,11 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
         )}
 
         {/* Informational Scope Banner */}
-        <div className="bg-sky-50/70 border-b border-sky-100 px-5 py-2.5 text-[#071A35] text-xs">
+        <div className="bg-sky-50/70 border-b border-sky-100 px-5 py-2.5 text-[#072e54] text-xs">
           <div className="flex items-start gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#071A35] shrink-0 mt-0.5" />
+            <ShieldCheck className="w-4 h-4 text-[#072e54] shrink-0 mt-0.5" />
             <div>
-              <div className="font-bold text-[#071A35]">
+              <div className="font-bold text-[#072e54]">
                 Authoritative Data Pipeline
               </div>
               <p className="text-[11px] text-slate-700 mt-0.5 leading-relaxed">
@@ -336,9 +336,9 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('required-inputs')}
-            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 ${
+            className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'required-inputs'
-                ? 'border-[#071A35] text-[#071A35] font-bold'
+                ? 'border-[#072e54] text-[#072e54] font-bold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -351,7 +351,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
             onClick={() => setActiveTab('paste-raw')}
             className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 ${
               activeTab === 'paste-raw'
-                ? 'border-[#071A35] text-[#071A35] font-bold'
+                ? 'border-[#072e54] text-[#072e54] font-bold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -364,7 +364,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
             onClick={() => setActiveTab('authoritative-baseline')}
             className={`pb-2 px-2 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 ${
               activeTab === 'authoritative-baseline'
-                ? 'border-[#071A35] text-[#071A35] font-bold'
+                ? 'border-[#072e54] text-[#072e54] font-bold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -400,7 +400,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
               <div className="border border-slate-200 rounded p-3.5 bg-slate-50/60 space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-[#071A35] text-white flex items-center justify-center font-bold text-[11px] shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-[#072e54] text-white flex items-center justify-center font-bold text-[11px] shrink-0">
                       1
                     </div>
                     <div>
@@ -425,7 +425,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
 
                 <div className="text-[11px] text-slate-600 bg-white p-2.5 rounded border border-slate-200 space-y-1">
                   <div className="font-semibold text-slate-800 flex items-center gap-1">
-                    <Info className="w-3.5 h-3.5 text-[#071A35]" />
+                    <Info className="w-3.5 h-3.5 text-[#072e54]" />
                     <span>Schema Fields Verified:</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -437,7 +437,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
                   </div>
                 </div>
 
-                <label className="border-2 border-dashed border-slate-300 hover:border-[#071A35] rounded p-3 flex flex-col items-center justify-center cursor-pointer bg-white transition-colors">
+                <label className="border-2 border-dashed border-slate-300 hover:border-[#072e54] rounded p-3 flex flex-col items-center justify-center cursor-pointer bg-white transition-colors">
                   <Upload className="w-5 h-5 text-slate-400 mb-1" />
                   <span className="font-semibold text-slate-800 text-xs">
                     {aklDizzyFile ? aklDizzyFile.name : 'Select or Drop AklDizzy.geojson'}
@@ -459,7 +459,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
               <div className="border border-slate-200 rounded p-3.5 bg-slate-50/60 space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-[#071A35] text-white flex items-center justify-center font-bold text-[11px] shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-[#072e54] text-white flex items-center justify-center font-bold text-[11px] shrink-0">
                       2
                     </div>
                     <div>
@@ -484,7 +484,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
 
                 <div className="text-[11px] text-slate-600 bg-white p-2.5 rounded border border-slate-200 space-y-1">
                   <div className="font-semibold text-slate-800 flex items-center gap-1">
-                    <Info className="w-3.5 h-3.5 text-[#071A35]" />
+                    <Info className="w-3.5 h-3.5 text-[#072e54]" />
                     <span>Schema Columns Verified:</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -496,7 +496,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
                   </div>
                 </div>
 
-                <label className="border-2 border-dashed border-slate-300 hover:border-[#071A35] rounded p-3 flex flex-col items-center justify-center cursor-pointer bg-white transition-colors">
+                <label className="border-2 border-dashed border-slate-300 hover:border-[#072e54] rounded p-3 flex flex-col items-center justify-center cursor-pointer bg-white transition-colors">
                   <Upload className="w-5 h-5 text-slate-400 mb-1" />
                   <span className="font-semibold text-slate-800 text-xs">
                     {zoneListFile ? zoneListFile.name : 'Select or Drop Auckland_zone_list.csv'}
@@ -517,8 +517,8 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
               {/* Pre-Commit Validation Summary Table */}
               {(aklDizzyValidation || zoneListValidation) && (
                 <div className="border border-slate-200 rounded overflow-hidden bg-white">
-                  <div className="bg-slate-100 px-3 py-1.5 text-xs font-bold text-[#071A35] border-b border-slate-200 flex items-center gap-1.5">
-                    <FileCheck className="w-4 h-4 text-[#071A35]" />
+                  <div className="bg-slate-100 px-3 py-1.5 text-xs font-bold text-[#072e54] border-b border-slate-200 flex items-center gap-1.5">
+                    <FileCheck className="w-4 h-4 text-[#072e54]" />
                     <span>Pre-Commit Validation Summary</span>
                   </div>
                   <table className="w-full text-xs">
@@ -587,7 +587,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
                   type="button"
                   onClick={handleApplyData}
                   disabled={!isStaff || (!aklDizzyData && !zoneListData)}
-                  className="w-full sm:w-auto px-6 py-2 bg-[#071A35] hover:bg-[#0C2548] disabled:bg-slate-300 text-white font-bold rounded text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs"
+                  className="w-full sm:w-auto px-6 py-2 bg-[#072e54] hover:bg-[#052340] disabled:bg-slate-300 text-white font-bold rounded text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>Commit & Apply to Live Map</span>
@@ -619,7 +619,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
                 onChange={(e) => setRawText(e.target.value)}
                 rows={12}
                 placeholder="Paste CSV rows directly from Excel or GeoJSON FeatureCollection..."
-                className="w-full font-mono text-[11px] p-3 rounded border border-slate-300 focus:ring-1 focus:ring-[#071A35] focus:outline-none bg-slate-50/50"
+                className="w-full font-mono text-[11px] p-3 rounded border border-slate-300 focus:ring-1 focus:ring-[#072e54] focus:outline-none bg-slate-50/50"
               />
 
               <div className="flex items-center justify-between pt-1">
@@ -654,7 +654,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
                     }
                   }}
                   disabled={!isStaff || !rawText.trim()}
-                  className="px-5 py-2 bg-[#071A35] hover:bg-[#0C2548] disabled:bg-slate-300 text-white font-bold rounded transition-colors flex items-center gap-1.5 shadow-xs"
+                  className="px-5 py-2 bg-[#072e54] hover:bg-[#052340] disabled:bg-slate-300 text-white font-bold rounded transition-colors flex items-center gap-1.5 shadow-xs"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>Parse & Commit to Map</span>
@@ -683,7 +683,7 @@ export const DataRequestModal: React.FC<DataRequestModalProps> = ({
                   <button
                     type="button"
                     onClick={handleLoadBaselineSample}
-                    className="px-5 py-2 bg-[#071A35] hover:bg-[#0C2548] text-white font-bold rounded text-xs transition-colors flex items-center gap-2 shadow-xs"
+                    className="px-5 py-2 bg-[#072e54] hover:bg-[#052340] text-white font-bold rounded text-xs transition-colors flex items-center gap-2 shadow-xs"
                   >
                     <Sparkles className="w-4 h-4 text-sky-300" />
                     <span>Activate Authoritative Baseline Now</span>

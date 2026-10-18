@@ -34,9 +34,9 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
 
   const baseMaps: { id: BaseMapStyle; label: string; desc: string }[] = [
     {
-      id: 'carto-light',
-      label: 'LINZ Cadastral Light',
-      desc: 'Clean, high-contrast property boundaries matching Watercare GIS Viewer.',
+      id: 'google-maps',
+      label: 'Google Maps (Roadmap)',
+      desc: 'Standard Google Maps vector cartography with street names, buildings & landmarks.',
     },
     {
       id: 'esri-satellite',
@@ -114,15 +114,15 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
   return (
     <div className="absolute right-4 bottom-20 w-84 max-h-[calc(100vh-140px)] bg-white border border-slate-300 rounded-lg shadow-2xl z-20 flex flex-col overflow-hidden animate-in fade-in duration-150">
       {/* Panel Header */}
-      <div className="px-4 py-3 bg-[#071A35] text-white flex items-center justify-between border-b border-[#0C2548]">
+      <div className="px-4 py-3 bg-[#072e54] text-white flex items-center justify-between border-b border-[#052340]">
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-sky-300" />
+          <Layers className="w-4 h-4 text-teal-300" />
           <h2 className="text-xs font-bold uppercase tracking-wider">Map Layers & Basemap</h2>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="text-white/70 hover:text-white p-1 rounded hover:bg-white/10 transition-colors"
+          className="text-white/70 hover:text-white p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
           aria-label="Close Layer Panel"
         >
           <X className="w-4 h-4" />
@@ -134,9 +134,9 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('layers')}
-          className={`flex-1 py-2 px-3 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 px-3 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'layers'
-              ? 'border-[#071A35] text-[#071A35] bg-white'
+              ? 'border-[#072e54] text-[#072e54] bg-white'
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
@@ -146,9 +146,9 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('basemap')}
-          className={`flex-1 py-2 px-3 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 px-3 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === 'basemap'
-              ? 'border-[#071A35] text-[#071A35] bg-white'
+              ? 'border-[#072e54] text-[#072e54] bg-white'
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
@@ -171,7 +171,7 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
                   key={item.key}
                   type="button"
                   onClick={() => onToggleLayer(item.key)}
-                  className={`w-full text-left p-2.5 rounded border text-xs transition-colors flex items-start gap-2.5 ${
+                  className={`w-full text-left p-2.5 rounded border text-xs transition-colors flex items-start gap-2.5 cursor-pointer ${
                     isVisible
                       ? 'bg-slate-50/80 border-slate-300 text-slate-900'
                       : 'border-slate-200 opacity-60 hover:opacity-100 bg-white text-slate-500'
@@ -179,7 +179,7 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
                 >
                   <div className="mt-0.5 shrink-0 text-slate-600">
                     {isVisible ? (
-                      <Eye className="w-4 h-4 text-[#071A35]" />
+                      <Eye className="w-4 h-4 text-[#072e54]" />
                     ) : (
                       <EyeOff className="w-4 h-4 text-slate-400" />
                     )}
@@ -209,14 +209,14 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
                   key={map.id}
                   type="button"
                   onClick={() => onBaseMapChange(map.id)}
-                  className={`w-full text-left p-2.5 rounded border text-xs transition-colors flex items-start gap-2.5 ${
+                  className={`w-full text-left p-2.5 rounded border text-xs transition-colors flex items-start gap-2.5 cursor-pointer ${
                     isSelected
-                      ? 'bg-sky-50/70 border-[#071A35] text-[#071A35] font-medium ring-1 ring-[#071A35]'
+                      ? 'bg-sky-50/70 border-[#072e54] text-[#072e54] font-medium ring-1 ring-[#072e54]'
                       : 'border-slate-200 hover:bg-slate-50 text-slate-700'
                   }`}
                 >
                   <div className={`w-3.5 h-3.5 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
-                    isSelected ? 'border-[#071A35] bg-[#071A35]' : 'border-slate-400'
+                    isSelected ? 'border-[#072e54] bg-[#072e54]' : 'border-slate-400'
                   }`}>
                     {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                   </div>

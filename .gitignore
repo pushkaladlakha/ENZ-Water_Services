@@ -12,3 +12,4 @@ __pycache__/
 backend/app/db/data/water_services.db
 .venv/
 venv/
+.aistudio/

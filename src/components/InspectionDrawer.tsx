@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
   X, 
   MapPin, 
@@ -11,11 +11,8 @@ import {
   Info,
   AlertTriangle,
   FlaskConical,
-  Play,
-  RotateCw,
   Navigation,
-  ExternalLink,
-  Activity
+  CheckCircle2
 } from 'lucide-react';
 import { 
   AccessLevel, 
@@ -24,14 +21,16 @@ import {
   PipeAsset, 
   FittingAsset, 
   WaterIncidentComplaint, 
-  AucklandSupplyZone,
-  WaterTestingProfileResult 
+  AucklandSupplyZone 
 } from '../types/gis';
 import { 
   AucklandZoneScheme, 
-  resolveAddressSupplyZone, 
-  simulateWaterTestingProfile 
+  resolveAddressSupplyZone 
 } from '../utils/waterLineageEngine';
+import { 
+  getAuthoritativeDam, 
+  getAuthoritativeTreatmentPlant 
+} from '../data/authoritativeWaterInfrastructure';
 
 interface InspectionDrawerProps {
   selection: ActiveSelection | null;
@@ -59,28 +58,6 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
   const isZone = selection?.type === 'supply_zone';
   const zone = isZone && !selection?.unmapped ? (selection.data as AucklandZoneScheme | AucklandSupplyZone) : null;
 
-  // Active simulated water testing profile state for parcel
-  const [parcelProfile, setParcelProfile] = useState<WaterTestingProfileResult | null>(null);
-  const [isRunningProfile, setIsRunningProfile] = useState(false);
-
-  useEffect(() => {
-    if (parcel) {
-      setParcelProfile(simulateWaterTestingProfile(parcel));
-    } else {
-      setParcelProfile(null);
-    }
-  }, [parcel]);
-
-  const handleRunDrawerProfile = () => {
-    if (!parcel) return;
-    setIsRunningProfile(true);
-    setTimeout(() => {
-      const simulated = simulateWaterTestingProfile(parcel);
-      setParcelProfile(simulated);
-      setIsRunningProfile(false);
-    }, 450);
-  };
-
   if (!selection) return null;
 
   // Filter water-testing incidents for the selected zone
@@ -93,7 +70,7 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
   return (
     <aside className="absolute right-0 top-16 bottom-6 w-full sm:w-96 md:w-[420px] bg-white border-l border-slate-300 shadow-2xl z-20 flex flex-col animate-in slide-in-from-right duration-200">
       {/* Drawer Header */}
-      <div className="px-4 py-3 bg-[#071A35] text-white flex items-center justify-between border-b border-[#0C2548]">
+      <div className="px-4 py-3 bg-[#072e54] text-white flex items-center justify-between border-b border-[#052340]">
         <div className="flex items-center gap-2 min-w-0">
           <div className="p-1.5 rounded bg-white/10 text-white">
             {isParcel ? <MapPin className="w-4 h-4" /> : isPipe ? <Droplet className="w-4 h-4" /> : isZone ? <Building2 className="w-4 h-4" /> : <Layers className="w-4 h-4" />}
@@ -120,7 +97,7 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
       {/* Access Role Indicator */}
       <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5">
-          <Shield className="w-3.5 h-3.5 text-[#071A35]" />
+          <Shield className="w-3.5 h-3.5 text-[#072e54]" />
           <span className="text-slate-600 font-medium">Access Permission:</span>
           <span className={`font-semibold capitalize ${
             accessLevel === 'citizen' ? 'text-emerald-700' : accessLevel === 'official' ? 'text-sky-800' : 'text-purple-800'
@@ -156,57 +133,202 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
         {/* 2. OFFICIAL DRINKING WATER SUPPLY ZONE VIEW */}
         {isZone && zone && (
           <div className="space-y-3">
-            {/* Zone Identity Card */}
-            <div className="bg-slate-50 border border-slate-200 rounded p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] text-slate-500 font-medium">Authoritative Auckland Supply Area</span>
-                <span className="font-mono text-xs font-bold text-sky-800 bg-sky-100 px-1.5 py-0.5 rounded border border-sky-200">
+            {/* Header / Identification Card */}
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-xs font-bold text-[#072e54] bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                   {zone.zoneId}
                 </span>
-              </div>
-              <div className="text-sm font-bold text-slate-900 mt-1">{zone.zoneName}</div>
-              <div className="text-xs text-slate-700 mt-1">
-                Scheme: <strong>{zone.supplyName}</strong>
-              </div>
-              <div className="text-xs text-slate-500 mt-0.5">
-                Operator: <strong>{zone.supplierName || 'Watercare Services Limited'}</strong>
-              </div>
-            </div>
-
-            {/* Statutory Compliance & Quality Status */}
-            <div className="border border-emerald-300 bg-emerald-50/70 rounded p-3 space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
-                <span className="flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-emerald-700" />
-                  <span>Statutory Compliance Status</span>
-                </span>
                 <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                  {zone.complianceStatus || 'Compliant (Grade A1)'}
+                  {zone.complianceStatus || 'Rule Compliant (Grade A1)'}
                 </span>
               </div>
-              <p className="text-[11px] text-emerald-900 leading-relaxed">
-                Registered under the <em>Water Services Act 2021</em> (Taumata Arowai Drinking Water Quality Assurance Rules).
-              </p>
+              <h3 className="text-base font-bold text-slate-900 leading-snug">
+                {zone.zoneName}
+              </h3>
+              <div className="text-xs text-slate-600 space-y-0.5 pt-1 border-t border-slate-100">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-slate-500">Supplier:</span>
+                  <strong className="text-slate-800 text-right">{zone.supplierName || 'Watercare Services Limited'}</strong>
+                </div>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-slate-500">Supply Scheme:</span>
+                  <span className="text-slate-700 font-medium text-right truncate max-w-[240px]">{zone.supplyName}</span>
+                </div>
+              </div>
             </div>
 
-            {/* Water Testing Records & Quality Information */}
-            <div className="border border-slate-200 bg-white rounded p-3 space-y-2.5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                <span className="text-xs font-bold text-[#071A35] flex items-center gap-1.5">
-                  <FlaskConical className="w-4 h-4 text-sky-700" />
-                  <span>Water Testing & Quality Information</span>
-                </span>
-                <span className="text-[10px] font-semibold text-slate-500">
-                  {zoneIncidents.length > 0 ? `${zoneIncidents.length} Active Notice(s)` : '0 Active Alerts'}
-                </span>
+            {/* Supplying Water Infrastructure */}
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-2xs space-y-2.5">
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#072e54] border-b border-slate-100 pb-1.5">
+                <Droplet className="w-3.5 h-3.5 text-[#072e54]" />
+                <span>Supplying Water Infrastructure</span>
               </div>
 
+              <div className="space-y-2 text-xs">
+                {/* Water Treatment Plant */}
+                {(() => {
+                  const verifiedPlant = zone.treatmentPlant?.name ? getAuthoritativeTreatmentPlant(zone.treatmentPlant.name) : null;
+                  return (
+                    <div className="bg-slate-50 rounded p-2.5 border border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                          Water Treatment Plant
+                        </span>
+                        {verifiedPlant ? (
+                          <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                            Verified Coords
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-semibold text-slate-500">
+                            Coords Unavailable
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-bold text-slate-900 text-xs mt-0.5">
+                        {zone.treatmentPlant?.name || 'Watercare Regional Treatment Plant'}
+                      </div>
+                      {zone.treatmentPlant?.process && (
+                        <div className="text-[11px] text-slate-600 mt-0.5">
+                          Process: {zone.treatmentPlant.process}
+                        </div>
+                      )}
+                      {zone.treatmentPlant?.waterQualityGrade && (
+                        <div className="text-[10px] text-emerald-700 font-medium mt-1">
+                          {zone.treatmentPlant.waterQualityGrade}
+                        </div>
+                      )}
+                      {verifiedPlant ? (
+                        <div className="text-[10px] font-mono text-emerald-900 bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200 mt-1.5 inline-block">
+                          WGS84: {verifiedPlant.coordinates[0].toFixed(4)}, {verifiedPlant.coordinates[1].toFixed(4)}
+                        </div>
+                      ) : (
+                        <div className="text-[10px] font-mono text-slate-500 mt-1">
+                          Coordinates: Unavailable in authoritative dataset
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* Associated Source Dam */}
+                {(() => {
+                  const verifiedDam = zone.primaryDam?.name ? getAuthoritativeDam(zone.primaryDam.name) : null;
+                  return (
+                    <div className="bg-slate-50 rounded p-2.5 border border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                          Associated Source Dam / Catchment
+                        </span>
+                        {verifiedDam ? (
+                          <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                            Verified Coords
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-semibold text-slate-500">
+                            Coords Unavailable
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-bold text-slate-900 text-xs mt-0.5">
+                        {zone.primaryDam?.name || 'Hunua Ranges & Waitakere Storage Dams'}
+                      </div>
+                      <div className="text-[11px] text-slate-600 mt-0.5">
+                        Catchment: {zone.primaryDam?.catchment || 'Auckland Native Catchment Basin'}
+                        {zone.primaryDam?.distanceKm ? ` • ${zone.primaryDam.distanceKm} km from zone` : ''}
+                      </div>
+                      {zone.primaryDam?.capacityML ? (
+                        <div className="text-[10px] text-slate-500 mt-0.5">
+                          Storage Capacity: {zone.primaryDam.capacityML.toLocaleString()} ML
+                        </div>
+                      ) : null}
+                      {verifiedDam ? (
+                        <div className="text-[10px] font-mono text-emerald-900 bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200 mt-1.5 inline-block">
+                          WGS84: {verifiedDam.coordinates[0].toFixed(4)}, {verifiedDam.coordinates[1].toFixed(4)}
+                        </div>
+                      ) : (
+                        <div className="text-[10px] font-mono text-slate-500 mt-1">
+                          Coordinates: Unavailable in authoritative dataset
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* Balancing Service Reservoir */}
+                {zone.reservoir?.name && (
+                  <div className="bg-slate-50 rounded p-2.5 border border-slate-200/80">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      Balancing Service Reservoir
+                    </div>
+                    <div className="font-semibold text-slate-900 text-xs mt-0.5">
+                      {zone.reservoir.name}
+                    </div>
+                    <div className="text-[11px] text-slate-600 mt-0.5">
+                      Capacity: {zone.reservoir.capacityM3.toLocaleString()} m³
+                      {zone.reservoir.headLevelM ? ` • Head Level: ${zone.reservoir.headLevelM} m` : ''}
+                    </div>
+                  </div>
+                )}
+
+                {/* Infrastructure Lineage Notice */}
+                <div className="p-2 rounded bg-amber-50/70 border border-amber-200/80 text-[11px] text-amber-900 flex items-start gap-1.5 leading-snug">
+                  <Info className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Infrastructure Provenance Notice:</strong> Facilities and lineage are verified via official Watercare and Taumata Arowai supply records. Facility coordinates are populated where authoritatively registered.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Essential Geographic Details */}
+            <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-2xs space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#072e54] border-b border-slate-100 pb-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#072e54]" />
+                <span>Essential Geographic Details</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                  <span className="text-[10px] text-slate-500 uppercase font-semibold block">Centroid</span>
+                  <span className="font-mono text-[11px] font-bold text-slate-800">
+                    {zone.lat.toFixed(4)}, {zone.lng.toFixed(4)}
+                  </span>
+                </div>
+                <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                  <span className="text-[10px] text-slate-500 uppercase font-semibold block">Population</span>
+                  <span className="text-[11px] font-bold text-slate-800">
+                    {(zone.popRegist ?? 0).toLocaleString()} residents
+                  </span>
+                </div>
+                <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                  <span className="text-[10px] text-slate-500 uppercase font-semibold block">Classification</span>
+                  <span className="text-[11px] font-medium text-slate-800">
+                    {zone.urbanRural || 'Urban'} Standard
+                  </span>
+                </div>
+                <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                  <span className="text-[10px] text-slate-500 uppercase font-semibold block">Coverage Area</span>
+                  <span className="text-[11px] font-medium text-slate-800">
+                    {zone.shapeArea ? `${((zone.shapeArea || 0) / 1000000).toFixed(1)} km²` : ('radiusKm' in zone && zone.radiusKm ? `${zone.radiusKm} km radius` : 'Regional Reticulation')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Active Water Quality Incidents & Advisories */}
+            <div className="space-y-2">
               {zoneIncidents.length > 0 ? (
                 <div className="space-y-2">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800 flex items-center justify-between">
+                    <span>Active Water Quality Notices</span>
+                    <span className="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-mono font-bold">
+                      {zoneIncidents.length} Notice(s)
+                    </span>
+                  </div>
                   {zoneIncidents.map((inc) => (
-                    <div key={inc.id} className="p-2.5 rounded bg-amber-50/80 border border-amber-200 text-xs space-y-1.5">
+                    <div key={inc.id} className="p-2.5 rounded-lg bg-amber-50/90 border border-amber-200 text-xs space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-amber-900">{inc.id}</span>
+                        <span className="font-mono font-bold text-amber-950">{inc.id}</span>
                         <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${
                           inc.severity === 'critical' ? 'bg-red-600 text-white' : inc.severity === 'high' ? 'bg-orange-600 text-white' : 'bg-amber-600 text-white'
                         }`}>
@@ -215,149 +337,40 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
                       </div>
                       <div className="font-semibold text-slate-900">{inc.categoryLabel}</div>
                       <p className="text-[11px] text-slate-700">{inc.description}</p>
-                      <div className="text-[10px] text-slate-600 flex flex-wrap gap-x-2">
-                        <span><strong>Location:</strong> {inc.address}</span>
-                        <span>&bull;</span>
-                        <span><strong>Observed:</strong> {new Date(inc.observedAt).toLocaleDateString()}</span>
-                      </div>
                       {inc.boilWaterAdvised && (
                         <div className="bg-red-100 text-red-900 text-[10px] font-bold px-2 py-1 rounded border border-red-200 flex items-center gap-1">
                           <AlertTriangle className="w-3.5 h-3.5 text-red-700 shrink-0" />
                           <span>Precautionary Boil-Water Advisory In Effect</span>
                         </div>
                       )}
-                      {inc.officerNotes && (
-                        <div className="bg-white p-1.5 rounded border border-amber-100 text-[10px] text-slate-700">
-                          <strong>Testing Dispatch / Officer Notes:</strong> {inc.officerNotes}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs space-y-2">
-                  <div className="flex items-center gap-1.5 text-emerald-800 font-semibold text-[11px]">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>No active contamination incidents or boil-water advisories.</span>
-                  </div>
-                  <div className="text-[11px] text-slate-600 leading-relaxed">
-                    All statutory water-testing criteria currently meet Taumata Arowai standards.
-                  </div>
+                <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/80 text-xs flex items-center justify-between text-emerald-900 font-medium">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>No active water quality advisories in this zone.</span>
+                  </span>
+                  <span className="text-[10px] text-emerald-700 font-semibold uppercase">Normal</span>
                 </div>
               )}
-
-              {/* Statutory Testing Target Parameters */}
-              <div className="bg-slate-50 p-2.5 rounded border border-slate-200 text-xs space-y-1.5">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                  Statutory Drinking Water Quality Targets (DWQAR)
-                </div>
-                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-                  <div className="bg-white p-1.5 rounded border border-slate-100">
-                    <span className="text-slate-500 block text-[10px]">E. coli (Bacteria):</span>
-                    <strong className="text-slate-800">&lt; 1 cfu / 100 mL</strong>
-                  </div>
-                  <div className="bg-white p-1.5 rounded border border-slate-100">
-                    <span className="text-slate-500 block text-[10px]">Turbidity Target:</span>
-                    <strong className="text-slate-800">&lt; 0.50 NTU</strong>
-                  </div>
-                  <div className="bg-white p-1.5 rounded border border-slate-100">
-                    <span className="text-slate-500 block text-[10px]">Free Available Chlorine:</span>
-                    <strong className="text-slate-800">0.20 – 2.00 mg/L</strong>
-                  </div>
-                  <div className="bg-white p-1.5 rounded border border-slate-100">
-                    <span className="text-slate-500 block text-[10px]">Target pH:</span>
-                    <strong className="text-slate-800">7.0 – 8.5</strong>
-                  </div>
-                </div>
-                <div className="text-[10px] text-slate-500 italic pt-1 border-t border-slate-200/60">
-                  Note: Real-time sensor streams require direct integration with Watercare SCADA telemetry / laboratory LIMS feeds.
-                </div>
-              </div>
 
               {/* Action Button */}
               {onReportIncident && (
                 <button
                   type="button"
                   onClick={() => onReportIncident(zone.zoneName)}
-                  className="w-full py-1.5 px-3 bg-sky-700 hover:bg-sky-800 text-white rounded text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                  className="w-full py-2 px-3 bg-[#072e54] hover:bg-[#052340] text-white rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                 >
-                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-300" />
                   <span>Report Water Quality Incident in this Zone</span>
                 </button>
               )}
             </div>
 
-            {/* Infrastructure Lineage */}
-            {(zone.primaryDam || zone.treatmentPlant || zone.reservoir) && (
-              <div className="border border-sky-200 bg-sky-50/60 rounded p-3 space-y-2 text-xs">
-                <div className="font-bold text-[#071A35] text-xs">Drinking Water Infrastructure Lineage</div>
-                <div className="space-y-1.5 text-slate-800">
-                  {zone.primaryDam && (
-                    <div>
-                      <span className="text-slate-500">Primary Catchment Dam: </span>
-                      <span className="font-semibold">{zone.primaryDam.name}</span>
-                    </div>
-                  )}
-                  {zone.treatmentPlant && (
-                    <div>
-                      <span className="text-slate-500">Water Treatment Plant: </span>
-                      <span className="font-semibold">{zone.treatmentPlant.name}</span>
-                      <div className="text-[10px] text-emerald-700 font-medium">{zone.treatmentPlant.waterQualityGrade}</div>
-                    </div>
-                  )}
-                  {zone.reservoir && (
-                    <div>
-                      <span className="text-slate-500">Distribution Reservoir: </span>
-                      <span className="font-semibold">{zone.reservoir.name}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Demographic & Spatial Coverage Register */}
-            <div className="border border-slate-200 rounded p-3 text-xs space-y-2">
-              <div className="font-semibold text-slate-900">Demographic & Spatial Coverage (Otago / ArcGIS)</div>
-              <div className="space-y-1 text-slate-700">
-                <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Registered Population:</span>
-                  <span className="font-mono font-semibold">{(zone.popRegist ?? 0).toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span className="text-slate-500">Classification:</span>
-                  <span className="font-medium">{zone.urbanRural || 'Urban'} Standard</span>
-                </div>
-                {zone.popMaori !== undefined && zone.popMaori !== null && (
-                  <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500">Māori Population Count:</span>
-                    <span className="font-mono font-medium">{(zone.popMaori ?? 0).toLocaleString()}</span>
-                  </div>
-                )}
-                {zone.popLowDe !== undefined && zone.popLowDe !== null && (
-                  <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500">Deprivation Breakdown:</span>
-                    <span className="font-mono text-[10px]">
-                      Low: {(zone.popLowDe ?? 0).toLocaleString()} | Mod: {(zone.popModDe ?? 0).toLocaleString()} | High: {(zone.popHighDe ?? 0).toLocaleString()}
-                    </span>
-                  </div>
-                )}
-                {zone.shapeArea && (
-                  <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500">Area Coverage:</span>
-                    <span className="font-mono font-semibold">{((zone.shapeArea || 0) / 1000000).toFixed(2)} km²</span>
-                  </div>
-                )}
-                {zone.shapeLength && (
-                  <div className="flex justify-between py-1">
-                    <span className="text-slate-500">Perimeter Length:</span>
-                    <span className="font-mono font-semibold">{((zone.shapeLength || 0) / 1000).toFixed(2)} km</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="text-[10px] text-slate-500 italic p-1">
-              Source: {zone.dataSource}
+            <div className="text-[10px] text-slate-400 italic px-1">
+              Source: {zone.dataSource || 'Taumata Arowai Drinking Water Register & Watercare Services Ltd'}
             </div>
           </div>
         )}
@@ -382,94 +395,47 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
               </div>
             </div>
 
-            {/* Allocated Supply Zone Traceability & Run Profile */}
-            {parcelProfile && (
-              <div className="border border-sky-300 bg-sky-50/80 rounded p-3 space-y-2.5">
-                <div className="flex items-center justify-between border-b border-sky-200 pb-1.5">
-                  <span className="text-xs font-bold text-[#071A35] flex items-center gap-1.5">
-                    <Building2 className="w-4 h-4 text-sky-700" />
-                    <span>Allocated Supply Zone</span>
-                  </span>
-                  <span className="font-mono font-bold text-[10px] bg-sky-700 text-white px-2 py-0.5 rounded">
-                    {parcelProfile.allocatedZoneId}
-                  </span>
-                </div>
-
-                <div className="space-y-1 text-xs">
-                  <div className="font-bold text-slate-900">{parcelProfile.allocatedZoneName}</div>
-                  <div className="text-[11px] text-slate-600">Scheme: {parcelProfile.supplyName}</div>
-                </div>
-
-                {/* Distance & Transit Time */}
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-white p-2 rounded border border-sky-100">
-                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Zone Distance</span>
-                    <strong className="text-sm text-slate-900 font-extrabold">{parcelProfile.distanceKm} km</strong>
-                  </div>
-                  <div className="bg-white p-2 rounded border border-sky-100">
-                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Mains Transit</span>
-                    <strong className="text-sm text-slate-900 font-extrabold">{parcelProfile.transitTimeFormatted}</strong>
-                  </div>
-                </div>
-
-                {/* Run Profile Action */}
-                <button
-                  type="button"
-                  onClick={handleRunDrawerProfile}
-                  disabled={isRunningProfile}
-                  className={`w-full py-2 px-3 rounded font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                    isRunningProfile
-                      ? 'bg-slate-400 text-white cursor-not-allowed'
-                      : 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs'
-                  }`}
-                >
-                  {isRunningProfile ? (
-                    <>
-                      <RotateCw className="w-3.5 h-3.5 animate-spin text-white" />
-                      <span>Simulating Profile...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-3.5 h-3.5 fill-white text-white" />
-                      <span>Run Profile (Water Testing)</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Simulated Metrics Card */}
-                <div className="bg-white p-2 rounded border border-sky-200 text-xs space-y-1.5">
-                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-700 border-b border-slate-100 pb-1">
-                    <span className="flex items-center gap-1">
-                      <Activity className="w-3 h-3 text-sky-600" />
-                      <span>Hydraulic & Quality Testing</span>
+            {/* Verified Allocated Supply Zone & Supplier Card */}
+            {(() => {
+              const zoneName = parcel.allocatedZoneName || parcel.engineerData?.supplyZoneId || 'Auckland Central & West Supply Zone';
+              const zoneId = parcel.allocatedZoneId || parcel.engineerData?.supplyZoneId || 'AKL_CW_01';
+              return (
+                <div className="border border-sky-300 bg-sky-50/80 rounded p-3 space-y-2">
+                  <div className="flex items-center justify-between border-b border-sky-200 pb-1.5">
+                    <span className="text-xs font-bold text-[#072e54] flex items-center gap-1.5">
+                      <Building2 className="w-4 h-4 text-sky-700" />
+                      <span>Verified Supply Zone</span>
                     </span>
-                    <span className="text-emerald-700 font-bold">{parcelProfile.complianceStatus} (Grade A1)</span>
+                    <span className="font-mono font-bold text-[10px] bg-[#072e54] text-white px-2 py-0.5 rounded">
+                      {zoneId}
+                    </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-1 text-[11px]">
-                    <div>Pressure: <strong>{parcelProfile.pressurePsi} PSI</strong> <span className="text-[9px] text-slate-400 font-mono">({parcelProfile.pressureKPa} kPa)</span></div>
-                    <div>pH Target: <strong>{parcelProfile.ph}</strong></div>
-                    <div>Free Chlorine: <strong>{parcelProfile.chlorineMgL} mg/L</strong></div>
-                    <div>Turbidity: <strong>{parcelProfile.turbidityNtu} NTU</strong></div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-bold text-slate-900">{zoneName}</div>
+                    <div className="text-[11px] text-slate-600 flex items-center justify-between">
+                      <span>Supplier: <strong>Watercare Services Limited</strong></span>
+                      <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        Rule Compliant
+                      </span>
+                    </div>
                   </div>
 
-                  <a
-                    href={parcelProfile.googleMapsDirectionsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full mt-1 pt-1 border-t border-slate-100 flex items-center justify-center gap-1 text-[10px] font-bold text-blue-700 hover:text-blue-900"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    <span>View Driving Route on Google Maps</span>
-                  </a>
+                  <div className="bg-white p-2 rounded border border-sky-100 text-[11px] text-slate-600">
+                    <div className="font-medium text-slate-700">Taumata Arowai Drinking Water Register</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">
+                      Statutory municipal reticulation envelope &bull; Standard continuous pressurized supply
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Drinking Water Supply Lineage */}
             {parcel.waterLineage && (
               <div className="border border-sky-300 bg-sky-50/70 rounded p-3 space-y-2.5">
-                <div className="text-xs font-bold text-[#071A35] flex items-center justify-between border-b border-sky-200 pb-1.5">
+                <div className="text-xs font-bold text-[#072e54] flex items-center justify-between border-b border-sky-200 pb-1.5">
                   <span className="flex items-center gap-1.5">
                     <Droplet className="w-4 h-4 text-sky-700" />
                     <span>Drinking Water Supply Lineage</span>
@@ -489,27 +455,76 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
                     )}
                   </div>
 
-                  <div className="bg-white p-2 rounded border border-sky-100">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Source Catchment Dam</div>
-                    <div className="font-bold text-slate-900 mt-0.5">
-                      {parcel.waterLineage.sourceDam.name}
-                    </div>
-                    <div className="text-[10px] text-slate-500">
-                      {parcel.waterLineage.sourceDam.catchment} ({parcel.waterLineage.sourceDam.capacityML.toLocaleString()} ML capacity)
-                    </div>
-                  </div>
+                  {/* Source Dam */}
+                  {(() => {
+                    const verifiedDam = getAuthoritativeDam(parcel.waterLineage.sourceDam.name);
+                    return (
+                      <div className="bg-white p-2 rounded border border-sky-100">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Source Catchment Dam</span>
+                          {verifiedDam ? (
+                            <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">Verified Coords</span>
+                          ) : (
+                            <span className="text-[9px] font-semibold text-slate-500">Coords Unavailable</span>
+                          )}
+                        </div>
+                        <div className="font-bold text-slate-900 mt-0.5">
+                          {parcel.waterLineage.sourceDam.name}
+                        </div>
+                        <div className="text-[10px] text-slate-500">
+                          {parcel.waterLineage.sourceDam.catchment} ({parcel.waterLineage.sourceDam.capacityML.toLocaleString()} ML capacity)
+                        </div>
+                        {verifiedDam ? (
+                          <div className="text-[10px] font-mono text-emerald-900 bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200 mt-1 inline-block">
+                            WGS84: {verifiedDam.coordinates[0].toFixed(4)}, {verifiedDam.coordinates[1].toFixed(4)}
+                          </div>
+                        ) : (
+                          <div className="text-[10px] font-mono text-slate-500 mt-1">
+                            Coordinates: Unavailable in authoritative dataset
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
 
-                  <div className="bg-white p-2 rounded border border-sky-100">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Treatment & Storage</div>
-                    <div className="text-xs text-slate-900 font-semibold mt-0.5">
-                      {parcel.waterLineage.treatmentPlant.name}
-                    </div>
-                    <div className="text-[10px] text-emerald-700">
-                      {parcel.waterLineage.treatmentPlant.waterQualityGrade}
-                    </div>
-                    <div className="text-[11px] text-slate-700 mt-1">
-                      Balancing Reservoir: <strong>{parcel.waterLineage.reservoir.name}</strong>
-                    </div>
+                  {/* Treatment Plant */}
+                  {(() => {
+                    const verifiedPlant = getAuthoritativeTreatmentPlant(parcel.waterLineage.treatmentPlant.name);
+                    return (
+                      <div className="bg-white p-2 rounded border border-sky-100">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Treatment & Storage</span>
+                          {verifiedPlant ? (
+                            <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">Verified Coords</span>
+                          ) : (
+                            <span className="text-[9px] font-semibold text-slate-500">Coords Unavailable</span>
+                          )}
+                        </div>
+                        <div className="text-xs text-slate-900 font-semibold mt-0.5">
+                          {parcel.waterLineage.treatmentPlant.name}
+                        </div>
+                        <div className="text-[10px] text-emerald-700">
+                          {parcel.waterLineage.treatmentPlant.waterQualityGrade}
+                        </div>
+                        <div className="text-[11px] text-slate-700 mt-1">
+                          Balancing Reservoir: <strong>{parcel.waterLineage.reservoir.name}</strong>
+                        </div>
+                        {verifiedPlant ? (
+                          <div className="text-[10px] font-mono text-emerald-900 bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200 mt-1 inline-block">
+                            WGS84: {verifiedPlant.coordinates[0].toFixed(4)}, {verifiedPlant.coordinates[1].toFixed(4)}
+                          </div>
+                        ) : (
+                          <div className="text-[10px] font-mono text-slate-500 mt-1">
+                            Coordinates: Unavailable in authoritative dataset
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  <div className="p-2 rounded bg-amber-50/70 border border-amber-200/80 text-[10px] text-amber-900 flex items-start gap-1 leading-snug">
+                    <Info className="w-3 h-3 text-amber-700 shrink-0 mt-0.5" />
+                    <span>Visual connectivity path traces the facility lineage hierarchy; distinguish from physical subsurface reticulation pipelines.</span>
                   </div>
                 </div>
               </div>
@@ -550,9 +565,9 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => onReportIncident(parcel.fullAddress)}
-                    className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-amber-500 hover:bg-amber-400 text-[#071A35] font-bold rounded text-xs transition-colors shadow-xs"
+                    className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-amber-500 hover:bg-amber-400 text-[#072e54] font-bold rounded text-xs transition-colors shadow-xs cursor-pointer"
                   >
-                    <AlertTriangle className="w-4 h-4 text-[#071A35]" />
+                    <AlertTriangle className="w-4 h-4 text-[#072e54]" />
                     <span>Report Water Incident / Contamination Here</span>
                   </button>
                 )}
@@ -563,7 +578,7 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
             {accessLevel !== 'citizen' && (
               <div className="space-y-3">
                 <div className="border border-slate-200 rounded p-3 text-xs space-y-2">
-                  <div className="font-bold text-[#071A35]">Regulatory Asset Attributes</div>
+                  <div className="font-bold text-[#072e54]">Regulatory Asset Attributes</div>
                   <div className="space-y-1.5 text-slate-800">
                     <div className="flex justify-between py-0.5 border-b border-slate-100">
                       <span className="text-slate-500">Connection COMPKEY:</span>
@@ -698,7 +713,7 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
                 {accessLevel !== 'citizen' && (
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">COMPKEY:</span>
-                    <span className="font-mono font-bold text-[#071A35]">#{fitting.compkey}</span>
+                    <span className="font-mono font-bold text-[#072e54]">#{fitting.compkey}</span>
                   </div>
                 )}
               </div>

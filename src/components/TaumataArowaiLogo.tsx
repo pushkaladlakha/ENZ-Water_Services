@@ -2,7 +2,7 @@ import React from 'react';
 
 interface TaumataArowaiLogoProps {
   className?: string;
-  theme?: 'dark' | 'light'; // dark = for #071A35 background (white typography), light = for white/light background (#071A35 typography)
+  theme?: 'dark' | 'light'; // dark = for #072e54 background (white typography), light = for white/light background (#072e54 typography)
   compact?: boolean;
 }
 
@@ -12,9 +12,9 @@ export const TaumataArowaiLogo: React.FC<TaumataArowaiLogoProps> = ({
   compact = false,
 }) => {
   const isLight = theme === 'light';
-  const textColor = isLight ? '#071A35' : '#FFFFFF';
-  const lineColor = isLight ? '#071A35' : '#7DD3FC';
-  const subtextColor = isLight ? '#071A35' : '#E2E8F0';
+  const textColor = isLight ? '#072e54' : '#FFFFFF';
+  const lineColor = isLight ? '#072e54' : '#7DD3FC';
+  const subtextColor = isLight ? '#072e54' : '#E2E8F0';
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
@@ -26,8 +26,8 @@ export const TaumataArowaiLogo: React.FC<TaumataArowaiLogoProps> = ({
         className="h-full w-auto shrink-0 select-none"
         aria-label="Taumata Arowai Emblem"
       >
-        {/* Top Triangle (#071A35 on light, or #38BDF8 on navy background for contrast) */}
-        <polygon points="27,2 53,36 1,36" fill={isLight ? '#071A35' : '#38BDF8'} />
+        {/* Top Triangle (#072e54 on light, or #38BDF8 on navy background for contrast) */}
+        <polygon points="27,2 53,36 1,36" fill={isLight ? '#072e54' : '#38BDF8'} />
         {/* Mosaic Lattice (Row 1) */}
         <polygon points="1,37 14,37 7.5,45" fill="#003B5C" />
         <polygon points="14,37 27,37 20.5,45" fill="#005B7F" />

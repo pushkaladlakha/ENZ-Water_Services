@@ -11,7 +11,7 @@ export interface AuthUser {
   lastLogin?: string;
 }
 
-export type BaseMapStyle = 'carto-light' | 'esri-satellite' | 'linz-topo' | 'osm';
+export type BaseMapStyle = 'google-maps' | 'carto-light' | 'esri-satellite' | 'linz-topo' | 'osm';
 
 export interface AucklandSupplyZone {
   zoneId: string;
@@ -261,6 +261,22 @@ export interface PathwayResolvedZone {
   lng: number;
   polygon?: [number, number][];
   dataSource?: string;
+  primaryDam?: {
+    name: string;
+    catchment: string;
+    capacityML: number;
+    distanceKm: number;
+  };
+  treatmentPlant?: {
+    name: string;
+    process: string;
+    waterQualityGrade: string;
+  };
+  reservoir?: {
+    name: string;
+    capacityM3: number;
+    headLevelM: number;
+  };
 }
 
 export interface PathwayResolvedScheme {
@@ -307,6 +323,23 @@ export interface DijkstraRouteResult {
   roadNames?: string[];
 }
 
+export interface SingleConnectivityPath {
+  coordinates: [number, number][]; // [Dam, Treatment Plant, Address]
+  totalDistanceKm: number;
+  damName: string;
+  damCoordinates?: [number, number] | null;
+  damAddress?: string;
+  hasVerifiedDamCoords: boolean;
+  plantName: string;
+  plantCoordinates?: [number, number] | null;
+  plantAddress?: string;
+  hasVerifiedPlantCoords: boolean;
+  address: string;
+  addressCoordinates: [number, number];
+  googleMapsDirectUrl: string;
+  disclaimer: string;
+}
+
 export interface PathwayResolutionResult {
   status: PathwayResolutionStatus;
   queriedAddress: string;
@@ -320,6 +353,24 @@ export interface PathwayResolutionResult {
   };
   supplyZone?: PathwayResolvedZone | null;
   supplyScheme?: PathwayResolvedScheme | null;
+  servingTreatmentPlant?: {
+    name: string;
+    process?: string;
+    waterQualityGrade?: string;
+    coordinates?: [number, number];
+    address?: string;
+    verifiedSource?: string;
+  } | null;
+  sourceDamFacility?: {
+    name: string;
+    catchment?: string;
+    capacityML?: number;
+    distanceKm?: number;
+    coordinates?: [number, number];
+    address?: string;
+    verifiedSource?: string;
+  } | null;
+  singleConnectivityPath?: SingleConnectivityPath | null;
   bufferTier?: {
     tierName: string;
     distanceMeters: number;

@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 76" fill="none" className="h-full w-auto">
   <!-- Taumata Arowai Emblem -->
   <g transform="translate(4, 4)">
-    <!-- Top Navy Triangle (#071A35) -->
-    <polygon points="26,2 52,36 0,36" fill="#071A35" />
+    <!-- Top Navy Triangle (#072e54) -->
+    <polygon points="26,2 52,36 0,36" fill="#072e54" />
     
     <!-- Bottom Mosaic Lattice of Triangles (Row 1) -->
     <polygon points="0,37 13,37 6.5,45" fill="#003B5C" />
@@ -32,15 +32,15 @@
   <!-- Typography -->
   <g transform="translate(68, 8)">
     <!-- Water Services Authority -->
-    <text x="0" y="24" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16.5" font-weight="500" fill="#071A35" letter-spacing="-0.2">
+    <text x="0" y="24" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16.5" font-weight="500" fill="#072e54" letter-spacing="-0.2">
       Water Services Authority
     </text>
     
     <!-- Dividing Rule -->
-    <line x1="0" y1="31" x2="250" y2="31" stroke="#071A35" stroke-width="1.2" opacity="0.85" />
+    <line x1="0" y1="31" x2="250" y2="31" stroke="#072e54" stroke-width="1.2" opacity="0.85" />
 
     <!-- Taumata Arowai -->
-    <text x="0" y="52" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="700" fill="#071A35" letter-spacing="-0.3">
+    <text x="0" y="52" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="700" fill="#072e54" letter-spacing="-0.3">
       Taumata Arowai
     </text>
   </g>

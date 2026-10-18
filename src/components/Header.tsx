@@ -10,6 +10,7 @@ import {
   Building2,
   X,
   AlertTriangle,
+  BookOpen,
 } from 'lucide-react';
 import { AuthUser, ParcelFeature } from '../types/gis';
 import { VERIFIED_PARCELS } from '../data/nzData';
@@ -42,25 +43,34 @@ export const Header: React.FC<HeaderProps> = ({
   isLocating,
   onOpenComplaintModal,
   onOpenDataRequestModal,
+  onOpenDocumentation,
   onOpenProfileDashboard,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [apiParcels, setApiParcels] = useState<ParcelFeature[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Debounced Live Backend Address Search
+  // Debounced Live Backend & Geocoded Address Search
   useEffect(() => {
     const q = searchQuery.trim();
     if (!q) {
       setApiParcels([]);
+      setIsSearching(false);
       return;
     }
+    setIsSearching(true);
     const timer = setTimeout(async () => {
-      const results = await searchAddressesApi(q, 8);
-      if (results && results.length > 0) {
-        setApiParcels(results);
+      try {
+        const results = await searchAddressesApi(q, 8);
+        setApiParcels(results || []);
+      } catch (err) {
+        console.error('Search error:', err);
+        setApiParcels([]);
+      } finally {
+        setIsSearching(false);
       }
-    }, 180);
+    }, 280);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
@@ -74,8 +84,10 @@ export const Header: React.FC<HeaderProps> = ({
         p.lotNumber.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-  // Active parcels: use backend API results if present, otherwise local
-  const filteredParcels = apiParcels.length > 0 ? apiParcels : localFilteredParcels;
+  // Active parcels: prefer geocoded/backend results, fallback to local
+  const filteredParcels = apiParcels.length > 0 
+    ? apiParcels 
+    : (searchQuery.trim().length < 4 ? localFilteredParcels : []);
 
   // Filter official Auckland Supply Zones
   const matchingZones = searchQuery.trim() === ''
@@ -101,9 +113,10 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const isStaff = currentUser?.role === 'admin' || currentUser?.role === 'official';
+  const isAdmin = currentUser?.role === 'admin';
 
   return (
-    <header className="bg-[#071A35] text-white border-b border-[#0C2548] z-30 shadow-md">
+    <header className="bg-[#072e54] text-white border-b border-[#052340] z-30 shadow-md">
       <div className="h-16 px-4 flex items-center justify-between gap-3 lg:gap-6">
         
         {/* Left: Official Taumata Arowai Branding */}
@@ -121,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex-1 max-w-xl relative">
           <div className="relative flex items-center">
             <div className="absolute left-3 text-slate-400 pointer-events-none">
-              <Search className="w-4 h-4 text-slate-400" />
+              <Search className="w-4 h-4 text-slate-300" />
             </div>
             <input
               type="text"
@@ -131,8 +144,34 @@ export const Header: React.FC<HeaderProps> = ({
                 setShowSearchResults(true);
               }}
               onFocus={() => setShowSearchResults(true)}
-              placeholder="Search Auckland address, street, or supply zone..."
-              className="w-full bg-[#040F20] text-white placeholder-slate-400 text-xs sm:text-sm pl-9 pr-24 py-2 rounded border border-slate-700/80 focus:outline-none focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition-all shadow-inner"
+              onKeyDown={async (e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  if (filteredParcels.length > 0) {
+                    onSearchSelectParcel(filteredParcels[0]);
+                    setSearchQuery(filteredParcels[0].fullAddress);
+                    setShowSearchResults(false);
+                  } else if (matchingZones.length > 0) {
+                    onSearchSelectZone(matchingZones[0]);
+                    setSearchQuery(matchingZones[0].zoneName);
+                    setShowSearchResults(false);
+                  } else if (searchQuery.trim().length >= 3) {
+                    setIsSearching(true);
+                    try {
+                      const direct = await searchAddressesApi(searchQuery.trim(), 1);
+                      if (direct.length > 0) {
+                        onSearchSelectParcel(direct[0]);
+                        setSearchQuery(direct[0].fullAddress);
+                        setShowSearchResults(false);
+                      }
+                    } finally {
+                      setIsSearching(false);
+                    }
+                  }
+                }
+              }}
+              placeholder="Search any Auckland address (e.g. 70 Lambeth Road, Sandringham)..."
+              className="w-full bg-[#052340] text-white placeholder-slate-300 text-xs sm:text-sm pl-9 pr-24 py-2 rounded border border-white/20 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 transition-all shadow-inner"
             />
             {/* Geolocation Button */}
             <button
@@ -140,9 +179,9 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onLocateMe}
               disabled={isLocating}
               title="Locate via GPS"
-              className="absolute right-1.5 flex items-center gap-1 px-2 py-1 text-xs font-medium rounded text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+              className="absolute right-1.5 flex items-center gap-1 px-2 py-1 text-xs font-medium rounded text-slate-200 hover:text-white hover:bg-white/10 transition-colors"
             >
-              <Navigation className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin text-sky-400' : 'text-slate-300'}`} />
+              <Navigation className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin text-teal-300' : 'text-slate-200'}`} />
               <span className="hidden sm:inline">{isLocating ? 'Locating...' : 'Locate'}</span>
             </button>
           </div>
@@ -161,9 +200,17 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               </div>
 
-              {filteredParcels.length === 0 && matchingZones.length === 0 && (
+              {isSearching && (
+                <div className="px-3 py-2 bg-sky-50 text-[11px] text-sky-800 flex items-center gap-2 border-b border-sky-100 animate-pulse">
+                  <div className="w-3 h-3 border-2 border-sky-600 border-t-transparent rounded-full animate-spin" />
+                  <span>Searching Auckland address register & geocoder...</span>
+                </div>
+              )}
+
+              {!isSearching && filteredParcels.length === 0 && matchingZones.length === 0 && (
                 <div className="p-4 text-center text-xs text-slate-500">
-                  No matching registered addresses or supply zones found for "{searchQuery}".
+                  <div>No direct matches found for "{searchQuery}".</div>
+                  <div className="text-[10px] text-slate-400 mt-1">Press <strong>Enter</strong> to search wider Auckland geocoding register.</div>
                 </div>
               )}
 
@@ -178,7 +225,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }}
                   className="w-full text-left px-3 py-2 hover:bg-slate-50 border-b border-slate-100 transition-colors flex items-start gap-2.5"
                 >
-                  <MapPin className="w-4 h-4 text-[#071A35] shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-[#072e54] shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-semibold text-slate-900 truncate">
                       {parcel.fullAddress}
@@ -207,7 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <Building2 className="w-4 h-4 text-sky-700 shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold text-[#071A35] flex items-center justify-between">
+                    <div className="text-xs font-semibold text-[#072e54] flex items-center justify-between">
                       <span className="truncate">{zone.zoneName}</span>
                       <span className="text-[10px] font-mono text-slate-500">{zone.zoneId}</span>
                     </div>
@@ -231,21 +278,34 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
             onClick={onOpenComplaintModal}
             title="Report Water Contamination or Network Incident"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-amber-500 hover:bg-amber-400 text-[#071A35] transition-colors shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-amber-500 hover:bg-amber-400 text-[#072e54] transition-colors shadow-xs cursor-pointer"
           >
-            <AlertTriangle className="w-3.5 h-3.5 text-[#071A35]" />
-            <span className="hidden sm:inline">Report Incident</span>
+            <AlertTriangle className="w-3.5 h-3.5 text-[#072e54]" />
+            <span className="hidden sm:inline">Report an Incident</span>
             <span className="sm:hidden">Report</span>
           </button>
+
+          {/* Admin Technical Documentation Access */}
+          {isAdmin && onOpenDocumentation && (
+            <button
+              type="button"
+              onClick={onOpenDocumentation}
+              title="Open Technical Documentation & Architecture Specifications (Admin Access)"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors shadow-xs cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-cyan-300" />
+              <span className="hidden sm:inline">Documentation</span>
+            </button>
+          )}
 
           {isStaff && (
             <button
               type="button"
               onClick={onOpenDataRequestModal}
               title="Upload custom GIS datasets"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-white text-[#071A35] hover:bg-slate-100 transition-colors shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-white text-[#072e54] hover:bg-slate-100 transition-colors shadow-xs cursor-pointer"
             >
-              <Database className="w-3.5 h-3.5 text-[#071A35]" />
+              <Database className="w-3.5 h-3.5 text-[#072e54]" />
               <span className="hidden sm:inline">Upload Data</span>
             </button>
           )}
@@ -257,10 +317,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={onOpenProfileDashboard}
-                  className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-2 py-1.5 text-left transition-colors hover:bg-white/10"
+                  className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-2 py-1.5 text-left transition-colors hover:bg-white/10 cursor-pointer"
                   title="Open profile dashboard"
                 >
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-cyan-600 text-[10px] font-bold text-white">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-600 text-[10px] font-bold text-white">
                     {currentUser.name.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                   <div className="hidden sm:block leading-tight">
@@ -272,7 +332,7 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={onLogout}
                   title="Sign Out of Session"
-                  className="p-1.5 rounded bg-white/10 hover:bg-rose-900/50 text-slate-200 hover:text-white border border-white/20 transition-colors"
+                  className="p-1.5 rounded bg-white/10 hover:bg-rose-900/50 text-slate-200 hover:text-white border border-white/20 transition-colors cursor-pointer"
                   aria-label="Sign Out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -282,11 +342,11 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={onOpenLogin}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-[#009E91] hover:bg-[#00877C] text-white border border-[#009E91] transition-colors shadow-xs"
-                title="Open AquaConnect Authentication Portal"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-[#008080] hover:bg-[#006666] text-white border border-[#008080] transition-colors shadow-xs cursor-pointer"
+                title="Sign in to access official account tools"
               >
                 <LogIn className="w-3.5 h-3.5 text-white" />
-                <span>Portal / Sign In</span>
+                <span>Sign In</span>
               </button>
             )}
           </div>
