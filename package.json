@@ -1,15 +1,22 @@
 {
-  "name": "react-example",
+  "name": "taumata-arowai-water-gis",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build",
-    "start": "tsx server.ts",
-    "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "dev": "tsx backend/server.ts",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "build": "npm run build --workspace=frontend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "start": "tsx backend/server.ts",
+    "preview": "npm run preview --workspace=frontend",
+    "clean": "rm -rf frontend/dist dist server.js",
+    "lint": "tsc --noEmit -p frontend/tsconfig.json && tsc --noEmit -p backend/tsconfig.json"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

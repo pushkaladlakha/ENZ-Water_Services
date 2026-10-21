@@ -1,0 +1,2410 @@
+[
+  {
+    "zoneId": "AKL-SZ-01",
+    "zoneName": "Anzac Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 4562,
+    "popLowDe": 1424,
+    "popModDe": 3881,
+    "popHighDe": 284,
+    "popMaori": 758,
+    "urbanRural": "Urban",
+    "lat": -37.208073,
+    "lng": 174.888952,
+    "radiusKm": 2.1,
+    "polygon": [
+      [
+        -37.1938,
+        174.8745
+      ],
+      [
+        -37.1938,
+        174.9065
+      ],
+      [
+        -37.2212,
+        174.9065
+      ],
+      [
+        -37.2212,
+        174.8745
+      ]
+    ],
+    "shapeLength": 16126.2,
+    "shapeArea": 5773246.12,
+    "primaryDam": {
+      "name": "Hunua Ranges (Mangatangi / Mangatawhiri)",
+      "catchment": "Hunua Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 34.0
+    },
+    "treatmentPlant": {
+      "name": "Ardmore Water Treatment Plant",
+      "process": "Clarification, Dual Media Sand Filtration & Chlorination",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Pukekohe High-Level Water Reservoir",
+      "capacityM3": 28000,
+      "headLevelM": 105
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-02",
+    "zoneName": "Auckland Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 280912,
+    "popLowDe": 88022,
+    "popModDe": 112929,
+    "popHighDe": 68514,
+    "popMaori": 24669,
+    "urbanRural": "Urban",
+    "lat": -36.88537,
+    "lng": 174.781511,
+    "radiusKm": 6.5,
+    "polygon": [
+      [
+        -36.835,
+        174.6594
+      ],
+      [
+        -36.835,
+        174.8921
+      ],
+      [
+        -36.9389,
+        174.8921
+      ],
+      [
+        -36.9389,
+        174.6594
+      ]
+    ],
+    "shapeLength": 241109.45,
+    "shapeArea": 151060001.57,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Auckland Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-03",
+    "zoneName": "Auckland Airport Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 984,
+    "popLowDe": 0,
+    "popModDe": 0,
+    "popHighDe": 1281,
+    "popMaori": 412,
+    "urbanRural": "Urban",
+    "lat": -36.988606,
+    "lng": 174.773318,
+    "radiusKm": 3.7,
+    "polygon": [
+      [
+        -36.9591,
+        174.7295
+      ],
+      [
+        -36.9591,
+        174.8096
+      ],
+      [
+        -37.0189,
+        174.8096
+      ],
+      [
+        -37.0189,
+        174.7295
+      ]
+    ],
+    "shapeLength": 48488.58,
+    "shapeArea": 35836435.73,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Auckland Airport Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-04",
+    "zoneName": "Bombay Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 609,
+    "popLowDe": 475,
+    "popModDe": 133,
+    "popHighDe": 0,
+    "popMaori": 61,
+    "urbanRural": "Rural",
+    "lat": -37.181965,
+    "lng": 174.997656,
+    "radiusKm": 2.1,
+    "polygon": [
+      [
+        -37.1705,
+        174.9809
+      ],
+      [
+        -37.1705,
+        175.0139
+      ],
+      [
+        -37.1922,
+        175.0139
+      ],
+      [
+        -37.1922,
+        174.9809
+      ]
+    ],
+    "shapeLength": 15706.59,
+    "shapeArea": 5989468.78,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Bombay Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-05",
+    "zoneName": "Buckland Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 997,
+    "popLowDe": 105,
+    "popModDe": 500,
+    "popHighDe": 0,
+    "popMaori": 86,
+    "urbanRural": "Rural",
+    "lat": -37.226741,
+    "lng": 174.92475,
+    "radiusKm": 1.4,
+    "polygon": [
+      [
+        -37.2213,
+        174.9208
+      ],
+      [
+        -37.2213,
+        174.929
+      ],
+      [
+        -37.2313,
+        174.929
+      ],
+      [
+        -37.2313,
+        174.9208
+      ]
+    ],
+    "shapeLength": 4609.74,
+    "shapeArea": 676317.46,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Buckland Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-06",
+    "zoneName": "Central Business District Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 19309,
+    "popLowDe": 3299,
+    "popModDe": 13746,
+    "popHighDe": 12816,
+    "popMaori": 1355,
+    "urbanRural": "Urban",
+    "lat": -36.848323,
+    "lng": 174.767689,
+    "radiusKm": 2.3,
+    "polygon": [
+      [
+        -36.8364,
+        174.7481
+      ],
+      [
+        -36.8364,
+        174.7897
+      ],
+      [
+        -36.8618,
+        174.7897
+      ],
+      [
+        -36.8618,
+        174.7481
+      ]
+    ],
+    "shapeLength": 35293.27,
+    "shapeArea": 7751668.4,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Central Business District Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-07",
+    "zoneName": "Clarks Beach/Waiau Beach Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 1434,
+    "popLowDe": 429,
+    "popModDe": 1007,
+    "popHighDe": 0,
+    "popMaori": 221,
+    "urbanRural": "Rural",
+    "lat": -37.138425,
+    "lng": 174.703044,
+    "radiusKm": 1.7,
+    "polygon": [
+      [
+        -37.1337,
+        174.6879
+      ],
+      [
+        -37.1337,
+        174.7178
+      ],
+      [
+        -37.1482,
+        174.7178
+      ],
+      [
+        -37.1482,
+        174.6879
+      ]
+    ],
+    "shapeLength": 12232.22,
+    "shapeArea": 2332765.75,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Clarks Beach/Waiau Beach Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-08",
+    "zoneName": "East Tamaki/Botany Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 50129,
+    "popLowDe": 17447,
+    "popModDe": 27681,
+    "popHighDe": 9132,
+    "popMaori": 3988,
+    "urbanRural": "Urban",
+    "lat": -36.958145,
+    "lng": 174.904292,
+    "radiusKm": 4.0,
+    "polygon": [
+      [
+        -36.9179,
+        174.8614
+      ],
+      [
+        -36.9179,
+        174.9381
+      ],
+      [
+        -37.0107,
+        174.9381
+      ],
+      [
+        -37.0107,
+        174.8614
+      ]
+    ],
+    "shapeLength": 63417.5,
+    "shapeArea": 45502000.38,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "East Tamaki/Botany Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-09",
+    "zoneName": "Glen Eden/New Lynn Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 61464,
+    "popLowDe": 13109,
+    "popModDe": 26720,
+    "popHighDe": 19127,
+    "popMaori": 6817,
+    "urbanRural": "Urban",
+    "lat": -36.925296,
+    "lng": 174.654644,
+    "radiusKm": 4.0,
+    "polygon": [
+      [
+        -36.8968,
+        174.5983
+      ],
+      [
+        -36.8968,
+        174.693
+      ],
+      [
+        -36.966,
+        174.693
+      ],
+      [
+        -36.966,
+        174.5983
+      ]
+    ],
+    "shapeLength": 65621.89,
+    "shapeArea": 43577367.09,
+    "primaryDam": {
+      "name": "Waitakere Dam & Lower Nihotupu Dam",
+      "catchment": "Waitakere Ranges Native Catchment",
+      "capacityML": 29800,
+      "distanceKm": 14.6
+    },
+    "treatmentPlant": {
+      "name": "Huia Water Treatment Plant",
+      "process": "Dissolved Air Flotation (DAF), Rapid Gravity Sand Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Titirangi High-Level Water Reservoir",
+      "capacityM3": 45000,
+      "headLevelM": 132
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-10",
+    "zoneName": "Glenbrook Beach Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 428,
+    "popLowDe": 0,
+    "popModDe": 140,
+    "popHighDe": 276,
+    "popMaori": 68,
+    "urbanRural": "Rural",
+    "lat": -37.1605,
+    "lng": 174.71151,
+    "radiusKm": 1.4,
+    "polygon": [
+      [
+        -37.156,
+        174.7042
+      ],
+      [
+        -37.156,
+        174.7187
+      ],
+      [
+        -37.1661,
+        174.7187
+      ],
+      [
+        -37.1661,
+        174.7042
+      ]
+    ],
+    "shapeLength": 6095.71,
+    "shapeArea": 640086.82,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Glenbrook Beach Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-11",
+    "zoneName": "HBC/Waiwera Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 35272,
+    "popLowDe": 28289,
+    "popModDe": 23197,
+    "popHighDe": 2492,
+    "popMaori": 4280,
+    "urbanRural": "Urban",
+    "lat": -36.61101,
+    "lng": 174.719283,
+    "radiusKm": 4.4,
+    "polygon": [
+      [
+        -36.5417,
+        174.6448
+      ],
+      [
+        -36.5417,
+        174.8095
+      ],
+      [
+        -36.6479,
+        174.8095
+      ],
+      [
+        -36.6479,
+        174.6448
+      ]
+    ],
+    "shapeLength": 96738.76,
+    "shapeArea": 57752605.22,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "HBC/Waiwera Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-12",
+    "zoneName": "Helensville/Parakai Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 4579,
+    "popLowDe": 49,
+    "popModDe": 2375,
+    "popHighDe": 1488,
+    "popMaori": 836,
+    "urbanRural": "Urban",
+    "lat": -36.67235,
+    "lng": 174.447421,
+    "radiusKm": 2.1,
+    "polygon": [
+      [
+        -36.65,
+        174.4201
+      ],
+      [
+        -36.65,
+        174.4685
+      ],
+      [
+        -36.6884,
+        174.4685
+      ],
+      [
+        -36.6884,
+        174.4201
+      ]
+    ],
+    "shapeLength": 27786.62,
+    "shapeArea": 5558952.87,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Helensville/Parakai Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-13",
+    "zoneName": "Henderson Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 135657,
+    "popLowDe": 14258,
+    "popModDe": 53829,
+    "popHighDe": 64941,
+    "popMaori": 22145,
+    "urbanRural": "Urban",
+    "lat": -36.862015,
+    "lng": 174.629846,
+    "radiusKm": 5.1,
+    "polygon": [
+      [
+        -36.7978,
+        174.5718
+      ],
+      [
+        -36.7978,
+        174.6731
+      ],
+      [
+        -36.9105,
+        174.6731
+      ],
+      [
+        -36.9105,
+        174.5718
+      ]
+    ],
+    "shapeLength": 69428.62,
+    "shapeArea": 84567882.41,
+    "primaryDam": {
+      "name": "Waitakere Dam & Swanson Catchment",
+      "catchment": "Waitakere Ranges Native Catchment",
+      "capacityML": 24000,
+      "distanceKm": 12.0
+    },
+    "treatmentPlant": {
+      "name": "Waitakere Water Treatment Plant",
+      "process": "Direct Filtration & UV Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Henderson Valley Service Reservoir",
+      "capacityM3": 38000,
+      "headLevelM": 120
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-14",
+    "zoneName": "High Head Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 7189,
+    "popLowDe": 4695,
+    "popModDe": 3195,
+    "popHighDe": 79,
+    "popMaori": 661,
+    "urbanRural": "Urban",
+    "lat": -36.98775,
+    "lng": 174.927778,
+    "radiusKm": 2.9,
+    "polygon": [
+      [
+        -36.955,
+        174.8967
+      ],
+      [
+        -36.955,
+        174.9513
+      ],
+      [
+        -37.0107,
+        174.9513
+      ],
+      [
+        -37.0107,
+        174.8967
+      ]
+    ],
+    "shapeLength": 30993.04,
+    "shapeArea": 18432572.85,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "High Head Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-15",
+    "zoneName": "Hillsborough Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 47845,
+    "popLowDe": 5801,
+    "popModDe": 23177,
+    "popHighDe": 16577,
+    "popMaori": 2860,
+    "urbanRural": "Urban",
+    "lat": -36.913389,
+    "lng": 174.741014,
+    "radiusKm": 3.2,
+    "polygon": [
+      [
+        -36.8939,
+        174.7105
+      ],
+      [
+        -36.8939,
+        174.7761
+      ],
+      [
+        -36.9364,
+        174.7761
+      ],
+      [
+        -36.9364,
+        174.7105
+      ]
+    ],
+    "shapeLength": 36105.02,
+    "shapeArea": 22998194.88,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Hillsborough Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-16",
+    "zoneName": "Hilltop/Douglas Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 1255,
+    "popLowDe": 246,
+    "popModDe": 764,
+    "popHighDe": 0,
+    "popMaori": 186,
+    "urbanRural": "Urban",
+    "lat": -37.228263,
+    "lng": 174.885285,
+    "radiusKm": 2.8,
+    "polygon": [
+      [
+        -37.2098,
+        174.8539
+      ],
+      [
+        -37.2098,
+        174.9142
+      ],
+      [
+        -37.2465,
+        174.9142
+      ],
+      [
+        -37.2465,
+        174.8539
+      ]
+    ],
+    "shapeLength": 27071.6,
+    "shapeArea": 16211274.32,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Hilltop/Douglas Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-17",
+    "zoneName": "Howick/Pakuranga Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 99873,
+    "popLowDe": 38737,
+    "popModDe": 48138,
+    "popHighDe": 7053,
+    "popMaori": 5820,
+    "urbanRural": "Urban",
+    "lat": -36.902802,
+    "lng": 174.909866,
+    "radiusKm": 4.3,
+    "polygon": [
+      [
+        -36.8464,
+        174.8583
+      ],
+      [
+        -36.8464,
+        174.9551
+      ],
+      [
+        -36.9355,
+        174.9551
+      ],
+      [
+        -36.9355,
+        174.8583
+      ]
+    ],
+    "shapeLength": 69683.49,
+    "shapeArea": 52460860.71,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Howick/Pakuranga Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-18",
+    "zoneName": "Huia Village Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 597,
+    "popLowDe": 0,
+    "popModDe": 582,
+    "popHighDe": 0,
+    "popMaori": 117,
+    "urbanRural": "Rural",
+    "lat": -37.001777,
+    "lng": 174.570278,
+    "radiusKm": 1.6,
+    "polygon": [
+      [
+        -36.99,
+        174.5596
+      ],
+      [
+        -36.99,
+        174.5816
+      ],
+      [
+        -37.0097,
+        174.5816
+      ],
+      [
+        -37.0097,
+        174.5596
+      ]
+    ],
+    "shapeLength": 12867.09,
+    "shapeArea": 1587912.1,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Huia Village Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-19",
+    "zoneName": "Kitchener Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 16558,
+    "popLowDe": 4448,
+    "popModDe": 5727,
+    "popHighDe": 6739,
+    "popMaori": 3768,
+    "urbanRural": "Urban",
+    "lat": -37.195252,
+    "lng": 174.909546,
+    "radiusKm": 3.4,
+    "polygon": [
+      [
+        -37.1549,
+        174.8792
+      ],
+      [
+        -37.1549,
+        174.9415
+      ],
+      [
+        -37.2212,
+        174.9415
+      ],
+      [
+        -37.2212,
+        174.8792
+      ]
+    ],
+    "shapeLength": 41026.53,
+    "shapeArea": 28682804.45,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Kitchener Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-20",
+    "zoneName": "Laingholm Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 2344,
+    "popLowDe": 1451,
+    "popModDe": 1053,
+    "popHighDe": 0,
+    "popMaori": 252,
+    "urbanRural": "Urban",
+    "lat": -36.968591,
+    "lng": 174.623215,
+    "radiusKm": 2.1,
+    "polygon": [
+      [
+        -36.9477,
+        174.6057
+      ],
+      [
+        -36.9477,
+        174.6453
+      ],
+      [
+        -36.9896,
+        174.6453
+      ],
+      [
+        -36.9896,
+        174.6057
+      ]
+    ],
+    "shapeLength": 25707.77,
+    "shapeArea": 5824093.97,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Laingholm Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-21",
+    "zoneName": "Mangere Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 82895,
+    "popLowDe": 1104,
+    "popModDe": 10734,
+    "popHighDe": 69721,
+    "popMaori": 13059,
+    "urbanRural": "Urban",
+    "lat": -36.967941,
+    "lng": 174.811856,
+    "radiusKm": 4.2,
+    "polygon": [
+      [
+        -36.935,
+        174.755
+      ],
+      [
+        -36.935,
+        174.8604
+      ],
+      [
+        -37.006,
+        174.8604
+      ],
+      [
+        -37.006,
+        174.755
+      ]
+    ],
+    "shapeLength": 72463.92,
+    "shapeArea": 50036142.46,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Mangere Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-22",
+    "zoneName": "Manurewa Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 77196,
+    "popLowDe": 6300,
+    "popModDe": 11486,
+    "popHighDe": 63539,
+    "popMaori": 22189,
+    "urbanRural": "Urban",
+    "lat": -37.027225,
+    "lng": 174.889857,
+    "radiusKm": 3.7,
+    "polygon": [
+      [
+        -36.9999,
+        174.8543
+      ],
+      [
+        -36.9999,
+        174.9401
+      ],
+      [
+        -37.059,
+        174.9401
+      ],
+      [
+        -37.059,
+        174.8543
+      ]
+    ],
+    "shapeLength": 52510.91,
+    "shapeArea": 36872003.72,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Manurewa Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-23",
+    "zoneName": "Maungawhau Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 50413,
+    "popLowDe": 13474,
+    "popModDe": 30663,
+    "popHighDe": 1969,
+    "popMaori": 2659,
+    "urbanRural": "Urban",
+    "lat": -36.887096,
+    "lng": 174.772082,
+    "radiusKm": 3.2,
+    "polygon": [
+      [
+        -36.86,
+        174.7479
+      ],
+      [
+        -36.86,
+        174.8031
+      ],
+      [
+        -36.9101,
+        174.8031
+      ],
+      [
+        -36.9101,
+        174.7479
+      ]
+    ],
+    "shapeLength": 37609.3,
+    "shapeArea": 22937323.83,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Maungawhau Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-24",
+    "zoneName": "Montana Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 4315,
+    "popLowDe": 3564,
+    "popModDe": 624,
+    "popHighDe": 0,
+    "popMaori": 329,
+    "urbanRural": "Urban",
+    "lat": -36.935359,
+    "lng": 174.626867,
+    "radiusKm": 2.7,
+    "polygon": [
+      [
+        -36.9229,
+        174.5978
+      ],
+      [
+        -36.9229,
+        174.6653
+      ],
+      [
+        -36.9478,
+        174.6653
+      ],
+      [
+        -36.9478,
+        174.5978
+      ]
+    ],
+    "shapeLength": 31096.66,
+    "shapeArea": 14639428.23,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Montana Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-25",
+    "zoneName": "Mt Hobson Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 31006,
+    "popLowDe": 17074,
+    "popModDe": 9250,
+    "popHighDe": 777,
+    "popMaori": 1326,
+    "urbanRural": "Urban",
+    "lat": -36.878649,
+    "lng": 174.809691,
+    "radiusKm": 2.7,
+    "polygon": [
+      [
+        -36.865,
+        174.7772
+      ],
+      [
+        -36.865,
+        174.8457
+      ],
+      [
+        -36.8945,
+        174.8457
+      ],
+      [
+        -36.8945,
+        174.7772
+      ]
+    ],
+    "shapeLength": 34374.5,
+    "shapeArea": 15105050.46,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Mt Hobson Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-26",
+    "zoneName": "Muriwai Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 563,
+    "popLowDe": 906,
+    "popModDe": 333,
+    "popHighDe": 0,
+    "popMaori": 140,
+    "urbanRural": "Urban",
+    "lat": -36.828847,
+    "lng": 174.434183,
+    "radiusKm": 1.6,
+    "polygon": [
+      [
+        -36.8182,
+        174.4275
+      ],
+      [
+        -36.8182,
+        174.4438
+      ],
+      [
+        -36.8393,
+        174.4438
+      ],
+      [
+        -36.8393,
+        174.4275
+      ]
+    ],
+    "shapeLength": 8662.27,
+    "shapeArea": 1846269.74,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Muriwai Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-27",
+    "zoneName": "North Shore South Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 158345,
+    "popLowDe": 77823,
+    "popModDe": 68150,
+    "popHighDe": 6740,
+    "popMaori": 10635,
+    "urbanRural": "Urban",
+    "lat": -36.776753,
+    "lng": 174.744529,
+    "radiusKm": 5.4,
+    "polygon": [
+      [
+        -36.6716,
+        174.6786
+      ],
+      [
+        -36.6716,
+        174.8141
+      ],
+      [
+        -36.8332,
+        174.8141
+      ],
+      [
+        -36.8332,
+        174.6786
+      ]
+    ],
+    "shapeLength": 129941.39,
+    "shapeArea": 94036439.64,
+    "primaryDam": {
+      "name": "Waikato River Pipeline & Hunua Dams",
+      "catchment": "Waikato River & Hunua Ranges",
+      "capacityML": 75000,
+      "distanceKm": 48.0
+    },
+    "treatmentPlant": {
+      "name": "Waikato Water Treatment Plant (Tuakau) & Ardmore WTP",
+      "process": "Advanced Membrane Ultrafiltration & Granular Activated Carbon",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Takapuna High-Level Reservoir (Pupuke)",
+      "capacityM3": 50000,
+      "headLevelM": 110
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-28",
+    "zoneName": "North Shore West Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 82199,
+    "popLowDe": 29389,
+    "popModDe": 51366,
+    "popHighDe": 3673,
+    "popMaori": 4784,
+    "urbanRural": "Urban",
+    "lat": -36.752836,
+    "lng": 174.709734,
+    "radiusKm": 4.8,
+    "polygon": [
+      [
+        -36.6887,
+        174.6623
+      ],
+      [
+        -36.6887,
+        174.7536
+      ],
+      [
+        -36.8039,
+        174.7536
+      ],
+      [
+        -36.8039,
+        174.6623
+      ]
+    ],
+    "shapeLength": 83656.33,
+    "shapeArea": 70799571.77,
+    "primaryDam": {
+      "name": "Waikato River & Hunua Regional System",
+      "catchment": "Waikato Regional Catchment",
+      "capacityML": 68000,
+      "distanceKm": 52.0
+    },
+    "treatmentPlant": {
+      "name": "Waikato Water Treatment Plant (Tuakau)",
+      "process": "Membrane Ultrafiltration & Ozone Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Albany Regional Balancing Reservoir",
+      "capacityM3": 60000,
+      "headLevelM": 145
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-29",
+    "zoneName": "Onehunga Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 25507,
+    "popLowDe": 3753,
+    "popModDe": 11777,
+    "popHighDe": 8324,
+    "popMaori": 2592,
+    "urbanRural": "Urban",
+    "lat": -36.919478,
+    "lng": 174.789736,
+    "radiusKm": 2.6,
+    "polygon": [
+      [
+        -36.9034,
+        174.7597
+      ],
+      [
+        -36.9034,
+        174.8141
+      ],
+      [
+        -36.9333,
+        174.8141
+      ],
+      [
+        -36.9333,
+        174.7597
+      ]
+    ],
+    "shapeLength": 22515.51,
+    "shapeArea": 13139037.64,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Onehunga Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-30",
+    "zoneName": "Oratia Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 1028,
+    "popLowDe": 773,
+    "popModDe": 400,
+    "popHighDe": 0,
+    "popMaori": 131,
+    "urbanRural": "Urban",
+    "lat": -36.918958,
+    "lng": 174.601087,
+    "radiusKm": 2.2,
+    "polygon": [
+      [
+        -36.8992,
+        174.5841
+      ],
+      [
+        -36.8992,
+        174.618
+      ],
+      [
+        -36.9404,
+        174.618
+      ],
+      [
+        -36.9404,
+        174.5841
+      ]
+    ],
+    "shapeLength": 20652.9,
+    "shapeArea": 7660438.36,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Oratia Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-31",
+    "zoneName": "Otahuhu Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 14862,
+    "popLowDe": 0,
+    "popModDe": 345,
+    "popHighDe": 14555,
+    "popMaori": 2306,
+    "urbanRural": "Urban",
+    "lat": -36.944111,
+    "lng": 174.845488,
+    "radiusKm": 2.2,
+    "polygon": [
+      [
+        -36.9305,
+        174.8321
+      ],
+      [
+        -36.9305,
+        174.8664
+      ],
+      [
+        -36.9602,
+        174.8664
+      ],
+      [
+        -36.9602,
+        174.8321
+      ]
+    ],
+    "shapeLength": 21824.29,
+    "shapeArea": 7488537.18,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Otahuhu Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-32",
+    "zoneName": "Otara/Papatoetoe/Manukau Central Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 63800,
+    "popLowDe": 0,
+    "popModDe": 12755,
+    "popHighDe": 51394,
+    "popMaori": 11054,
+    "urbanRural": "Urban",
+    "lat": -36.985299,
+    "lng": 174.86575,
+    "radiusKm": 4.2,
+    "polygon": [
+      [
+        -36.9461,
+        174.8233
+      ],
+      [
+        -36.9461,
+        174.8984
+      ],
+      [
+        -37.0295,
+        174.8984
+      ],
+      [
+        -37.0295,
+        174.8233
+      ]
+    ],
+    "shapeLength": 73223.97,
+    "shapeArea": 49413607.78,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Otara/Papatoetoe/Manukau Central Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-33",
+    "zoneName": "Papakura Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 32421,
+    "popLowDe": 5618,
+    "popModDe": 9649,
+    "popHighDe": 22886,
+    "popMaori": 11407,
+    "urbanRural": "Urban",
+    "lat": -37.071648,
+    "lng": 174.946971,
+    "radiusKm": 3.3,
+    "polygon": [
+      [
+        -37.0473,
+        174.91
+      ],
+      [
+        -37.0473,
+        174.9779
+      ],
+      [
+        -37.1099,
+        174.9779
+      ],
+      [
+        -37.1099,
+        174.91
+      ]
+    ],
+    "shapeLength": 55376.09,
+    "shapeArea": 25934499.13,
+    "primaryDam": {
+      "name": "Hays Creek Dam & Cosseys Dam",
+      "catchment": "Hays Creek & Hunua Catchment",
+      "capacityML": 32000,
+      "distanceKm": 16.0
+    },
+    "treatmentPlant": {
+      "name": "Hays Creek Water Treatment Plant & Ardmore WTP",
+      "process": "Ultrafiltration Membranes, Powdered Activated Carbon & Chlorination",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Papakura Water Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 88
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-34",
+    "zoneName": "Patumahoe Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 470,
+    "popLowDe": 1115,
+    "popModDe": 0,
+    "popHighDe": 0,
+    "popMaori": 87,
+    "urbanRural": "Urban",
+    "lat": -37.186204,
+    "lng": 174.829366,
+    "radiusKm": 1.5,
+    "polygon": [
+      [
+        -37.1816,
+        174.8222
+      ],
+      [
+        -37.1816,
+        174.8379
+      ],
+      [
+        -37.1914,
+        174.8379
+      ],
+      [
+        -37.1914,
+        174.8222
+      ]
+    ],
+    "shapeLength": 7025.85,
+    "shapeArea": 1237695.37,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Patumahoe Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-35",
+    "zoneName": "Red Hill Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 2475,
+    "popLowDe": 626,
+    "popModDe": 318,
+    "popHighDe": 86,
+    "popMaori": 197,
+    "urbanRural": "Urban",
+    "lat": -37.064541,
+    "lng": 174.979601,
+    "radiusKm": 1.7,
+    "polygon": [
+      [
+        -37.0559,
+        174.9721
+      ],
+      [
+        -37.0559,
+        174.9894
+      ],
+      [
+        -37.0756,
+        174.9894
+      ],
+      [
+        -37.0756,
+        174.9721
+      ]
+    ],
+    "shapeLength": 8750.37,
+    "shapeArea": 2677249.6,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Red Hill Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-36",
+    "zoneName": "Snells/Algies Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 4664,
+    "popLowDe": 766,
+    "popModDe": 2872,
+    "popHighDe": 401,
+    "popMaori": 401,
+    "urbanRural": "Urban",
+    "lat": -36.422458,
+    "lng": 174.730421,
+    "radiusKm": 1.9,
+    "polygon": [
+      [
+        -36.4037,
+        174.7166
+      ],
+      [
+        -36.4037,
+        174.7518
+      ],
+      [
+        -36.44,
+        174.7518
+      ],
+      [
+        -36.44,
+        174.7166
+      ]
+    ],
+    "shapeLength": 17505.35,
+    "shapeArea": 4268871.8,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Snells/Algies Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-37",
+    "zoneName": "Swanson Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 5789,
+    "popLowDe": 4235,
+    "popModDe": 2430,
+    "popHighDe": 71,
+    "popMaori": 772,
+    "urbanRural": "Urban",
+    "lat": -36.875547,
+    "lng": 174.571126,
+    "radiusKm": 3.7,
+    "polygon": [
+      [
+        -36.839,
+        174.523
+      ],
+      [
+        -36.839,
+        174.6103
+      ],
+      [
+        -36.914,
+        174.6103
+      ],
+      [
+        -36.914,
+        174.523
+      ]
+    ],
+    "shapeLength": 61745.46,
+    "shapeArea": 35519146.45,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Swanson Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-38",
+    "zoneName": "Takanini Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 13617,
+    "popLowDe": 4302,
+    "popModDe": 5976,
+    "popHighDe": 6812,
+    "popMaori": 3743,
+    "urbanRural": "Urban",
+    "lat": -37.041859,
+    "lng": 174.929675,
+    "radiusKm": 2.9,
+    "polygon": [
+      [
+        -37.0165,
+        174.8995
+      ],
+      [
+        -37.0165,
+        174.9614
+      ],
+      [
+        -37.0594,
+        174.9614
+      ],
+      [
+        -37.0594,
+        174.8995
+      ]
+    ],
+    "shapeLength": 31408.66,
+    "shapeArea": 18379242.13,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Takanini Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-39",
+    "zoneName": "Te Henga Supply Zone",
+    "supplyId": "SUP-AKL-WEST-01",
+    "supplyName": "Huia / Waitakere Western Water Supply Scheme",
+    "popRegist": 851,
+    "popLowDe": 775,
+    "popModDe": 294,
+    "popHighDe": 0,
+    "popMaori": 117,
+    "urbanRural": "Urban",
+    "lat": -36.871674,
+    "lng": 174.552425,
+    "radiusKm": 2.0,
+    "polygon": [
+      [
+        -36.8588,
+        174.5355
+      ],
+      [
+        -36.8588,
+        174.5647
+      ],
+      [
+        -36.8824,
+        174.5647
+      ],
+      [
+        -36.8824,
+        174.5355
+      ]
+    ],
+    "shapeLength": 13540.12,
+    "shapeArea": 4998335.0,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Te Henga Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-40",
+    "zoneName": "Waiuku Supply Zone",
+    "supplyId": "SUP-AKL-SOUTH-01",
+    "supplyName": "Southern Auckland & Manukau Supply Scheme",
+    "popRegist": 8697,
+    "popLowDe": 2323,
+    "popModDe": 3811,
+    "popHighDe": 3042,
+    "popMaori": 1827,
+    "urbanRural": "Urban",
+    "lat": -37.25152,
+    "lng": 174.734207,
+    "radiusKm": 2.7,
+    "polygon": [
+      [
+        -37.2331,
+        174.707
+      ],
+      [
+        -37.2331,
+        174.7662
+      ],
+      [
+        -37.2668,
+        174.7662
+      ],
+      [
+        -37.2668,
+        174.707
+      ]
+    ],
+    "shapeLength": 28778.19,
+    "shapeArea": 14654887.89,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Waiuku Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-41",
+    "zoneName": "Warkworth Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 4111,
+    "popLowDe": 1098,
+    "popModDe": 2976,
+    "popHighDe": 847,
+    "popMaori": 484,
+    "urbanRural": "Urban",
+    "lat": -36.403202,
+    "lng": 174.659522,
+    "radiusKm": 2.1,
+    "polygon": [
+      [
+        -36.3883,
+        174.6439
+      ],
+      [
+        -36.3883,
+        174.6745
+      ],
+      [
+        -36.4151,
+        174.6745
+      ],
+      [
+        -36.4151,
+        174.6439
+      ]
+    ],
+    "shapeLength": 24506.38,
+    "shapeArea": 6154485.04,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Warkworth Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-42",
+    "zoneName": "Wellsford/Te Hana Supply Zone",
+    "supplyId": "SUP-AKL-NORTH-01",
+    "supplyName": "North Shore & Rodney Supply Scheme",
+    "popRegist": 2114,
+    "popLowDe": 0,
+    "popModDe": 554,
+    "popHighDe": 1293,
+    "popMaori": 462,
+    "urbanRural": "Rural",
+    "lat": -36.287545,
+    "lng": 174.520086,
+    "radiusKm": 1.8,
+    "polygon": [
+      [
+        -36.2523,
+        174.5053
+      ],
+      [
+        -36.2523,
+        174.5334
+      ],
+      [
+        -36.304,
+        174.5334
+      ],
+      [
+        -36.304,
+        174.5053
+      ]
+    ],
+    "shapeLength": 19576.49,
+    "shapeArea": 2967915.92,
+    "primaryDam": {
+      "name": "Hoteo River Catchment & Local Borefield",
+      "catchment": "North West Regional Groundwater Aquifer",
+      "capacityML": 6900,
+      "distanceKm": 8.5
+    },
+    "treatmentPlant": {
+      "name": "Wellsford Water Treatment Plant",
+      "process": "Clarification, Dual Media Sand Filtration, UV & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Wellsford Hilltop Water Reservoir",
+      "capacityM3": 12000,
+      "headLevelM": 160
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  },
+  {
+    "zoneId": "AKL-SZ-43",
+    "zoneName": "Whenuapai Supply Zone",
+    "supplyId": "SUP-AKL-CENTRAL-01",
+    "supplyName": "Central Isthmus Bulk Supply Scheme",
+    "popRegist": 8851,
+    "popLowDe": 9957,
+    "popModDe": 4611,
+    "popHighDe": 369,
+    "popMaori": 1416,
+    "urbanRural": "Urban",
+    "lat": -36.802402,
+    "lng": 174.60858,
+    "radiusKm": 4.5,
+    "polygon": [
+      [
+        -36.75,
+        174.5283
+      ],
+      [
+        -36.75,
+        174.6747
+      ],
+      [
+        -36.8574,
+        174.6747
+      ],
+      [
+        -36.8574,
+        174.5283
+      ]
+    ],
+    "shapeLength": 91313.37,
+    "shapeArea": 60962298.49,
+    "primaryDam": {
+      "name": "Hunua Ranges & Waitakere Storage Dams",
+      "catchment": "Regional Water Supply Native Catchment",
+      "capacityML": 52000,
+      "distanceKm": 18.5
+    },
+    "treatmentPlant": {
+      "name": "Watercare Regional Water Treatment Plant",
+      "process": "Coagulation, Dual Media Filtration & Disinfection",
+      "waterQualityGrade": "Taumata Arowai Rule Compliant (Grade A1)"
+    },
+    "reservoir": {
+      "name": "Whenuapai Distribution Balancing Reservoir",
+      "capacityM3": 35000,
+      "headLevelM": 118
+    },
+    "streetMainTemplate": {
+      "nomDiaMm": 150,
+      "material": "Ductile Iron"
+    },
+    "dataSource": "Taumata Arowai Drinking Water Register & Watercare Services Ltd"
+  }
+]
