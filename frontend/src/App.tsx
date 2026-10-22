@@ -70,6 +70,7 @@ export default function App() {
   // 5. Modals & Side Panels
   const [isLayerPanelOpen, setIsLayerPanelOpen] = useState(false);
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
+  const [complaintModalTab, setComplaintModalTab] = useState<'submit' | 'registry'>('submit');
   const [isDataModalOpen, setIsDataModalOpen] = useState(false);
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
   const [isProfileDashboardOpen, setIsProfileDashboardOpen] = useState(false);
@@ -130,6 +131,7 @@ export default function App() {
   // After successful authentication: continue directly to incident reporting!
   const handleReportIncident = useCallback((address?: string) => {
     const targetAddress = address || (selectedFeature?.type === 'parcel' ? selectedFeature.data.fullAddress : '');
+    setComplaintModalTab('submit');
     
     if (currentUser) {
       if (targetAddress) {
@@ -142,6 +144,11 @@ export default function App() {
       setIsLoginModalOpen(true);
     }
   }, [currentUser, selectedFeature]);
+
+  const handleOpenIncidentRegister = useCallback(() => {
+    setComplaintModalTab('registry');
+    setIsComplaintModalOpen(true);
+  }, []);
 
   // Handle successful login from LoginModal
   const handleLoginSuccess = useCallback((user: AuthUser) => {
@@ -408,6 +415,11 @@ export default function App() {
             selectedFeature?.type === 'parcel' ? selectedFeature.data.center : undefined
           }
           complaintsList={complaintsList}
+          onOpenLoginModal={(reason) => {
+            setLoginReason(reason || 'general');
+            setIsLoginModalOpen(true);
+          }}
+          initialTab={complaintModalTab}
         />
 
         <DataRequestModal

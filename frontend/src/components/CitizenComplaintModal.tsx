@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   AlertTriangle, 
@@ -37,6 +37,7 @@ interface CitizenComplaintModalProps {
   selectedCoordinates?: [number, number];
   complaintsList: WaterIncidentComplaint[];
   onOpenLoginModal?: (reason?: 'report_incident' | 'general') => void;
+  initialTab?: 'submit' | 'registry';
 }
 
 export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
@@ -48,8 +49,15 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
   selectedCoordinates,
   complaintsList = [],
   onOpenLoginModal,
+  initialTab = 'submit',
 }) => {
-  const [activeTab, setActiveTab] = useState<'submit' | 'registry'>('submit');
+  const [activeTab, setActiveTab] = useState<'submit' | 'registry'>(initialTab);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   // Export & Authority Access State
   const isAuthority = isAuthorityUser(currentUser);
@@ -575,14 +583,74 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
           {/* TAB 2: ACTIVE INCIDENT REGISTER */}
           {activeTab === 'registry' && (
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900">
-                  Registered Incident Reports & Contamination Notifications ({complaintsList.length})
-                </span>
-                <span className="text-[10px] text-slate-500">
-                  Regulatory Compliance Tracking
-                </span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
+                <div>
+                  <h3 className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                    <span>Registered Incident Reports & Contamination Notifications ({complaintsList.length})</span>
+                  </h3>
+                  <p className="text-[10px] text-slate-500">
+                    Statutory Drinking Water Register • Water Services Act 2021
+                  </p>
+                </div>
+
+                {/* GREEN EXPORT BUTTON */}
+                <button
+                  type="button"
+                  onClick={handleExportIncidentData}
+                  disabled={isExporting}
+                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold rounded text-xs transition-all flex items-center gap-2 shadow-xs cursor-pointer disabled:opacity-50 shrink-0"
+                  title={
+                    isAuthority
+                      ? "Export reported incidents (address, supply zone, treatment plant/dam, details) to CSV/Excel"
+                      : "Official login required to export incident records"
+                  }
+                >
+                  {isExporting ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : isAuthority ? (
+                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                  ) : (
+                    <Lock className="w-3.5 h-3.5 text-emerald-200" />
+                  )}
+                  <span>Export Incident Data (CSV / Excel)</span>
+                  {isAuthority ? (
+                    <span className="text-[9px] bg-emerald-800/80 text-emerald-100 px-1.5 py-0.5 rounded font-normal uppercase tracking-wider">
+                      Official
+                    </span>
+                  ) : (
+                    <span className="text-[9px] bg-amber-400 text-slate-900 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                      Login Req.
+                    </span>
+                  )}
+                </button>
               </div>
+
+              {/* Export feedback alert banner */}
+              {exportFeedback && (
+                <div
+                  className={`p-2.5 rounded border text-xs flex items-center justify-between gap-2 animate-in fade-in duration-150 ${
+                    exportFeedback.type === 'success'
+                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                      : 'bg-rose-50 border-rose-300 text-rose-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {exportFeedback.type === 'success' ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                    )}
+                    <span className="font-medium text-[11px]">{exportFeedback.text}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setExportFeedback(null)}
+                    className="text-slate-400 hover:text-slate-600 text-sm font-bold cursor-pointer"
+                  >
+                    &times;
+                  </button>
+                </div>
+              )}
 
               {complaintsList.length === 0 ? (
                 <div className="p-6 text-center text-slate-500 bg-slate-50 rounded border border-slate-200">
@@ -635,18 +703,110 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
         {/* Modal Footer */}
         <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
           <div className="text-[10px] text-slate-500">
-            For urgent health emergencies, phone Healthline 0800 611 116 (24/7).
+            {activeTab === 'registry' ? (
+              <span className="flex items-center gap-1.5 text-slate-600 font-medium">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>Statutory export dataset includes citizen address, zone ID, treatment plant/dam & contact details.</span>
+              </span>
+            ) : (
+              'For urgent health emergencies, phone Healthline 0800 611 116 (24/7).'
+            )}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded font-semibold text-xs transition-colors"
-          >
-            Close
-          </button>
+          <div className="flex items-center gap-2">
+            {activeTab === 'registry' && (
+              <button
+                type="button"
+                onClick={handleExportIncidentData}
+                disabled={isExporting}
+                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded font-bold text-xs transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                title={isAuthority ? "Download official CSV/Excel export" : "Authority login required"}
+              >
+                {isExporting ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                <span>Export CSV</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded font-semibold text-xs transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
         </div>
 
       </div>
+
+      {/* Authority Access Gate Modal */}
+      {showAuthGateModal && (
+        <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-lg shadow-2xl border border-slate-300 w-full max-w-md p-5 space-y-4 animate-in zoom-in-95 duration-150">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <Lock className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    Official Authority Access Only
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowAuthGateModal(false)}
+                    className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">
+                  Under the <strong>Water Services Act 2021</strong> and <strong>Privacy Act 2020</strong>, downloading complete incident logs is restricted to authorized Drinking Water Officials and GIS Administrators.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-emerald-50/60 border border-emerald-200 rounded p-3 text-[11px] text-slate-700 space-y-1.5">
+              <div className="font-bold text-emerald-900 flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Protected Statutory Export Dataset Includes:</span>
+              </div>
+              <ul className="list-disc list-inside text-slate-600 space-y-0.5 pl-1">
+                <li>Affected citizen residential address & cadastral parcel</li>
+                <li>Municipal drinking water supply zone ID & zone name</li>
+                <li>Associated upstream treatment plant & source dam lineage</li>
+                <li>Problem category, severity level & detailed observations</li>
+                <li>Citizen contact details (name, email, phone)</li>
+              </ul>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowAuthGateModal(false)}
+                className="px-3 py-1.5 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAuthGateModal(false);
+                  if (onOpenLoginModal) {
+                    onOpenLoginModal('general');
+                  }
+                }}
+                className="px-4 py-1.5 bg-[#072e54] hover:bg-[#0b3d6f] text-white rounded font-bold text-xs transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <span>Sign In with Authority Credentials</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
