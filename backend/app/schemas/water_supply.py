@@ -49,7 +49,7 @@ class WaterSupplyResolutionResponse(BaseModel):
     status: ResolutionStatus
     queriedAddress: str
     coordinates: List[float]  # [lat, lng]
-    nztm2000: NZTMCoordinate
+    nztm2000: Optional[NZTMCoordinate] = None
     supplyZone: Optional[AucklandSupplyZoneSchema] = None
     supplyScheme: Optional[WaterSupplySchemeSchema] = None
     bufferTier: Optional[BufferTierSchema] = None

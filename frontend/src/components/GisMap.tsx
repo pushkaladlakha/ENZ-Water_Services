@@ -17,6 +17,7 @@ import {
   VERIFIED_PIPES, 
   VERIFIED_FITTINGS, 
   latLngToNZTM2000, 
+  isCoordinateInNewZealand, 
   NZ_DEFAULT_CENTER, 
   NZ_DEFAULT_ZOOM 
 } from '../data/nzData';
@@ -200,6 +201,12 @@ export const GisMap: React.FC<GisMapProps> = ({
         unmapped: true,
       });
 
+      const isOutsideNZ = !isCoordinateInNewZealand(lat, lng);
+      const title = isOutsideNZ ? 'Outside New Zealand Territorial Jurisdiction' : 'No Municipal Reticulation Recorded';
+      const description = isOutsideNZ
+        ? 'This location sits outside Aotearoa New Zealand. Under the Water Services Act 2021, statutory drinking water registers and municipal reticulation only apply within New Zealand territory.'
+        : 'This location sits outside the active municipal reticulation boundaries. It may be serviced by rainwater tank harvesting, private bore, or rural unreticulated supplies.';
+
       const popupHtml = `
         <div style="font-family: inherit; max-width: 300px;">
           <div style="background: #072e54; color: white; padding: 7px 12px; font-weight: 700; font-size: 12px;">
@@ -207,11 +214,11 @@ export const GisMap: React.FC<GisMapProps> = ({
           </div>
           <div style="padding: 10px 12px; font-size: 12px; color: #1e293b;">
             <div style="font-weight: 600; color: #072e54; margin-bottom: 4px;">
-              No Municipal Reticulation Recorded
+              ${title}
             </div>
             <p style="color: #64748b; font-size: 11px; line-height: 1.4; margin: 0;">
               Coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}<br/>
-              This location sits outside the active municipal reticulation boundaries. It may be serviced by rainwater tank harvesting, private bore, or rural unreticulated supplies.
+              ${description}
             </p>
           </div>
         </div>
@@ -1012,7 +1019,13 @@ export const GisMap: React.FC<GisMapProps> = ({
 
       // 1.2 Single Connectivity Path (Dam -> Treatment Plant -> Property Address)
       const connectivityPath = pathway.singleConnectivityPath;
-      if (connectivityPath && connectivityPath.coordinates && connectivityPath.coordinates.length >= 2) {
+      if (
+        connectivityPath && 
+        connectivityPath.coordinates && 
+        connectivityPath.coordinates.length >= 2 &&
+        connectivityPath.coordinates.every(coord => isCoordinateInNewZealand(coord[0], coord[1])) &&
+        connectivityPath.totalDistanceKm < 200
+      ) {
         // High-contrast clean casing for readability across basemaps
         const pathCasing = L.polyline(connectivityPath.coordinates, {
           color: '#ffffff',

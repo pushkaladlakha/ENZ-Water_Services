@@ -552,8 +552,18 @@ export const VERIFIED_FITTINGS: FittingAsset[] = [
   },
 ];
 
+export function isCoordinateInNewZealand(lat: number, lng: number): boolean {
+  return lat >= -48.0 && lat <= -33.0 && lng >= 164.0 && lng <= 180.0;
+}
+
 // Standard New Zealand Transverse Mercator 2000 (NZTM2000 - EPSG:2193) projection conversion
 export function latLngToNZTM2000(lat: number, lng: number): { easting: string; northing: string } {
+  if (!isCoordinateInNewZealand(lat, lng)) {
+    return {
+      easting: 'N/A (Outside NZ Grid)',
+      northing: 'N/A (Outside NZ Grid)',
+    };
+  }
   const a = 6378137.0;
   const f = 1 / 298.257222101;
   const k0 = 0.9996;

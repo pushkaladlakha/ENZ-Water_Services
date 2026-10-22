@@ -14,7 +14,7 @@ import {
   AucklandSupplyZone,
   WaterTestingProfileResult
 } from '../types/gis';
-import { VERIFIED_PARCELS, latLngToNZTM2000 } from '../data/nzData';
+import { VERIFIED_PARCELS, latLngToNZTM2000, isCoordinateInNewZealand } from '../data/nzData';
 import { 
   AUCKLAND_ZONE_SCHEMES, 
   resolveDrinkingWaterSupplyZone, 
@@ -408,6 +408,25 @@ export async function resolveWaterSupplyApi(req: {
   coordinates?: [number, number];
   address_id?: string;
 }): Promise<PathwayResolutionResult> {
+  const reqLat = req.coordinates ? req.coordinates[0] : null;
+  const reqLng = req.coordinates ? req.coordinates[1] : null;
+  if (reqLat !== null && reqLng !== null && !isCoordinateInNewZealand(reqLat, reqLng)) {
+    return {
+      status: 'UNMAPPED_OUTSIDE_RETICULATION',
+      queriedAddress: req.address || `Coordinates (${reqLat.toFixed(4)}, ${reqLng.toFixed(4)})`,
+      addressId: req.address_id,
+      coordinates: [reqLat, reqLng],
+      nztm2000: undefined,
+      supplyZone: null,
+      supplyScheme: null,
+      bufferTier: null as any,
+      lineage: null,
+      singleConnectivityPath: null,
+      warnings: ['Location is outside New Zealand territorial jurisdiction. Water Services Act 2021 statutory drinking water registers only apply within Aotearoa New Zealand.'],
+      confidenceScore: 0.0,
+      dataProvenance: 'Taumata Arowai Territorial Boundary Verification',
+    };
+  }
   // 1. Attempt live FastAPI backend resolution
   try {
     const res = await fetch(`${BASE_URL}/v1/water-supply/resolve`, {
@@ -527,6 +546,23 @@ export async function resolveWaterSupplyApi(req: {
     addressStr = matchedParcel.fullAddress;
   }
 
+  if (!isCoordinateInNewZealand(lat, lng)) {
+    return {
+      status: 'UNMAPPED_OUTSIDE_RETICULATION',
+      queriedAddress: addressStr || `Coordinates (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+      coordinates: [lat, lng],
+      nztm2000: undefined,
+      supplyZone: null,
+      supplyScheme: null,
+      bufferTier: null as any,
+      lineage: null,
+      singleConnectivityPath: null,
+      warnings: ['Location is outside New Zealand territorial jurisdiction. Water Services Act 2021 statutory drinking water registers only apply within Aotearoa New Zealand.'],
+      confidenceScore: 0.0,
+      dataProvenance: 'Taumata Arowai Territorial Boundary Verification',
+    };
+  }
+
   const nztm = latLngToNZTM2000(lat, lng);
   const nztmEasting = parseFloat(nztm.easting.replace(/,/g, ''));
   const nztmNorthing = parseFloat(nztm.northing.replace(/,/g, ''));
@@ -599,9 +635,10 @@ export async function resolveWaterSupplyApi(req: {
     const waypointParam = (verifiedDam && verifiedPlant) ? `&waypoints=${verifiedPlant.coordinates[0]},${verifiedPlant.coordinates[1]}` : '';
     const gmapsDirectUrl = `https://www.google.com/maps/dir/?api=1&origin=${damOriginParam}&destination=${lat},${lng}${waypointParam}&travelmode=driving`;
 
-    singleConnectivityPath = {
-      coordinates: coords,
-      totalDistanceKm: Math.round(distKm * 10) / 10,
+    if (isCoordinateInNewZealand(lat, lng) && distKm <= 200) {
+      singleConnectivityPath = {
+        coordinates: coords,
+        totalDistanceKm: Math.round(distKm * 10) / 10,
       damName: rawDamName || 'Regional Storage Catchment',
       damCoordinates: verifiedDam ? verifiedDam.coordinates : null,
       damAddress: verifiedDam ? verifiedDam.address : undefined,
@@ -614,7 +651,8 @@ export async function resolveWaterSupplyApi(req: {
       addressCoordinates: [lat, lng],
       googleMapsDirectUrl: gmapsDirectUrl,
       disclaimer: 'Visual Lineage Connectivity Path: Traces geographic facility supply hierarchy from source catchment dam to water treatment plant to property. This schematic path is distinct from subsurface reticulation pipelines (toggle the Water Network layer to inspect underground pipes).',
-    };
+      };
+    }
   }
 
   return {

@@ -13,7 +13,8 @@ from backend.app.repositories.network_repository import network_repository
 from backend.app.services.spatial_service import (
     wgs84_to_nztm2000,
     resolve_buffer_tier,
-    haversine_distance_m
+    haversine_distance_m,
+    is_coordinate_in_new_zealand
 )
 from backend.app.services.dijkstra_service import dijkstra_service
 from backend.app.db.models.query_log import SpatialPropertyQuery
@@ -66,6 +67,25 @@ class WaterSupplyService:
             lat, lng = -36.9094, 174.6806
             queried_address_str = "Default Query Point (Kelston, Auckland)"
             warnings.append("No valid address or coordinates provided; defaulted to Auckland survey datum.")
+
+        # Non-Jurisdictional Territorial Boundary Guard
+        if not is_coordinate_in_new_zealand(lat, lng):
+            warnings.append("Location is outside New Zealand territorial jurisdiction. Water Services Act 2021 statutory drinking water registers only apply within Aotearoa New Zealand.")
+            return WaterSupplyResolutionResponse(
+                status="UNMAPPED_OUTSIDE_RETICULATION",
+                queriedAddress=queried_address_str,
+                coordinates=[lat, lng],
+                nztm2000=None,
+                supplyZone=None,
+                supplyScheme=None,
+                bufferTier=None,
+                lineage=None,
+                matchedPipeCompkey=None,
+                distanceToMainMeters=None,
+                warnings=warnings,
+                confidenceScore=0.0,
+                dijkstraRoute=None
+            )
 
         # Coordinate Reference System Projection
         nztm = wgs84_to_nztm2000(lat, lng)

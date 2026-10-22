@@ -31,6 +31,19 @@ def test_resolve_water_supply_outside_network(client):
     assert len(data["warnings"]) >= 1
     assert any("reticulation" in w.lower() for w in data["warnings"])
 
+def test_resolve_water_supply_international_outside_nz(client):
+    # International coordinates (e.g., Jaipur, India)
+    payload = {"coordinates": [26.8454, 75.8055]}
+    response = client.post("/api/v1/water-supply/resolve", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "UNMAPPED_OUTSIDE_RETICULATION"
+    assert data["supplyZone"] is None
+    assert data["lineage"] is None
+    assert data["nztm2000"] is None
+    assert data["confidenceScore"] == 0.0
+    assert any("territorial jurisdiction" in w.lower() for w in data["warnings"])
+
 def test_resolve_water_supply_by_parcel_id(client):
     payload = {"address_id": "PARCEL-88-QUEEN"}
     response = client.post("/api/v1/water-supply/resolve", json=payload)

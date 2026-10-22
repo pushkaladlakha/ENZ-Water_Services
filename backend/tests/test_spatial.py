@@ -3,7 +3,8 @@ from backend.app.services.spatial_service import (
     wgs84_to_nztm2000,
     haversine_distance_m,
     point_in_geojson_geometry,
-    resolve_buffer_tier
+    resolve_buffer_tier,
+    is_coordinate_in_new_zealand
 )
 
 def test_wgs84_to_nztm2000_projection():
@@ -13,8 +14,16 @@ def test_wgs84_to_nztm2000_projection():
     # Expected NZTM coordinates in Auckland range:
     # Easting ~ 1,748,000 m
     # Northing ~ 5,914,000 m
+    assert nztm is not None
     assert 1740000.0 < nztm.easting < 1760000.0
     assert 5900000.0 < nztm.northing < 5930000.0
+
+def test_wgs84_to_nztm2000_international_boundary():
+    # Jaipur, India
+    assert is_coordinate_in_new_zealand(26.8454, 75.8055) is False
+    assert wgs84_to_nztm2000(26.8454, 75.8055) is None
+    # Auckland, NZ
+    assert is_coordinate_in_new_zealand(-36.8485, 174.7633) is True
 
 def test_haversine_distance():
     # Distance between Great North Rd and Brandon Rd (~ 280-350m)

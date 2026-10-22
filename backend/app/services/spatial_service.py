@@ -15,11 +15,18 @@ FALSE_EASTING = 1600000.0
 FALSE_NORTHING = 10000000.0
 KO = 0.9996            # Central scale factor
 
-def wgs84_to_nztm2000(lat: float, lng: float) -> NZTMCoordinate:
+def is_coordinate_in_new_zealand(lat: float, lng: float) -> bool:
+    """Check if coordinates fall within New Zealand territorial bounds."""
+    return -48.0 <= lat <= -33.0 and 164.0 <= lng <= 180.0
+
+def wgs84_to_nztm2000(lat: float, lng: float) -> Optional[NZTMCoordinate]:
     """
     Project WGS84 (EPSG:4326) latitude and longitude to
     New Zealand Transverse Mercator 2000 (NZTM2000 / EPSG:2193) metric coordinates.
+    Returns None if coordinates fall outside the New Zealand territorial projection domain.
     """
+    if not is_coordinate_in_new_zealand(lat, lng):
+        return None
     phi = lat * math.pi / 180.0
     lam = lng * math.pi / 180.0
     

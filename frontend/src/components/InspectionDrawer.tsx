@@ -31,6 +31,7 @@ import {
   getAuthoritativeDam, 
   getAuthoritativeTreatmentPlant 
 } from '../data/authoritativeWaterInfrastructure';
+import { isCoordinateInNewZealand } from '../data/nzData';
 
 interface InspectionDrawerProps {
   selection: ActiveSelection | null;
@@ -80,7 +81,7 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
               {isParcel ? 'Cadastral Parcel Record' : isPipe ? 'Utility Pipeline' : isZone ? 'Auckland Water Supply Zone' : 'Network Fitting'}
             </span>
             <h2 className="text-xs font-bold truncate text-white leading-tight">
-              {isParcel ? parcel?.fullAddress : isPipe ? `${pipe?.nomDiaMm}mm ${pipe?.material}` : isZone ? (selection.unmapped ? 'Unmapped Coordinates' : zone?.zoneName) : fitting?.label}
+              {isParcel ? parcel?.fullAddress : isPipe ? `${pipe?.nomDiaMm}mm ${pipe?.material}` : isZone ? (selection.unmapped ? (selection.data?.lat && !isCoordinateInNewZealand(selection.data.lat, selection.data.lng) ? 'Non-Jurisdictional Coordinate' : 'Unmapped Coordinates') : zone?.zoneName) : fitting?.label}
             </h2>
           </div>
         </div>
@@ -111,24 +112,34 @@ export const InspectionDrawer: React.FC<InspectionDrawerProps> = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
 
         {/* 1. UNMAPPED COORDINATES STATE */}
-        {selection.unmapped && (
-          <div className="p-4 bg-slate-50 rounded border border-slate-200 space-y-3 text-xs">
-            <div className="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <Info className="w-4 h-4 text-slate-500" />
-              <span>Unregistered Network Coordinate</span>
+        {selection.unmapped && (() => {
+          const isOutsideNZ = selection.data?.lat !== undefined && selection.data?.lng !== undefined && !isCoordinateInNewZealand(selection.data.lat, selection.data.lng);
+          return (
+            <div className="p-4 bg-slate-50 rounded border border-slate-200 space-y-3 text-xs">
+              <div className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <Info className="w-4 h-4 text-slate-500" />
+                <span>{isOutsideNZ ? 'Outside New Zealand Territorial Jurisdiction' : 'Unregistered Network Coordinate'}</span>
+              </div>
+              <p className="text-slate-600 leading-relaxed">
+                {isOutsideNZ
+                  ? 'The queried coordinates fall outside the territorial jurisdiction of Aotearoa New Zealand. Under the Water Services Act 2021, Taumata Arowai registers cover municipal drinking water networks within New Zealand.'
+                  : 'No registered public reticulation mains or municipal drinking water supply zone recorded for this queried location.'
+                }
+              </p>
+              <div className="bg-white p-3 rounded border border-slate-200 text-slate-700 space-y-1 text-[11px]">
+                <div><strong>Latitude:</strong> {selection.data?.lat?.toFixed(6)}</div>
+                <div><strong>Longitude:</strong> {selection.data?.lng?.toFixed(6)}</div>
+                {isOutsideNZ && <div className="text-amber-700 font-semibold mt-1">Jurisdiction: Non-Territorial (International)</div>}
+              </div>
+              <p className="text-[11px] text-slate-500">
+                {isOutsideNZ
+                  ? 'Municipal supply network maps, water quality data, and reticulation infrastructure are maintained strictly for New Zealand geographic entities.'
+                  : 'For properties outside municipal networks, water supply is commonly serviced by private rainwater harvesting or on-site boreholes under regional environmental council rules.'
+                }
+              </p>
             </div>
-            <p className="text-slate-600 leading-relaxed">
-              No registered public reticulation mains or municipal drinking water supply zone recorded for this queried location.
-            </p>
-            <div className="bg-white p-3 rounded border border-slate-200 text-slate-700 space-y-1 text-[11px]">
-              <div><strong>Latitude:</strong> {selection.data?.lat?.toFixed(6)}</div>
-              <div><strong>Longitude:</strong> {selection.data?.lng?.toFixed(6)}</div>
-            </div>
-            <p className="text-[11px] text-slate-500">
-              For properties outside municipal networks, water supply is commonly serviced by private rainwater harvesting or on-site boreholes under regional environmental council rules.
-            </p>
-          </div>
-        )}
+          );
+        })()}
 
         {/* 2. OFFICIAL DRINKING WATER SUPPLY ZONE VIEW */}
         {isZone && zone && (

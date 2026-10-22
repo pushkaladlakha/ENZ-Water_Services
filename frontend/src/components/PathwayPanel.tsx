@@ -18,6 +18,7 @@ import {
   Route
 } from 'lucide-react';
 import { PathwayResolutionResult, PathwayResolvedZone } from '../types/gis';
+import { isCoordinateInNewZealand } from '../data/nzData';
 
 interface PathwayPanelProps {
   pathway: PathwayResolutionResult | null;
@@ -81,6 +82,15 @@ export const PathwayPanel: React.FC<PathwayPanelProps> = ({
         </span>
       );
     }
+    const isOutsideNZ = pathway && !isCoordinateInNewZealand(pathway.coordinates[0], pathway.coordinates[1]);
+    if (isOutsideNZ) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+          <AlertCircle className="w-3.5 h-3.5 text-amber-700" />
+          Outside NZ Jurisdiction
+        </span>
+      );
+    }
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-200 text-slate-800 border border-slate-300">
         <AlertCircle className="w-3.5 h-3.5 text-slate-600" />
@@ -140,7 +150,7 @@ export const PathwayPanel: React.FC<PathwayPanelProps> = ({
           {/* Status Header Badge */}
           <div className="flex items-center justify-between gap-2 pb-1 border-b border-slate-100">
             {getStatusBadge()}
-            {pathway?.confidenceScore && (
+            {pathway?.confidenceScore !== undefined && pathway.confidenceScore > 0 && (
               <span className="text-[10px] font-mono font-medium text-slate-500">
                 Confidence: {(pathway.confidenceScore * 100).toFixed(0)}%
               </span>
@@ -192,7 +202,7 @@ export const PathwayPanel: React.FC<PathwayPanelProps> = ({
                       )}
                       <div className="text-[10px] font-mono text-slate-500 mt-1.5 bg-slate-100 px-2 py-0.5 rounded inline-block">
                         WGS84: {pathway.coordinates[0].toFixed(5)}, {pathway.coordinates[1].toFixed(5)}
-                        {pathway.nztm2000 && ` • NZTM: ${pathway.nztm2000.easting.toLocaleString()}m E`}
+                        {pathway.nztm2000 && !isNaN(pathway.nztm2000.easting) && pathway.nztm2000.easting > 0 && ` • NZTM: ${pathway.nztm2000.easting.toLocaleString()}m E`}
                       </div>
                     </div>
                   </div>
@@ -270,9 +280,15 @@ export const PathwayPanel: React.FC<PathwayPanelProps> = ({
                 </div>
               ) : (
                 <div className="rounded-lg border border-slate-200 bg-slate-100 p-3 text-xs text-slate-600">
-                  <div className="font-bold text-slate-800">No Municipal Supply Zone Enclosure</div>
+                  <div className="font-bold text-slate-800">
+                    {pathway && !isCoordinateInNewZealand(pathway.coordinates[0], pathway.coordinates[1])
+                      ? 'Outside New Zealand Territorial Jurisdiction'
+                      : 'No Municipal Supply Zone Enclosure'}
+                  </div>
                   <div className="text-[11px] mt-0.5">
-                    Location sits outside official registered reticulation zones. Private bore or rainwater harvesting likely.
+                    {pathway && !isCoordinateInNewZealand(pathway.coordinates[0], pathway.coordinates[1])
+                      ? 'The queried coordinates fall outside Aotearoa New Zealand. Drinking water compliance registers and municipal supply networks operate under the Water Services Act 2021 within New Zealand.'
+                      : 'Location sits outside official registered reticulation zones. Private bore or rainwater harvesting likely.'}
                   </div>
                 </div>
               )}

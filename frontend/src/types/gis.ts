@@ -183,7 +183,8 @@ export interface ParcelFeature {
     cathodicProtectionStatus: 'N/A' | 'Active' | 'Inspected';
     scadaZoneId: string;
   };
-  waterLineage: WaterNetworkLineage;
+  waterLineage?: WaterNetworkLineage | null;
+  isOutsideNewZealand?: boolean;
 }
 
 export interface LayerVisibility {

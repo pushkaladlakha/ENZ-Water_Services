@@ -18,7 +18,7 @@ import {
   WaterIncidentComplaint,
   PathwayResolutionResult
 } from './types/gis';
-import { VERIFIED_PIPES, VERIFIED_PARCELS, getDocumentedWaterLineage } from './data/nzData';
+import { VERIFIED_PIPES, VERIFIED_PARCELS, getDocumentedWaterLineage, isCoordinateInNewZealand } from './data/nzData';
 import { 
   AucklandZoneScheme, 
   findNearestVerifiedParcel, 
@@ -87,9 +87,14 @@ export default function App() {
   const [isResolvingPathway, setIsResolvingPathway] = useState<boolean>(false);
   const [focusZoneBounds, setFocusZoneBounds] = useState<[number, number][] | null>(null);
   const [focusRouteBounds, setFocusRouteBounds] = useState<[number, number][] | null>(null);
+  const [gpsAdvisory, setGpsAdvisory] = useState<string | null>(null);
 
   // Resolve authoritative water supply pathway & single connectivity path for a parcel
   const resolvePathwayForParcel = useCallback(async (parcel: ParcelFeature) => {
+    if (parcel.isOutsideNewZealand || !isCoordinateInNewZealand(parcel.center[0], parcel.center[1])) {
+      setPathwayState(null);
+      return;
+    }
     setIsResolvingPathway(true);
     try {
       const result = await resolveWaterSupplyApi({
@@ -221,6 +226,17 @@ export default function App() {
 
     const applyLocation = (lat: number, lng: number, isRealGps: boolean) => {
       setIsLocating(false);
+
+      if (isRealGps && !isCoordinateInNewZealand(lat, lng)) {
+        setFlyToLocation({ center: [-36.8485, 174.7633], zoom: 14 });
+        setSelectedFeature(null);
+        setPathwayState(null);
+        setGpsAdvisory(
+          `Your detected GPS location (${lat >= 0 ? `${lat.toFixed(4)}° N` : `${Math.abs(lat).toFixed(4)}° S`}, ${lng >= 0 ? `${lng.toFixed(4)}° E` : `${Math.abs(lng).toFixed(4)}° W`}) sits outside New Zealand territorial jurisdiction. Under the Water Services Act 2021, Taumata Arowai registers cover municipal drinking water networks within Aotearoa New Zealand. Map centered on Auckland municipal reticulation.`
+        );
+        return;
+      }
+      setGpsAdvisory(null);
       setFlyToLocation({ center: [lat, lng], zoom: 18 });
 
       // 1. Check if user is near one of the verified cadastral parcels (within 250m)
@@ -341,6 +357,33 @@ export default function App() {
 
       {/* Main Map Viewport Area (Default Landing Page) */}
       <main className="relative flex-1 w-full h-full overflow-hidden">
+        {/* Non-Jurisdictional GPS Location Alert */}
+        {gpsAdvisory && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1000] max-w-xl w-[92%] bg-[#072e54] text-white px-4 py-3 rounded-lg shadow-xl border border-sky-400/40 flex items-start gap-3">
+            <div className="p-1 rounded bg-amber-500/20 text-amber-300 shrink-0 mt-0.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="flex-1 text-xs leading-relaxed">
+              <div className="font-bold text-sky-200 uppercase tracking-wider text-[10px] mb-0.5">
+                Territorial Boundary Notice
+              </div>
+              <div>{gpsAdvisory}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setGpsAdvisory(null)}
+              className="text-slate-300 hover:text-white p-1 rounded hover:bg-white/10 transition-colors shrink-0 cursor-pointer"
+              aria-label="Dismiss notice"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
+
         {/* Leaflet GIS Map Canvas - Available to all guests */}
         <GisMap
           accessLevel={accessLevel}

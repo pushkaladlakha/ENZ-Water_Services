@@ -1,5 +1,5 @@
 import { ParcelFeature, PipeAsset, AucklandSupplyZone } from '../types/gis';
-import { VERIFIED_PARCELS, VERIFIED_PIPES } from '../data/nzData';
+import { VERIFIED_PARCELS, VERIFIED_PIPES, isCoordinateInNewZealand } from '../data/nzData';
 import { ALL_AUCKLAND_ZONES } from './aucklandZonesData';
 
 export interface AucklandZoneScheme {
@@ -213,6 +213,24 @@ export function resolveAddressSupplyZone(
     designatedZoneId = target.allocatedZoneId || target.engineerData?.supplyZoneId;
   }
 
+  // Territorial Boundary Guard: Disallow mapping outside New Zealand
+  if (!isCoordinateInNewZealand(targetLat, targetLng)) {
+    return {
+      zone: null as any,
+      distanceKm: 0,
+      isAutoResolvedNearest: false,
+    };
+  }
+
+  // Territorial Boundary Guard: Disallow mapping outside New Zealand
+  if (!isCoordinateInNewZealand(targetLat, targetLng)) {
+    return {
+      zone: null as any,
+      distanceKm: 0,
+      isAutoResolvedNearest: false,
+    };
+  }
+
   // 1. If designatedZoneId is provided and valid, verify against master register
   if (designatedZoneId) {
     const matched = AUCKLAND_ZONE_SCHEMES.find(z => z.zoneId === designatedZoneId);
@@ -292,6 +310,78 @@ export function simulateWaterTestingProfile(
     addressId = `LOC-${Math.abs(Math.round(targetLat * 10000))}`;
   }
 
+  // Territorial Boundary Guard: Return non-jurisdictional profile if outside New Zealand
+  if (!isCoordinateInNewZealand(targetLat, targetLng)) {
+    return {
+      addressId: addressId || 'LOC-NON-NZ',
+      address: addressStr || `Coordinates (${targetLat.toFixed(4)}, ${targetLng.toFixed(4)})`,
+      lotPlan: 'N/A (Outside NZ Cadastre)',
+      allocatedZoneId: 'NON-JURISDICTIONAL',
+      allocatedZoneName: 'Outside New Zealand Territorial Jurisdiction',
+      supplyId: 'N/A',
+      supplyName: 'Non-Jurisdictional (Outside Taumata Arowai Coverage)',
+      coordinates: [targetLat, targetLng],
+      zoneCoordinates: [targetLat, targetLng],
+      distanceKm: 0,
+      transitTimeMinutes: 0,
+      transitTimeFormatted: 'N/A',
+      pressurePsi: 0,
+      pressureKPa: 0,
+      ph: 0,
+      chlorineMgL: 0,
+      turbidityNtu: 0,
+      ecoliCfuPer100ml: 0,
+      fluorideMgL: 0,
+      waterQualityGrade: 'Non-Jurisdictional (Outside New Zealand)',
+      complianceStatus: 'Advisory',
+      testedAt: new Date().toISOString(),
+      sourceDam: 'Unavailable in authoritative dataset',
+      treatmentPlant: 'Unavailable in authoritative dataset',
+      reservoir: 'Unavailable in authoritative dataset',
+      distributionMain: 'Unavailable in authoritative dataset',
+      servicePipe: 'Unavailable in authoritative dataset',
+      googleMapsDirectionsUrl: `https://www.google.com/maps/search/?api=1&query=${targetLat},${targetLng}`,
+      googleMapsEmbedUrl: `https://www.google.com/maps/embed/v1/place?key=&q=${targetLat},${targetLng}`,
+      pipelineLineage: null,
+    };
+  }
+
+  // Territorial Boundary Guard: Return non-jurisdictional profile if outside New Zealand
+  if (!isCoordinateInNewZealand(targetLat, targetLng)) {
+    return {
+      addressId: addressId || 'LOC-NON-NZ',
+      address: addressStr || `Coordinates (${targetLat.toFixed(4)}, ${targetLng.toFixed(4)})`,
+      lotPlan: 'N/A (Outside NZ Cadastre)',
+      allocatedZoneId: 'NON-JURISDICTIONAL',
+      allocatedZoneName: 'Outside New Zealand Territorial Jurisdiction',
+      supplyId: 'N/A',
+      supplyName: 'Non-Jurisdictional (Outside Taumata Arowai Coverage)',
+      coordinates: [targetLat, targetLng],
+      zoneCoordinates: [targetLat, targetLng],
+      distanceKm: 0,
+      transitTimeMinutes: 0,
+      transitTimeFormatted: 'N/A',
+      pressurePsi: 0,
+      pressureKPa: 0,
+      ph: 0,
+      chlorineMgL: 0,
+      turbidityNtu: 0,
+      ecoliCfuPer100ml: 0,
+      fluorideMgL: 0,
+      waterQualityGrade: 'Non-Jurisdictional (Outside New Zealand)',
+      complianceStatus: 'Advisory',
+      testedAt: new Date().toISOString(),
+      sourceDam: 'Unavailable in authoritative dataset',
+      treatmentPlant: 'Unavailable in authoritative dataset',
+      reservoir: 'Unavailable in authoritative dataset',
+      distributionMain: 'Unavailable in authoritative dataset',
+      servicePipe: 'Unavailable in authoritative dataset',
+      googleMapsDirectionsUrl: `https://www.google.com/maps/search/?api=1&query=${targetLat},${targetLng}`,
+      googleMapsEmbedUrl: `https://www.google.com/maps/embed/v1/place?key=&q=${targetLat},${targetLng}`,
+      pipelineLineage: null,
+    };
+  }
+
   // Deterministic zone resolution (resolves missing/broken IDs)
   const { zone, distanceKm } = resolveAddressSupplyZone(parcel || [targetLat, targetLng]);
 
@@ -314,18 +404,18 @@ export function simulateWaterTestingProfile(
   const fluorideMgL = Math.round((0.74 + (seed * 0.005)) * 100) / 100;
 
   const lineage = parcel?.waterLineage || {
-    sourceDam: zone.primaryDam || {
+    sourceDam: zone?.primaryDam || {
       name: 'Waitakere Dam & Lower Nihotupu Dam',
       catchment: 'Waitakere Ranges Native Catchment',
       capacityML: 29800,
       distanceKm: 14.6,
     },
-    treatmentPlant: zone.treatmentPlant || {
+    treatmentPlant: zone?.treatmentPlant || {
       name: 'Huia Water Treatment Plant',
       process: 'Dissolved Air Flotation (DAF), Rapid Gravity Sand Filtration & Disinfection',
       waterQualityGrade: 'Taumata Arowai Rule Compliant (Grade A1)',
     },
-    reservoir: zone.reservoir || {
+    reservoir: zone?.reservoir || {
       name: 'Titirangi High-Level Balancing Reservoir',
       capacityM3: 45000,
       headLevelM: 132,
