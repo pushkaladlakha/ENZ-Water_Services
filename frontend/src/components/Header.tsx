@@ -11,7 +11,6 @@ import {
   X,
   AlertTriangle,
   BookOpen,
-  FileSpreadsheet,
 } from 'lucide-react';
 import { AuthUser, ParcelFeature } from '../types/gis';
 import { VERIFIED_PARCELS } from '../data/nzData';
@@ -28,7 +27,6 @@ interface HeaderProps {
   onLocateMe: () => void;
   isLocating: boolean;
   onOpenComplaintModal: () => void;
-  onOpenIncidentRegister?: () => void;
   onOpenDataRequestModal: () => void;
   onOpenDocumentation?: () => void;
   onProfileDashboardOpen?: () => void;
@@ -44,7 +42,6 @@ export const Header: React.FC<HeaderProps> = ({
   onLocateMe,
   isLocating,
   onOpenComplaintModal,
-  onOpenIncidentRegister,
   onOpenDataRequestModal,
   onOpenDocumentation,
   onOpenProfileDashboard,
@@ -286,28 +283,6 @@ export const Header: React.FC<HeaderProps> = ({
             <AlertTriangle className="w-3.5 h-3.5 text-[#072e54]" />
             <span className="hidden sm:inline">Report an Incident</span>
             <span className="sm:hidden">Report</span>
-          </button>
-
-          {/* Official Incident Register & CSV Export (Green Button) */}
-          <button
-            type="button"
-            onClick={onOpenIncidentRegister || onOpenComplaintModal}
-            title={
-              isStaff
-                ? "Export reported incidents (address, supply zone, treatment plant/dam, details) to CSV/Excel"
-                : "Authority login required to export incident records"
-            }
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white transition-all shadow-xs cursor-pointer"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-white" />
-            <span className="hidden md:inline">Export Incidents (CSV)</span>
-            <span className="md:hidden hidden sm:inline">Export CSV</span>
-            <span className="sm:hidden">Export</span>
-            {isStaff && (
-              <span className="text-[9px] bg-emerald-800/80 text-emerald-100 px-1.5 py-0.2 rounded font-normal uppercase hidden lg:inline">
-                Official
-              </span>
-            )}
           </button>
 
           {/* Admin Technical Documentation Access */}
