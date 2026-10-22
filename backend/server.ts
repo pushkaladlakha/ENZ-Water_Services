@@ -894,6 +894,82 @@ export function createApiRouter(): express.Router {
     res.json(results);
   });
 
+  // Export Incident Complaints to CSV (for Excel) - Restricted to Authorized Officials & Admins
+  router.get('/incidents/export', (req: Request, res: Response) => {
+    const user = getAuthUser(req);
+    if (!user || (user.role !== 'official' && user.role !== 'admin')) {
+      return res.status(403).json({ 
+        detail: 'Access restricted: Only authorized officials or administrators can export incident data containing citizen residential and contact details.' 
+      });
+    }
+
+    const escapeCsv = (val: any) => {
+      if (val === null || val === undefined) return '""';
+      let str = String(val).replace(/"/g, '""');
+      if (/^[=\+\-@\t\r]/.test(str)) {
+        str = "'" + str;
+      }
+      return `"${str}"`;
+    };
+
+    const headers = [
+      'Incident ID',
+      'Citizen Residential Address',
+      'Supply Zone ID',
+      'Supply Zone Name',
+      'Treatment Plant / Dam Associated',
+      'Associated Treatment Plant',
+      'Associated Source Dam',
+      'Problem / Category',
+      'Severity',
+      'Incident Description',
+      'Citizen Contact Name',
+      'Citizen Contact Email',
+      'Citizen Contact Phone',
+      'Anonymous Submission',
+      'Observed Date & Time',
+      'Date Registered',
+      'Investigation Status',
+      'Boil Water Advised',
+      'Officer Notes'
+    ];
+
+    const rows = INCIDENTS_DB.map(inc => {
+      const zone = AUCKLAND_ZONE_SCHEMES.find(z => z.zoneId === inc.supplyZoneId);
+      const treatmentPlant = zone?.treatmentPlant?.name || 'Huia Water Treatment Plant';
+      const sourceDam = zone?.primaryDam?.name || 'Waitakere Ranges Native Catchment';
+      const associatedCombined = `${treatmentPlant} / ${sourceDam}`;
+
+      return [
+        escapeCsv(inc.id),
+        escapeCsv(inc.address),
+        escapeCsv(inc.supplyZoneId || zone?.zoneId || 'AKL-SZ-14'),
+        escapeCsv(zone?.zoneName || inc.supplySchemeName || 'Kelston Supply Zone'),
+        escapeCsv(associatedCombined),
+        escapeCsv(treatmentPlant),
+        escapeCsv(sourceDam),
+        escapeCsv(inc.categoryLabel || inc.category),
+        escapeCsv(inc.severity.toUpperCase()),
+        escapeCsv(inc.description),
+        escapeCsv(inc.reporterName),
+        escapeCsv(inc.reporterEmail),
+        escapeCsv(inc.reporterPhone || 'Not provided'),
+        escapeCsv(inc.isAnonymous ? 'Yes' : 'No'),
+        escapeCsv(inc.observedAt),
+        escapeCsv(inc.createdAt),
+        escapeCsv(inc.status),
+        escapeCsv(inc.boilWaterAdvised ? 'YES' : 'NO'),
+        escapeCsv(inc.officerNotes || '')
+      ].join(',');
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="nz_water_incidents_${dateStr}.csv"`);
+    res.status(200).send(csvContent);
+  });
+
   router.post('/incidents', (req: Request, res: Response) => {
     const body = req.body || {};
     const newId = `NZ-DW-2026-${Math.floor(1000 + Math.random() * 9000)}`;

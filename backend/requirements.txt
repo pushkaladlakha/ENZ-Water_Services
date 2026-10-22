@@ -1,0 +1,11 @@
+fastapi>=0.115.0
+uvicorn>=0.32.0
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+sqlalchemy>=2.0.36
+shapely>=2.0.6
+pyjwt>=2.9.0
+bcrypt>=4.2.0
+python-multipart>=0.0.12
+httpx>=0.28.0
+pytest>=8.3.0

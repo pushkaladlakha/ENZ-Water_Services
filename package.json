@@ -8,12 +8,17 @@
     "backend"
   ],
   "scripts": {
-    "dev": "tsx backend/server.ts",
+    "dev": "concurrently -k -n \"FASTAPI,VITE\" -c \"magenta,cyan\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
+    "dev:backend": "python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "dev:node": "tsx backend/server.ts",
+    "test": "python -m pytest -v backend/tests",
+    "test:backend": "python -m pytest -v backend/tests",
+    "db:info": "python backend/manage_db.py info",
+    "db:reseed": "python backend/manage_db.py reseed",
     "build": "npm run build --workspace=frontend",
     "build:frontend": "npm run build --workspace=frontend",
-    "start": "tsx backend/server.ts",
+    "start": "python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000",
     "preview": "npm run preview --workspace=frontend",
     "clean": "rm -rf frontend/dist dist server.js",
     "lint": "tsc --noEmit -p frontend/tsconfig.json && tsc --noEmit -p backend/tsconfig.json"
@@ -40,6 +45,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^10.0.6",
     "esbuild": "^0.28.2",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",

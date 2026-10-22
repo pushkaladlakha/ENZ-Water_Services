@@ -15,12 +15,18 @@ import {
   Info,
   ChevronRight,
   ListFilter,
-  Check
+  Check,
+  FileSpreadsheet,
+  Download,
+  Lock,
+  ShieldCheck,
+  AlertCircle
 } from 'lucide-react';
 import { AuthUser, WaterIncidentComplaint, IncidentCategory, IncidentSeverity } from '../types/gis';
 import { TaumataArowaiLogo } from './TaumataArowaiLogo';
 import { AUCKLAND_ZONE_SCHEMES } from '../utils/waterLineageEngine';
 import { submitIncidentApi } from '../services/apiClient';
+import { isAuthorityUser, exportIncidentData, resolveIncidentInfrastructure } from '../utils/incidentExport';
 
 interface CitizenComplaintModalProps {
   isOpen: boolean;
@@ -30,6 +36,7 @@ interface CitizenComplaintModalProps {
   selectedAddress?: string;
   selectedCoordinates?: [number, number];
   complaintsList: WaterIncidentComplaint[];
+  onOpenLoginModal?: (reason?: 'report_incident' | 'general') => void;
 }
 
 export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
@@ -40,8 +47,38 @@ export const CitizenComplaintModal: React.FC<CitizenComplaintModalProps> = ({
   selectedAddress = '',
   selectedCoordinates,
   complaintsList = [],
+  onOpenLoginModal,
 }) => {
   const [activeTab, setActiveTab] = useState<'submit' | 'registry'>('submit');
+
+  // Export & Authority Access State
+  const isAuthority = isAuthorityUser(currentUser);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportFeedback, setExportFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showAuthGateModal, setShowAuthGateModal] = useState(false);
+
+  const handleExportIncidentData = async () => {
+    if (!isAuthority) {
+      setShowAuthGateModal(true);
+      return;
+    }
+
+    setIsExporting(true);
+    setExportFeedback(null);
+    try {
+      const res = await exportIncidentData(complaintsList, currentUser);
+      if (res.success) {
+        setExportFeedback({ type: 'success', text: res.message });
+        setTimeout(() => setExportFeedback(null), 6000);
+      } else {
+        setExportFeedback({ type: 'error', text: res.message });
+      }
+    } catch (err: any) {
+      setExportFeedback({ type: 'error', text: err?.message || 'Failed to export incident records.' });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Form Fields
   const [category, setCategory] = useState<IncidentCategory>('contamination_discoloration');
