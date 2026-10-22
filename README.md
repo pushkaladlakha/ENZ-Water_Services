@@ -170,6 +170,7 @@ flowchart TD
 | **Update Incident Status** | ❌ Forbidden (`403`) | ✅ Allowed | ✅ Allowed | Official regulatory workflow integrity |
 | **Upload Custom GIS Datasets** | ❌ Forbidden (`403`) | ✅ Allowed | ✅ Allowed | Staff geospatial analysis |
 | **Open Technical Documentation** | ❌ Hidden in UI | ❌ Hidden in UI | ✅ **Visible in UI** | Administrator architecture & governance specifications |
+| **Export Statutory Incident Data (CSV)** | ❌ Hidden in UI & Forbidden (`403`) | ✅ Allowed (Register & Profile Workspace) | ✅ Allowed | Water Services Act 2021 & Privacy Act 2020: Protects citizen addresses, phone numbers, and vulnerability data |
 | **Inspect Query Audit Logs** | ❌ Forbidden (`403`) | ❌ Forbidden (`403`) | ✅ Allowed | Privacy and data governance compliance |
 
 ---
@@ -383,65 +384,71 @@ The backend exposes a clean, versioned REST API accessible via `/api/v1` or `/ap
 
 ## 9. Quick Start & Execution Guide
 
-### 9.1 Running the Frontend Application (Vite + React 19)
+### 9.1 Unified Single-Command Startup (Frontend + Backend)
+
+The workspace is configured with an npm workspace monorepo and a cross-platform Python virtual environment runner (`scripts/run-python.js`). A single command concurrently boots both services:
 
 ```bash
-# 1. Install frontend dependencies (Run once only)
+# 1. Install dependencies (First-time setup only)
 npm install
 
-# 2. Type-check with zero compilation errors
-npm run lint
-
-# 3. Create production bundle
-npm run build
-
-# 4. Start the Vite development server on port 3000
+# 2. Start both Python FastAPI (:8000) and Vite React 19 (:3000) concurrently:
 npm run dev
 ```
 
-Open your browser at:  
-👉 **`http://localhost:3000`**
-
-### 9.2 Running the Backend REST Service (FastAPI + Python)
-
-The backend operates out of the box using a pre-seeded standalone SQLite spatial database (`backend/app/db/data/water_services.db`). No external database setup is required for local development:
-
-```bash
-# Windows PowerShell
-$env:PYTHONPATH="."
-python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
-
-# macOS / Linux
-export PYTHONPATH="."
-python3 -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
-Once running:
-- **Interactive Swagger Documentation**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- **ReDoc Technical Specification**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-- **Health Probe**: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
+- **Vite Web Application**: 👉 **`http://localhost:3000`** (Reverse-proxies `/api` calls to FastAPI)
+- **FastAPI Backend Direct**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **Interactive Swagger Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc Specification**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
 ---
 
-### 9.3 Preconfigured Accounts for Testing & Evaluation
+### 9.2 Independent Service Commands
+
+```bash
+# Start backend service only (Port 8000 with live reload):
+npm run dev:backend
+
+# Start frontend development server only (Port 3000):
+npm run dev:frontend
+
+# Run full TypeScript validation across frontend and backend:
+npm run lint
+
+# Build production Vite bundle:
+npm run build
+
+# Inspect pre-seeded spatial SQLite database:
+npm run db:info
+
+# Reset & re-seed spatial SQLite database:
+npm run db:reseed
+```
+
+---
+
+### 9.3 Running the Full Automated Test Suite (36 Tests)
+
+Run the comprehensive 36-test suite verifying the resolution engine, spatial algorithms, RBAC telemetry redaction, incident intake, and official CSV export:
+
+```bash
+npm test
+```
+
+All 36 tests execute via the isolated `.venv` environment with 100% pass rate.
+
+---
+
+### 9.4 Preconfigured Accounts for Testing & Role Evaluation
 
 Click **Sign In** in the top-right header and use the built-in autofill options to test any role:
 
 | Role | Email Address | Password | Permissions & UI Elements |
 |---|---|---|---|
-| **Public Citizen / Guest** | *(No login required)* | *(None)* | Default map access, cadastral search, red pin drop, in-app lineage path, incident reporting |
-| **Public Citizen (Auth)** | `citizen@nzwater.org.nz` | `CitizenNZ#2026` | Verified resident status, expedited incident reporting |
-| **Authorized Official** | `official@taumataarowai.govt.nz` | `OfficialWater#2026` | Unredacted CCTV scores, pipe invert depths, engineering notes, incident investigation, **Upload Data** button |
-| **System Administrator** | `admin@taumataarowai.govt.nz` | `AdminTaumata#2026` | **Documentation** button in UI header, **Upload Data** button, full governance & PostGIS administration |
-
----
-
-### 9.4 Running Automated Verification Tests
-
-```bash
-# Run full automated backend test suite (34 tests)
-pytest -v backend/tests
-```
+| **Public Citizen / Guest** | *(No login required)* | *(None)* | Interactive map, address search, red pin drop, in-app lineage path, incident reporting intake. Critical pipe telemetry (CCTV, depths) is redacted. No incident export button visible. |
+| **Public Citizen (Auth)** | `citizen@nzwater.org.nz` | `CitizenNZ#2026` | Verified resident status, expedited incident reporting intake. |
+| **Authorized Official** | `official@taumataarowai.govt.nz` | `OfficialWater#2026` | Unredacted CCTV defect scores (1-5), pipe invert depths, engineering notes, incident investigation tools, **Upload Data** button, and **Statutory Incident Register Export (CSV)** in the Active Incident Register and Official Profile Workspace. |
+| **System Administrator** | `admin@taumataarowai.govt.nz` | `AdminTaumata#2026` | Full governance, **Documentation** button in UI header, **Upload Data** button, PostGIS administration, and Incident Register CSV Export. |
 
 ---
 

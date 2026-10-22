@@ -274,6 +274,49 @@ Submits a citizen water contamination, quality, or network incident.
 }
 ```
 
+### `GET /api/v1/incidents`
+Lists registered incident complaints with optional filtering by status or severity.
+- **Query Parameters**:
+  - `status` (string, optional): Filter by status (`Submitted`, `Under Investigation`, `Resolved`)
+  - `severity` (string, optional): Filter by severity (`low`, `medium`, `high`, `critical`)
+  - `limit` (integer, optional, default: 50): Max records to retrieve
+- **Response `200 OK`**:
+```json
+[
+  {
+    "id": "NZ-DW-2026-1042",
+    "category": "contamination_discoloration",
+    "categoryLabel": "Water Discoloration / Turbidity",
+    "severity": "high",
+    "address": "4015 Great North Road, Kelston, Auckland",
+    "supplyZoneId": "AKL-SZ-14",
+    "supplySchemeName": "Kelston Municipal Zone",
+    "description": "Rust brown water with sediment coming from kitchen tap.",
+    "status": "Under Investigation",
+    "observedAt": "2026-10-22T08:30:00",
+    "createdAt": "2026-10-22T08:35:00",
+    "reporterName": "David Resident",
+    "isAnonymous": false
+  }
+]
+```
+
+### `GET /api/v1/incidents/export`
+Exports the complete statutory incident register to an RFC 4180-compliant CSV file (UTF-8 BOM encoded for Microsoft Excel compatibility).
+- **Access Control**: **Restricted to `official` or `admin` roles only.**
+- **Headers Required**:
+  - `Authorization: Bearer <token>`
+- **Response `200 OK`**:
+  - `Content-Type: text/csv; charset=utf-8`
+  - `Content-Disposition: attachment; filename="taumata_arowai_incident_register_YYYY-MM-DD.csv"`
+- **Export Columns**:
+  ```csv
+  Incident ID,Citizen's Residential Address,Supply Zone ID,Supply Zone Name,Treatment Plant / Dam Associated,Associated Treatment Plant,Associated Source Dam,Problem / Category,Severity,Incident Description,Citizen Contact Name,Citizen Contact Email,Citizen Contact Phone,Anonymous Submission,Observed Date & Time,Date Registered,Investigation Status,Boil Water Advised,Officer Compliance Notes
+  ```
+- **Error Responses**:
+  - `401 Unauthorized`: Missing or invalid JWT bearer token.
+  - `403 Forbidden`: Authenticated user does not possess `official` or `admin` authority permissions (*Water Services Act 2021* & *Privacy Act 2020*).
+
 ### `PATCH /api/v1/incidents/{incident_id}`
 Updates incident status and adds compliance officer notes.
 - **Restricted to**: `official` or `admin`

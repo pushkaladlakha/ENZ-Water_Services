@@ -58,7 +58,7 @@ The backend for the **Taumata Arowai GIS Platform** is designed as a modular, hi
   - Implements the official LINZ WGS84 (EPSG:4326) to NZTM2000 (EPSG:2193) Transverse Mercator projection formulas.
   - Executes sub-millisecond point-in-polygon containment using GEOS via Shapely.
   - Evaluates concentric distance buffers (50m, 100m, 200m, 500m, 1500m).
-- **`incident_service.py`**: Handles water quality incident intake, tracking number generation (`NZ-DW-YYYY-XXXX`), and official investigation status transitions.
+- **`incident_service.py`**: Handles water quality incident intake, tracking number generation (`NZ-DW-YYYY-XXXX`), official investigation status transitions, and statutory CSV export formatting (RFC 4180 with UTF-8 BOM, merging citizen addresses, supply zone lineages, treatment plants/dams, and contact info under strict `official`/`admin` authorization).
 - **`auth_service.py`**: Handles bcrypt password verification and JWT claim signing.
 
 ### 2.3 Repositories (`backend/app/repositories/`)
@@ -117,3 +117,16 @@ sequenceDiagram
    - `admin`: Administrative governance and audit log access.
 2. **CORS Governance**: Whitelisted strictly to local and forwarded frontend development ports (`3000`, `5173`, `4173`).
 3. **Audit Trails**: All property resolution queries are logged with coordinates, response time, and matched zone IDs.
+
+---
+
+## 5. Automated Verification & Testing
+
+The backend includes a comprehensive **36-test suite** running under `pytest` in `backend/tests/`:
+- **`test_health.py`**: Uptime diagnostics and readiness probes.
+- **`test_auth.py`**: JWT authentication, salted Bcrypt hashing, role claim validation.
+- **`test_spatial.py`**: LINZ NZTM2000 projections, Haversine distance, GEOS point-in-polygon containment, and buffer tiers.
+- **`test_water_supply_resolution.py`**: 7-step deterministic supply zone and infrastructure resolution pipeline.
+- **`test_address_search.py`**: Cadastral parcel search, lot matching, and boundary retrieval.
+- **`test_zones_and_assets.py`**: Supply zones, schemes, and field-level telemetry redaction (CCTV and depth scores).
+- **`test_incidents.py`**: Incident reporting, dispatch status updates, and authenticated CSV incident export RBAC checks.

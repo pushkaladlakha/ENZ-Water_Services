@@ -2,37 +2,41 @@
 
 High-precision spatial drinking water register, supply zone management, Watercare reticulation asset inspection, and compliance portal REST API for New Zealand (*Te Mana o te Wai*).
 
-Built with **Python 3.13**, **FastAPI**, **Shapely 2.0**, **SQLAlchemy 2.0**, and **Pydantic v2**.
+Built with **Python 3.12 / 3.13**, **FastAPI**, **Shapely 2.0 (GEOS)**, **SQLAlchemy 2.0**, and **Pydantic v2**.
 
 ---
 
 ## 1. Quick Start Guide
 
-### Step 1: Environment & Virtual Environment
-If you haven't already activated the Python virtual environment:
+### Option A: Standard npm Commands (Recommended)
+From the repository root (`c:\ENZ-Water_Services`):
 
+```bash
+# Start both FastAPI backend (:8000) and Vite frontend (:3000) concurrently:
+npm run dev
+
+# Start backend service only:
+npm run dev:backend
+
+# Run the full 36-test automated suite:
+npm test
+```
+
+### Option B: Using the Cross-Platform Python Runner
+The workspace includes `scripts/run-python.js`, which automatically locates `.venv\Scripts\python.exe` (Windows) or `.venv/bin/python` (Unix) and ensures `PYTHONPATH=.`:
+
+```bash
+# Run FastAPI with live reload
+node scripts/run-python.js -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Run pytest suite
+node scripts/run-python.js -m pytest -v backend/tests
+```
+
+### Option C: Direct Virtual Environment Execution
 ```powershell
 # Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-
-# Or run directly using the venv python executable:
 .\.venv\Scripts\python -m uvicorn backend.app.main:app --port 8000 --reload
-```
-
-### Step 2: Running the Automated Test Suite
-
-Execute the full 34-test suite verifying the resolution engine, spatial algorithms, RBAC, and API contracts:
-
-```powershell
-$env:PYTHONPATH="."
-.\.venv\Scripts\python -m pytest -v backend/tests
-```
-
-### Step 3: Starting the Development Server
-
-```powershell
-$env:PYTHONPATH="."
-.\.venv\Scripts\python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 Once running:
@@ -43,7 +47,26 @@ Once running:
 
 ---
 
-## 2. Standalone Database File & Zero-Config Operation
+## 2. Automated Test Suite (36 Tests)
+
+Execute the full 36-test suite verifying the 7-step resolution engine, spatial algorithms, RBAC, incident export, and API contracts:
+
+```bash
+npm test
+```
+
+Test modules covered in `backend/tests/`:
+- `test_health.py`: Uptime, diagnostic probes, and readiness.
+- `test_auth.py`: JWT login, password hashing, and token validation.
+- `test_spatial.py`: NZTM2000 projections, Haversine geodesics, PIP containment, buffer tiers.
+- `test_water_supply_resolution.py`: 7-step authoritative water supply lineage pipeline.
+- `test_address_search.py`: Cadastral parcel matching and address resolution.
+- `test_zones_and_assets.py`: Supply zones, schemes, and field-level telemetry redaction.
+- `test_incidents.py`: Incident intake, dispatch patching, and statutory CSV export RBAC enforcement.
+
+---
+
+## 3. Standalone Database File & Zero-Config Operation
 
 To avoid requiring an immediate PostgreSQL server installation during local development, the backend operates out of the box with an embedded, pre-seeded SQLite spatial database:
 
@@ -55,15 +78,15 @@ To avoid requiring an immediate PostgreSQL server installation during local deve
   - Key Watercare assets (Huia WTP, Ardmore WTP, Waitakere Dam, Titirangi Reservoir, reticulation mains, valves)
   - Preconfigured RBAC test accounts (`official`, `admin`, `citizen`)
 
-To re-seed or reset the database at any time:
-```powershell
-$env:PYTHONPATH="."
-.\.venv\Scripts\python -m backend.app.db.seed
+To re-seed or inspect the database at any time:
+```bash
+npm run db:info
+npm run db:reseed
 ```
 
 ---
 
-## 3. Production PostgreSQL / PostGIS Deployment
+## 4. Production PostgreSQL / PostGIS Deployment
 
 To switch to a production PostgreSQL database:
 
@@ -80,36 +103,37 @@ To switch to a production PostgreSQL database:
 
 ---
 
-## 4. Key API Endpoints
+## 5. Key API Endpoints
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/health` | Uptime health check |
-| `GET` | `/api/ready` | Database & spatial engine readiness |
-| `GET` | `/api/v1/addresses/search?q={query}` | Search cadastral parcels & addresses |
-| `GET` | `/api/v1/addresses/{id}` | Detailed cadastral parcel attributes |
-| `GET` | `/api/v1/addresses/{id}/water-supply` | Verified water supply for known address |
-| `POST` | `/api/v1/water-supply/resolve` | 7-step authoritative address resolution |
-| `GET` | `/api/v1/zones` | List all 43 Auckland supply zones |
-| `GET` | `/api/v1/zones/{zone_id}` | Detailed zone geometry and demographics |
-| `GET` | `/api/v1/zones/{zone_id}/buffers` | Concentric buffer protection tiers |
-| `GET` | `/api/v1/networks` | List drinking water supply schemes |
-| `GET` | `/api/v1/networks/{id}` | Retrieve specific supply scheme |
-| `GET` | `/api/v1/assets` | Filterable network assets (RBAC telemetry filtering) |
-| `GET` | `/api/v1/assets/{compkey}` | Retrieve asset by Watercare COMPKEY |
-| `POST` | `/api/v1/incidents` | Citizen water contamination/incident intake |
-| `GET` | `/api/v1/incidents` | List registered incident complaints |
-| `PATCH` | `/api/v1/incidents/{id}` | Official update investigation status & notes |
-| `POST` | `/api/v1/auth/login` | Authenticate user & issue JWT bearer token |
-| `GET` | `/api/v1/auth/me` | Retrieve current authenticated user profile |
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `GET` | `/api/health` | Public | Uptime health check |
+| `GET` | `/api/ready` | Public | Database & spatial engine readiness |
+| `GET` | `/api/v1/addresses/search?q={query}` | Public | Search cadastral parcels & addresses |
+| `GET` | `/api/v1/addresses/{id}` | Public | Detailed cadastral parcel attributes |
+| `GET` | `/api/v1/addresses/{id}/water-supply` | Public | Verified water supply for known address |
+| `POST` | `/api/v1/water-supply/resolve` | Public | 7-step authoritative address resolution |
+| `GET` | `/api/v1/zones` | Public | List all 43 Auckland supply zones |
+| `GET` | `/api/v1/zones/{zone_id}` | Public | Detailed zone geometry and demographics |
+| `GET` | `/api/v1/zones/{zone_id}/buffers` | Public | Concentric buffer protection tiers |
+| `GET` | `/api/v1/networks` | Public | List drinking water supply schemes |
+| `GET` | `/api/v1/networks/{id}` | Public | Retrieve specific supply scheme |
+| `GET` | `/api/v1/assets` | Public / Role-Based | Network assets (redacts CCTV & depth for citizens) |
+| `GET` | `/api/v1/assets/{compkey}` | Public / Role-Based | Retrieve asset by Watercare COMPKEY |
+| `POST` | `/api/v1/incidents` | Public | Citizen water contamination/incident intake |
+| `GET` | `/api/v1/incidents` | Public | List registered incident complaints |
+| `GET` | `/api/v1/incidents/export` | **Official / Admin Only** | Download statutory incident register CSV |
+| `PATCH` | `/api/v1/incidents/{id}` | **Official / Admin Only** | Update investigation status & notes |
+| `POST` | `/api/v1/auth/login` | Public | Authenticate user & issue JWT bearer token |
+| `GET` | `/api/v1/auth/me` | Authenticated | Retrieve current user profile |
 
 ---
 
-## 5. Security & RBAC Roles
+## 6. Security & RBAC Roles
 
 - **Citizen Role** (`citizen@nzwater.org.nz` / `CitizenNZ#2026`):
-  Public water compliance grades, boil-water notices, and supply scheme names. Sensitive pipe telemetry (`cctvConditionScore`, `invertDepthM`, `engineerNotes`) is redacted from responses.
+  Public water compliance grades, boil-water notices, and supply scheme names. Sensitive pipe telemetry (`cctvConditionScore`, `invertDepthM`, `engineerNotes`) is redacted from responses. Cannot download unredacted citizen incident registers.
 - **Authorized Official** (`official@taumataarowai.govt.nz` / `OfficialWater#2026`):
-  Full access to CCTV defect scores, pipe invert depths, engineering notes, buffer corridor assessments, and incident investigation dispatch.
+  Full access to CCTV defect scores, pipe invert depths, engineering notes, buffer corridor assessments, and incident investigation dispatch. Authorized to export the full incident register (`/api/v1/incidents/export`) with citizen residential addresses, water supply zones, associated treatment plants/dams, and contact details under the *Water Services Act 2021*.
 - **Administrator** (`admin@taumataarowai.govt.nz` / `ArowaiAdmin#2026`):
   Full system governance, audit log queries, and administrative operations.
